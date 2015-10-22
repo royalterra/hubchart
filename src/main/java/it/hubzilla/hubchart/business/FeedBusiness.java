@@ -48,7 +48,7 @@ public class FeedBusiness {
 		}
 		
 		FeedEntries fe = new FeedEntries();
-		fe.setTitle("red#matrix network statistics "+AppConstants.FORMAT_DAY_SQL.format(global.getPollTime()));
+		fe.setTitle("Hubzilla network statistics "+AppConstants.FORMAT_DAY_SQL.format(global.getPollTime()));
 		fe.setLink(AppConstants.FEED_LINK);
 		fe.setDescriptionType("text/html");
 		fe.setPublishedDate(global.getPollTime());

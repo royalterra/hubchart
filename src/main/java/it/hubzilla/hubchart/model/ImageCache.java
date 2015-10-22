@@ -127,7 +127,7 @@ public class ImageCache extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "RegisteredHubs[id=" + id + "]";
+		return "ImageCache[id=" + id + "]";
 	}
 
 }

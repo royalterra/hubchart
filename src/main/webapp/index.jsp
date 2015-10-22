@@ -64,7 +64,7 @@ request.setAttribute("firstGs", firstGs);
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-7">
-				<img src="images/red_statistics_400.png" align="middle" /><br />
+				<img src="images/logo_hubzilla_400.png" align="middle" /><br />
 				<a href="https://redmatrix.me"><b>redmatrix</b></a> decentralized publishing, sharing, privacy & social<br />
 				&nbsp;<br />
 				<h3>network status</h3>

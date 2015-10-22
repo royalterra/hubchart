@@ -79,11 +79,11 @@ public class PollBusiness {
 		//Throws an error if the hub is not responsive
 		Statistics stats = null;
 		
-		//Poll extended siteinfo/json red service
-		String redPollUrl = hub.getBaseUrl() + AppConstants.JSON_SITEINFO;
-		String redJsonResp = getJsonResponseFromUrl(redPollUrl);
+		//Poll siteinfo/json service
+		String hubPollUrl = hub.getBaseUrl() + AppConstants.JSON_SITEINFO;
+		String hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
 		try {
-			stats = parseHubJsonToTransientEntity(ses, hub, redJsonResp, pollTime);
+			stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
 		} catch (JsonParsingException e) {
 			LOG.debug(e.getMessage());
 			throw new UrlException(e.getMessage(), e);

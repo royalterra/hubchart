@@ -15,7 +15,6 @@ public class AppConstants {
 	public static final String QUARTZ_CONFIG_FILE = "/quartz-jobs.xml";
 	public static final String APP_PROPERTY_FILE = "/app.properties";
 	public static final String TESTING_PROPERTY_FILE = "/testing.properties";
-	//public static final boolean USE_ONLY_RED_SITEINFO = false;
 	
 	public static final int HUB_EXPIRATION_DAYS = 15;
 	public static final int HUB_DELETION_DAYS = 120;
@@ -34,9 +33,9 @@ public class AppConstants {
 	// FEED CONSTANTS
 	public static final String FEED_DEFAULT_TYPE = "rss_2.0";
 	//rss_0.9, rss_0.91, rss_0.92, rss_0.93,rss_0.94, rss_1.0, rss_2.0, atom_0.3, atom_1.0
-	public static final String FEED_TITLE = "redmatrix network statistics";
-	public static final String FEED_LINK = "http://redstats.tarine.net";
-	public static final String FEED_DESCRIPTION = "Daily redmatrix network statistics";
+	public static final String FEED_TITLE = "Hubzilla network statistics";
+	public static final String FEED_LINK = "http://hubchart.tarine.net";
+	public static final String FEED_DESCRIPTION = "Daily Hubzilla grid statistics";
 	public static final int FEED_DAYS_BEFORE_DELETION = 10;
 	
 	// FORMATS
@@ -100,30 +99,27 @@ public class AppConstants {
 	public static final String PARAM_GEO_PAGE = "geoPag";
 	
 	// LOOKUP: NETWORK TYPE
+	public static final String NETWORK_TYPE_HUBZILLA = "HUBZ";
 	public static final String NETWORK_TYPE_RED = "RED#";
 	public static final String NETWORK_TYPE_FRIENDICA = "FRND";
 	public static final String NETWORK_TYPE_DIASPORA = "DSPR";
 	public static final Map<String, String> NETWORK_TYPES = new HashMap<String, String>();
 	static {//key must be lowercase
+		NETWORK_TYPES.put("hubzilla", NETWORK_TYPE_HUBZILLA);
 		NETWORK_TYPES.put("redmatrix", NETWORK_TYPE_RED);
 		NETWORK_TYPES.put("red matrix", NETWORK_TYPE_RED);
-		NETWORK_TYPES.put("friendica", NETWORK_TYPE_FRIENDICA);
 	};
+	public static final String NETWORK_ICON_HUBZILLA = "images/hz-16.png";
 	public static final String NETWORK_ICON_RED = "images/rm-16.png";
-	public static final String NETWORK_ICON_FRIENDICA = "images/friendica-16.png";
-	public static final String NETWORK_ICON_DIASPORA = "images/diaspora-16.png";
-	public static final String NETWORK_ICON_RSS = "images/rss-16.png";
 	public static final Map<String, String> NETWORK_ICONS = new HashMap<String, String>();
 	static {
+		NETWORK_ICONS.put(NETWORK_TYPE_HUBZILLA,NETWORK_ICON_HUBZILLA);
 		NETWORK_ICONS.put(NETWORK_TYPE_RED,NETWORK_ICON_RED);
-		NETWORK_ICONS.put(NETWORK_TYPE_FRIENDICA,NETWORK_ICON_FRIENDICA);
-		NETWORK_ICONS.put(NETWORK_TYPE_DIASPORA,NETWORK_ICON_DIASPORA);
 	};
 	public static final Map<String, String> NETWORK_DESCRIPTIONS = new HashMap<String, String>();
 	static {
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RED, "redmatrix");
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_FRIENDICA, "friendica");
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_DIASPORA, "diaspora");
+		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RED, "RedMatrix");
+		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_HUBZILLA, "Hubzilla");
 	};
 	// LOOKUP: REGISTRATION
 	public static final String REGISTRATION_OPEN = "OPEN";

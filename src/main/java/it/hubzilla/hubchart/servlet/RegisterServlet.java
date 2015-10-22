@@ -102,12 +102,12 @@ public class RegisterServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
 				"<html> \n" + "<head> \n" +
-				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"> \n" + "<title>red#matrix hub registration</title> \n" +
+				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"> \n" + "<title>Hubzilla hub registration</title> \n" +
 				"<meta name='viewport' content='width=device-width, initial-scale=1'>"+
 				"<link href='css/bootstrap.min.css' rel='stylesheet'>"+
 				"</head> \n" + "<body> \n" +
 				"<div class='container'>"+
-				"<img src='images/red_statistics_400.png' /><br />&nbsp;<br />");
+				"<img src='images/logo_hubzilla_400.png' /><br />&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");
 			try {
