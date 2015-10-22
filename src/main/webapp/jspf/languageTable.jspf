@@ -1,0 +1,67 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.hubzilla.hubchart.beans.*"%>
+<%@ page import="it.hubzilla.hubchart.business.*"%>
+<%@ page import="it.hubzilla.hubchart.*"%>
+<%@ page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%
+List<LanguageStatBean> lsList = HubBusiness.findLanguageStatBeans(
+		(Integer) session.getAttribute(AppConstants.PARAM_LANG_PAGE),
+		(Integer) AppConstants.PAGING_LANG);
+Double langItemCount = new Double(HubBusiness.findLanguageStatCount());
+Double langPageCount = Math.ceil(langItemCount/AppConstants.PAGING_LANG);
+request.setAttribute("lsList", lsList);
+request.setAttribute("langPageCount", langPageCount.intValue());
+%>
+<table class="table table-condensed" style="border-collapse: collapse">
+	<thead>
+		<tr>
+			<th>Default language</th>
+			<th>Code</th>
+			<th class="text-right">Hubs</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach items="${requestScope.lsList}" var="ls" varStatus="status">
+			<tr>
+				<td>
+					<img src="${ls.countryFlag}" />&nbsp;<b><c:out value="${ls.language.language}" /></b>
+				</td>
+				<td><c:out value="${ls.language.code}" /></td>
+				<td class="text-right"><c:out value="${ls.liveHubs}" /></td>
+			</tr>
+		</c:forEach>
+	</tbody>
+</table>
+
+<c:if test="${requestScope.langPageCount > 1}">
+	<div class="text-center">
+		<ul class="pagination">
+			<c:choose>
+				<c:when test="${sessionScope.langPag > 0}">
+					<li><a href="index.jsp?langPag=${sessionScope.langPag-1}">&laquo;</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="disabled"><span>&laquo;</span></li>
+				</c:otherwise>
+			</c:choose>
+			<c:forEach var="i" begin="0" end="${requestScope.langPageCount-1}" step="1" varStatus ="status">
+				<c:if test="${i != sessionScope.langPag}">
+					<li><a href="index.jsp?langPag=${i}">${i+1}</a></li>
+				</c:if>
+				<c:if test="${i == sessionScope.langPag}">
+					<li class="active"><span>${i+1}</span></li>
+				</c:if>
+			</c:forEach>
+			<c:choose>
+				<c:when test="${sessionScope.langPag < requestScope.langPageCount}">
+					<li><a href="index.jsp?langPag=${sessionScope.langPag+1}">&raquo;</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="disabled"><span>&raquo;</span></li>
+				</c:otherwise>
+			</c:choose>
+		</ul>
+	</div>
+</c:if>

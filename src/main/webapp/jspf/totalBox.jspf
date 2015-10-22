@@ -1,0 +1,45 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.hubzilla.hubchart.beans.*"%>
+<%@ page import="it.hubzilla.hubchart.business.*"%>
+<%@ page import="it.hubzilla.hubchart.model.*"%>
+<%@ page import="it.hubzilla.hubchart.*"%>
+<%@ page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<c:if test="${not empty requestScope.gs.totalChannels}">
+	<table class="table table-condensed"
+		style="width: 100%; border-collapse: collapse">
+		<tbody class="small">
+			<tr>
+				<td>Active channels (6 months)</td>
+				<td class="text-right"><b><c:out
+							value="${requestScope.gs.activeChannelsLast6Months}" /></b></td>
+			</tr>
+			<tr>
+				<td>Total channels</td>
+				<td class="text-right"><b><c:out
+							value="${requestScope.gs.totalChannels}" /></b></td>
+			</tr>
+			<tr>
+				<td>Total posts</td>
+				<td class="text-right"><b><c:out value="${requestScope.gs.totalPosts}" /></b></td>
+			</tr>
+			<tr>
+				<td>Active hubs</td>
+				<td class="text-right"><b><c:out value="${requestScope.gs.activeHubs}" /></b></td>
+			</tr>
+			<tr>
+				<td>Channels/hub</td>
+				<td class="text-right"><b><c:out value="${requestScope.gs.averageHubChannels}" /></b></td>
+			</tr>
+			<tr>
+				<td>Deployed versions</td>
+				<td class="text-right"><%=HubBusiness.printVersionTagStat() %></td>
+			</tr>
+			<tr>
+				<td>Last update</td>
+				<td class="text-right">${requestScope.gs.lastUpdateString}</td>
+			</tr>
+		</tbody>
+	</table>
+</c:if>

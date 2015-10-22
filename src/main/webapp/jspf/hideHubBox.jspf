@@ -1,0 +1,19 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.hubzilla.hubchart.beans.*"%>
+<%@ page import="it.hubzilla.hubchart.business.*"%>
+<%@ page import="it.hubzilla.hubchart.model.*"%>
+<%@ page import="it.hubzilla.hubchart.*"%>
+<%@ page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%
+Integer hiddenCount = HubBusiness.countHiddenHubs();
+request.setAttribute("hiddenCount", hiddenCount);
+%>
+
+<b>Please hide my hub!</b><br />
+<small>Execute this command on your hub to hide it in statistics:<br />
+<code>util/config system hide_in_statistics 1</code><br />
+Your hub's channel count will be included in totals only.<br />
+At the moment there are <b><c:out value="${requestScope.hiddenCount}" /> hidden hubs</b>.
+</small>

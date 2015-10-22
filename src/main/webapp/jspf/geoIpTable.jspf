@@ -1,0 +1,65 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.hubzilla.hubchart.beans.*"%>
+<%@ page import="it.hubzilla.hubchart.business.*"%>
+<%@ page import="it.hubzilla.hubchart.*"%>
+<%@ page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%
+List<CountryStatBean> csList = HubBusiness.findCountryStatBeans(
+		(Integer) session.getAttribute(AppConstants.PARAM_GEO_PAGE),
+		(Integer) AppConstants.PAGING_GEO);
+Double geoItemCount = new Double(HubBusiness.findCountryStatCount());
+Double geoPageCount = Math.ceil(geoItemCount/AppConstants.PAGING_GEO);
+request.setAttribute("csList", csList);
+request.setAttribute("geoPageCount", geoPageCount.intValue());
+%>
+<table class="table table-condensed" style="border-collapse: collapse">
+	<thead>
+		<tr>
+			<th>Geo location</th>
+			<th class="text-right">Hubs</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach items="${requestScope.csList}" var="cs" varStatus="status">  
+			<tr>
+				<td>
+					<img src="${cs.countryFlag}" />&nbsp;<b><c:out value="${cs.countryName}" /></b>
+				</td>
+				<td class="text-right"><c:out value="${cs.liveHubs}" /></td>
+			</tr>
+		</c:forEach>
+	</tbody>
+</table>
+
+<c:if test="${requestScope.geoPageCount > 1}">
+	<div class="text-center">
+		<ul class="pagination">
+			<c:choose>
+				<c:when test="${sessionScope.geoPag > 0}">
+					<li><a href="index.jsp?geoPag=${sessionScope.geoPag-1}">&laquo;</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="disabled"><span>&laquo;</span></li>
+				</c:otherwise>
+			</c:choose>
+			<c:forEach var="i" begin="0" end="${requestScope.geoPageCount-1}" step="1" varStatus ="status">
+				<c:if test="${i != sessionScope.geoPag}">
+					<li><a href="index.jsp?geoPag=${i}">${i+1}</a></li>
+				</c:if>
+				<c:if test="${i == sessionScope.geoPag}">
+					<li class="active"><span>${i+1}</span></li>
+				</c:if>
+			</c:forEach>
+			<c:choose>
+				<c:when test="${sessionScope.geoPag < requestScope.geoPageCount}">
+					<li><a href="index.jsp?geoPag=${sessionScope.geoPag+1}">&raquo;</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="disabled"><span>&raquo;</span></li>
+				</c:otherwise>
+			</c:choose>
+		</ul>
+	</div>
+</c:if>

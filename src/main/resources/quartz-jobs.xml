@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_1_8.xsd"
+  version="1.8">
+  
+	<schedule>
+		<job>
+			<name>poll</name>
+			<group>hubzilla</group>
+			<description>Registered hubs' stats are checked daily</description>
+			<job-class>it.hubzilla.hubchart.servlet.PollJob</job-class>
+		</job>
+		<trigger>
+			<cron>
+				<name>cronPoll</name>
+				<group>hubzilla</group>
+				<job-name>poll</job-name>
+				<job-group>hubzilla</job-group>
+				<cron-expression>0 10 00 ? * *</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
+	
+	<schedule>
+		<job>
+			<name>crawler</name>
+			<group>hubzilla</group>
+			<description>Register new hubs found by crawling known hubs</description>
+			<job-class>it.hubzilla.hubchart.servlet.CrawlerJob</job-class>
+		</job>
+		<trigger>
+			<cron>
+				<name>cronCrawler</name>
+				<group>hubzilla</group>
+				<job-name>crawler</job-name>
+				<job-group>hubzilla</job-group>
+				<cron-expression>0 00 12 ? * *</cron-expression><!--0 00 18 ? * SAT-->
+			</cron>
+		</trigger>
+	</schedule>
+</job-scheduling-data> 

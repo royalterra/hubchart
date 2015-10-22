@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration
+    PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+    
+		<!-- MySQL -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<!--
+		<property name="hibernate.connection.username">${env.OPENSHIFT_MYSQL_DB_USERNAME}</property>
+		<property name="hibernate.connection.password">${env.OPENSHIFT_MYSQL_DB_PASSWORD}</property>
+		<property name="hibernate.connection.url">jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/${env.OPENSHIFT_APP_NAME}</property>
+		-->
+		<property name="hibernate.connection.characterEncoding">UTF-8</property>
+		<property name="hibernate.connection.useUnicode">true</property> 
+		<property name="hibernate.connection.autocommit">false</property>
+		
+		<!-- dialect for MySQL -->
+        <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.connection.pool_size">0</property> 
+		<property name="hibernate.connection.autoReconnect">true</property>
+		<property name="hibernate.connection.autoReconnectForPools">true</property>
+		<property name="hibernate.connection.is-connection-validation-required">true</property>
+		<property name="hibernate.connection.isolation">2</property> <!-- TRANSACTION_NONE=0 TRANSACTION_READ_COMMITTED=2 TRANSACTION_READ_UNCOMMITTED=1 TRANSACTION_REPEATABLE_READ=4 TRANSACTION_SERIALIZABLE=8 -->
+		<!--property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property-->
+		<!--property name="hibernate.hbm2ddl.auto">update</property-->
+		<!--<property name="hibernate.show_sql">true</property>-->
+		<property name="hibernate.query.substitutions">true 1, false 0, yes 'Y', no 'N'</property>
+		<property name="hibernate.max_fetch_depth">1</property> <!-- set the maximum depth of the outer join fetch tree -->
+		<property name="hibernate.jdbc.batch_size">50</property> <!-- set the maximum JDBC 2 batch size (a nonzero value enables batching)-->
+		<property name="hibernate.jdbc.batch_versioned_data">true</property> <!-- enable batch updates even for versioned data -->
+		<property name="hibernate.jdbc.use_streams_for_binary">true</property> <!-- use streams when writing binary types to / from JDBC -->
+		<property name="hibernate.cache.region_prefix">hibernate.test</property> <!--set a prefix for cache region names -->
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property> <!-- choose a cache implementation -->
+
+		<!-- configuration pool via c3p0
+		<property name="hibernate.c3p0.acquireIncrement">3</property>
+		<property name="hibernate.c3p0.acquireRetryAttempts">30</property>
+		<property name="hibernate.c3p0.autoCommitOnClose">false</property>		
+		<property name="hibernate.c3p0.idleConnectionTestPeriod">300</property>
+		<property name="hibernate.c3p0.initialPoolSize">3</property>
+		<property name="hibernate.c3p0.maxIdleTime">330</property>
+		<property name="hibernate.c3p0.maxPoolSize">20</property>
+		<property name="hibernate.c3p0.minPoolSize">1</property>
+		<property name="hibernate.c3p0.maxStatements">50</property>
+		<property name="hibernate.c3p0.preferredTestQuery">SELECT 1</property>
+		-->
+
+		<!--mapping package="it.hubzilla.hubchart.model"/-->
+		<mapping class="it.hubzilla.hubchart.model.FeedEntries"/>
+		<mapping class="it.hubzilla.hubchart.model.Hubs"/>
+		<mapping class="it.hubzilla.hubchart.model.ImageCache"/>
+		<mapping class="it.hubzilla.hubchart.model.Ip2nation"/>
+		<mapping class="it.hubzilla.hubchart.model.Ip2nationCountries"/>
+		<mapping class="it.hubzilla.hubchart.model.Languages"/>
+		<mapping class="it.hubzilla.hubchart.model.Statistics"/>
+    </session-factory>
+</hibernate-configuration>
