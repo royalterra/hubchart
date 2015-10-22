@@ -428,8 +428,10 @@ public class PollBusiness {
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			Statistics s = new StatisticsDao().findLastGlobalStats(ses);
-			result = new StatisticBean();
-			if (s != null) PropertyUtils.copyProperties(result, s);
+			if (s != null) {
+				result = new StatisticBean();
+				PropertyUtils.copyProperties(result, s);
+			}
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} catch (NoSuchMethodException e) {
@@ -462,8 +464,10 @@ public class PollBusiness {
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			Statistics s = new StatisticsDao().findFirstGlobalStats(ses);
-			result = new StatisticBean();
-			PropertyUtils.copyProperties(result, s);
+			if (s != null) {
+				result = new StatisticBean();
+				PropertyUtils.copyProperties(result, s);
+			}
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} catch (NoSuchMethodException e) {

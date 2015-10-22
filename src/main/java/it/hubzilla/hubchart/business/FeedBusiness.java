@@ -24,23 +24,25 @@ public class FeedBusiness {
 	public static void createFeedEntry() throws BusinessException {
 		StatisticBean global;
 		StatisticBean firstGs;
-		String overview;
-		String imageTags;
-		String hubChart;
-		String newestHubChart;
+		String overview = "";
+		String imageTags = "";
+		String hubChart = "";
+		String newestHubChart = "";
 		try {
 			global = PollBusiness.findLatestGlobalStats();
-			List<StatisticBean> statList = HubBusiness.findStatisticsForPresentation(true, true,
-					AppConstants.ORDER_CHANNEL,
-					false, //order asc?
-					0,//start page
-					20);//rows
 			firstGs = PollBusiness.findFirstGlobalStats();
-			overview = createOverview(global);
-			imageTags = createImageTags(firstGs, global);
-			hubChart = createHubChart(statList);
-			List<StatisticBean> newestHubList = HubBusiness.findNewestHubStatistics(0, 5);
-			newestHubChart = createNewestHubChart(newestHubList);
+			if (global != null && firstGs != null) {
+				List<StatisticBean> statList = HubBusiness.findStatisticsForPresentation(true, true,
+						AppConstants.ORDER_CHANNEL,
+						false, //order asc?
+						0,//start page
+						20);//rows
+				overview = createOverview(global);
+				imageTags = createImageTags(firstGs, global);
+				hubChart = createHubChart(statList);
+				List<StatisticBean> newestHubList = HubBusiness.findNewestHubStatistics(0, 5);
+				newestHubChart = createNewestHubChart(newestHubList);
+			}
 		} catch (OrmException e) {
 			throw new BusinessException(e.getMessage(), e);
 		}

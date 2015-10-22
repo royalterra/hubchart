@@ -329,16 +329,18 @@ public class HubBusiness {
 	}
 	
 	public static String printVersionTagStat() throws OrmException {
-		StatisticBean gs = PollBusiness.findLatestGlobalStats();
 		String result ="--";
-		List<VersionTagStatBean> stats = findVersionTagStatBeans(gs.getActiveHubs());
-		if (stats != null) {
-			if (stats.size() > 0) {
-				result = "";
-				int max = MAX_VERSIONS_SHOWN;
-				if (stats.size() < MAX_VERSIONS_SHOWN) max = stats.size();
-				for (int i=0; i<max; i++) {
-					result += "<b>"+stats.get(i).getVersionTag()+"</b> ("+stats.get(i).getPercentage()+") ";
+		StatisticBean gs = PollBusiness.findLatestGlobalStats();
+		if (gs != null) {
+			List<VersionTagStatBean> stats = findVersionTagStatBeans(gs.getActiveHubs());
+			if (stats != null) {
+				if (stats.size() > 0) {
+					result = "";
+					int max = MAX_VERSIONS_SHOWN;
+					if (stats.size() < MAX_VERSIONS_SHOWN) max = stats.size();
+					for (int i=0; i<max; i++) {
+						result += "<b>"+stats.get(i).getVersionTag()+"</b> ("+stats.get(i).getPercentage()+") ";
+					}
 				}
 			}
 		}
