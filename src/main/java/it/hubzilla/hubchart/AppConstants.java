@@ -99,6 +99,7 @@ public class AppConstants {
 	public static final String PARAM_GEO_PAGE = "geoPag";
 	
 	// LOOKUP: NETWORK TYPE
+	public static final String NETWORK_TYPE_UNKNOWN = "----";
 	public static final String NETWORK_TYPE_HUBZILLA = "HUBZ";
 	public static final String NETWORK_TYPE_RED = "RED#";
 	public static final String NETWORK_TYPE_FRIENDICA = "FRND";
@@ -108,6 +109,7 @@ public class AppConstants {
 		NETWORK_TYPES.put("hubzilla", NETWORK_TYPE_HUBZILLA);
 		NETWORK_TYPES.put("redmatrix", NETWORK_TYPE_RED);
 		NETWORK_TYPES.put("red matrix", NETWORK_TYPE_RED);
+		NETWORK_TYPES.put("Red Matrix", NETWORK_TYPE_RED);
 	};
 	public static final String NETWORK_ICON_HUBZILLA = "images/hz-16.png";
 	public static final String NETWORK_ICON_RED = "images/rm-16.png";
