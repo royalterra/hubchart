@@ -124,13 +124,16 @@ public class CrawlerJob implements Job {
 	private List<Hubs> registerHubs(List<String> urlList) throws OrmException {
 		List<Hubs> newHubList = new ArrayList<Hubs>();
 		for(String url:urlList) {
+			LOG.debug(newHubList.size()+"/"+urlList.size()+" Saving "+url);
+			Integer hubId = null;
 			try {
-				LOG.debug(newHubList.size()+"/"+urlList.size()+" Saving "+url);
-				Integer hubId = HubBusiness.initHub(url, false);
-				Hubs hub = HubBusiness.findHubById(hubId);
-				newHubList.add(hub);
+				hubId = HubBusiness.addHub(url);
 			} catch (BusinessException e) {/* ignore if URL is already registered */
 			} catch (MalformedURLException e) {/* ignore if URL is malformed */
+			}
+			if (hubId != null) {
+				Hubs hub = HubBusiness.findHubById(hubId);
+				newHubList.add(hub);
 			}
 		}
 		return newHubList;

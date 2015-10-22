@@ -80,34 +80,19 @@ public class PollBusiness {
 		Statistics stats = null;
 		
 		//Poll extended siteinfo/json red service
-		String redPollUrl = hub.getBaseUrl() + AppConstants.JSON_SUFFIX_RED;
+		String redPollUrl = hub.getBaseUrl() + AppConstants.JSON_SITEINFO;
 		String redJsonResp = getJsonResponseFromUrl(redPollUrl);
 		try {
-			stats = parseRedJsonToTransient(ses, hub, redJsonResp, pollTime);
+			stats = parseHubJsonToTransientEntity(ses, hub, redJsonResp, pollTime);
 		} catch (JsonParsingException e) {
 			LOG.debug(e.getMessage());
 			throw new UrlException(e.getMessage(), e);
 		}
 		
-		//if (!AppConstants.USE_ONLY_RED_SITEINFO) {
-		//	//If the previous service is not providing stats, then look for the statistics_json service
-		//	if (stats != null) {
-		//		if (stats.getTotalChannels() == null) {
-		//			LOG.debug(hub.getBaseUrl()+" is not providing red statistics. Trying statistics_json service");
-		//			String dspPollUrl = hub.getBaseUrl() + AppConstants.JSON_SUFFIX_DIASPORA;
-		//			try {
-		//				String dspJsonResp = getJsonResponseFromUrl(dspPollUrl);
-		//				stats = parseDiasporaToTransient(ses, stats, dspJsonResp, pollTime);
-		//			} catch (Exception e) {
-		//				LOG.debug(hub.getBaseUrl()+" neither red siteinfo service nor statistics_json plugin is providing statistics");
-		//			}
-		//		}
-		//	}
-		//}
-
 		// Last poll time
 		if (stats != null) {
 			hub.setLastSuccessfulPollTime(pollTime);
+			hub.setDeleted(false);
 			stats.setPollTime(pollTime);
 		}
 		return stats;
@@ -142,7 +127,7 @@ public class PollBusiness {
 		return responseBody;
 	}
 	
-//	private static Statistics parseDiasporaToTransient(Session ses, Statistics stats,
+//	private static Statistics parseDiasporaToTransientEntity(Session ses, Statistics stats,
 //			String responseBody, Date pollTime)
 //				throws OrmException, JsonParsingException {
 //		// Handle json response
@@ -228,7 +213,7 @@ public class PollBusiness {
 //		return stats;
 //	}
 	
-	private static Statistics parseRedJsonToTransient(Session ses, Hubs hub,
+	private static Statistics parseHubJsonToTransientEntity(Session ses, Hubs hub,
 			String responseBody, Date pollTime)
 				throws OrmException, JsonParsingException {
 		Statistics stats = new Statistics();
@@ -244,14 +229,8 @@ public class PollBusiness {
 		JsonObject jo = jsonReader.readObject();
 		jsonReader.close();
 		
-		// Hub fqdn
-		String fqdn = stats.getHub().getBaseUrl();
-		try {
-			fqdn = new URL(stats.getHub().getBaseUrl()).getHost();
-		} catch (Exception e) { }
-		hub.setFqdn(fqdn);
 		// Hub name
-		String name = fqdn;
+		String name = hub.getFqdn();
 		try {
 			name = jo.getString("site_name");
 		} catch (Exception e) { }
@@ -275,8 +254,7 @@ public class PollBusiness {
 		}
 		// Network type
 		try {
-			String networkType = LookupUtil.encodeNetworkType(jo.getString("platform"));
-			hub.setNetworkType(networkType);// "redmatrix",
+			hub.setNetworkType(jo.getString("platform"));// "redmatrix","hubzilla"...
 		} catch (Exception e) { }
 		// Version
 		try {
@@ -314,38 +292,6 @@ public class PollBusiness {
 			}
 			hub.setPlugins(plugins);
 		} catch (Exception e) { }
-		// FEATURE Diaspora
-		boolean featureDiaspora = false;
-		try {
-			String dspString = jo.getString("diaspora_emulation").toString();
-			if (dspString != null) {
-				if (dspString.equals("1")) featureDiaspora = true;
-			}
-		} catch (Exception e1) {
-			try {
-				Integer dspInt = jo.getInt("diaspora_emulation");
-				if (dspInt != null) {
-					if (dspInt > 0) featureDiaspora = true;
-				}
-			} catch (Exception e2) {/* Any exception is discarded */}
-		}
-		hub.setFeatureDiaspora(featureDiaspora);
-		// FEATURE Rss
-		boolean featureRss = false;
-		try {
-			String rssString = jo.getString("rss_connections").toString();
-			if (rssString != null) {
-				if (rssString.equals("1")) featureRss = true;
-			}
-		} catch (Exception e1) {
-			try {
-				Integer rssInt = jo.getInt("rss_connections");
-				if (rssInt != null) {
-					if (rssInt > 0) featureRss = true;
-				}
-			} catch (Exception e2) {/* Any exception is discarded */}
-		}
-		hub.setFeatureRss(featureRss);
 		//channels_total
 		Integer channelsTotal = null;
 		try {
@@ -425,7 +371,7 @@ public class PollBusiness {
 		return stats;
 	}
 	
-	public static boolean deleteIfLongTimeDead(Session ses, Hubs hub)
+	public static boolean markUnresponsiveAsDeleted(Session ses, Hubs hub)
 			throws OrmException {
 		//is hub's last valid poll later than 'expiryDays' ago?
 		Calendar cal = new GregorianCalendar();
@@ -483,7 +429,7 @@ public class PollBusiness {
 		try {
 			Statistics s = new StatisticsDao().findLastGlobalStats(ses);
 			result = new StatisticBean();
-			PropertyUtils.copyProperties(result, s);
+			if (s != null) PropertyUtils.copyProperties(result, s);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} catch (NoSuchMethodException e) {

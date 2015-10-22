@@ -2,8 +2,6 @@ package it.hubzilla.hubchart.model;
 
 import it.hubzilla.hubchart.AppConstants;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -96,18 +94,6 @@ public class Hubs extends BaseEntity {
     private Languages language;
 
 	public Hubs() {
-	}
-	
-	public Hubs(String baseUrl) throws MalformedURLException {
-		this.baseUrl = baseUrl;
-		this.fqdn = new URL(this.baseUrl).getHost();
-		this.networkType = AppConstants.NETWORK_TYPE_RED;
-		this.deleted = false;
-		this.lastSuccessfulPollTime = AppConstants.DATE_FAR_PAST;
-	}
-
-	public Hubs(Integer id) {
-		this.id = id;
 	}
 
 	public String getVersionDescription() {

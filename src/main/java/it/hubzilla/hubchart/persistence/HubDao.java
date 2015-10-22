@@ -4,6 +4,8 @@ import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Hubs;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,37 +19,20 @@ import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 
 public class HubDao {
-
-	public boolean isUnique(Session ses, String baseUrl) throws OrmException {
-		String baseUrlHttp = baseUrl.replaceAll("https:", "http:");
-		String baseUrlHttps = baseUrl.replaceAll("http:", "https:");
-		String baseUrlNoWww = baseUrl.replaceAll("://www.", "://");
-		try {
-			Query q = ses.createQuery("from Hubs h where "+
-					"h.baseUrl like :s1 or h.baseUrl like :s2 or h.baseUrl like :s3");
-			q.setParameter("s1", baseUrlHttp, StringType.INSTANCE);
-			q.setParameter("s2", baseUrlHttps, StringType.INSTANCE);
-			q.setParameter("s3", baseUrlNoWww, StringType.INSTANCE);
-			@SuppressWarnings("unchecked")
-			List<Hubs> list = q.list();
-			if (list == null) return true;
-			if (list.size() == 0) return true;
-			return false;
-		} catch (HibernateException e) {
-			throw new OrmException(e.getMessage(), e);
-		}
-	}
 	
-	public Hubs findByBaseUrl(Session ses, String baseUrl) throws OrmException {
+	public Hubs findByFqdn(Session ses, String baseUrl) throws OrmException, MalformedURLException {
 		Hubs result = null;
-		String baseUrlHttp = baseUrl.replaceAll("https:", "http:");
-		String baseUrlHttps = baseUrl.replaceAll("http:", "https:");
+		URL url = new URL(baseUrl);
+		String fqdn = url.getHost();
+		String baseUrlNoWww = baseUrl.replaceAll("://www.", "://");
+		URL urlNoWww = new URL(baseUrlNoWww);
+		String fqdnNoWww = urlNoWww.getHost();
 		try {
 			Query q = ses.createQuery("from Hubs h where "+
-					"h.baseUrl like :s1 or h.baseUrl like :s2 "+
+					"(h.fqdn like :s1 or h.fqdn like :s2) "+
 					"order by h.deleted asc");
-			q.setParameter("s1", baseUrlHttp, StringType.INSTANCE);
-			q.setParameter("s2", baseUrlHttps, StringType.INSTANCE);
+			q.setParameter("s1", fqdn, StringType.INSTANCE);
+			q.setParameter("s2", fqdnNoWww, StringType.INSTANCE);
 			q.setMaxResults(1);
 			q.setFirstResult(0);
 			@SuppressWarnings("unchecked")

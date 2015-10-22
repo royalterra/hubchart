@@ -35,6 +35,7 @@ public class PollJob implements Job {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
+			
 			//Poll and save
 			Date pollTime = new Date();
 			List<Hubs> activeHubs = hubDao.findAll(ses, false, false);//include expired and hidden hubs
@@ -45,10 +46,10 @@ public class PollJob implements Job {
 				GenericDao.updateGeneric(ses, stat.getHub().getId(), stat.getHub());
 			}
 			
-			//exclude expired but not hidden hubs
+			//Mark hubs as deleted if unresponsive for more than HUB_DELETION_DAYS
 			List<Hubs> expiredHubs = hubDao.findExpired(ses);
 			for (Hubs hub:expiredHubs) {
-				PollBusiness.deleteIfLongTimeDead(ses, hub);
+				PollBusiness.markUnresponsiveAsDeleted(ses, hub);
 			}
 			
 			//Remove deleted hubs from activeHubs list

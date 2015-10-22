@@ -18,6 +18,7 @@ import it.hubzilla.hubchart.persistence.StatisticsDao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,59 +35,30 @@ public class HubBusiness {
 	private static HubDao hubDao = new HubDao();
 	private static StatisticsDao statisticsDao = new StatisticsDao();
 	
-	public static Integer initHub(String baseUrl, boolean reviveDeletedHub) throws BusinessException, OrmException,
+	public static Integer addHub(String baseUrl) throws BusinessException, OrmException,
 			MalformedURLException {
 		Integer id = null;
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
 			Date pollTime = new Date();
-			boolean exists = false;
 			//Check uniqueness
-			boolean unique = hubDao.isUnique(ses, baseUrl);
-			Hubs hub = null;
-			if (!unique) {
-				//Exists
-				hub = hubDao.findByBaseUrl(ses, baseUrl);
-				if (hub != null) {
-					exists = true;
-					if (hub.getDeleted()) {
-						if (reviveDeletedHub) {
-							hub.setLastSuccessfulPollTime(pollTime);
-							hub.setIdLastHubStats(0);
-							hub.setDeleted(false);
-							hub.setHidden(false);
-							GenericDao.updateGeneric(ses, hub.getId(), hub);
-							id = hub.getId();
-						} else {
-							throw new BusinessException(baseUrl+" is already marked as deleted");
-						}
-					} else {
-						throw new BusinessException(baseUrl+" has already been registered");
-					}
-				}
-			}
-			if (!exists) {
-				//Doesn't exist, a new one is created
-				hub = new Hubs(baseUrl);
-				hub.setLastSuccessfulPollTime(AppConstants.DATE_FAR_PAST);
-				hub.setCreationTime(pollTime);
-				hub.setIdLastHubStats(0);
-				hub.setDeleted(false);
-				hub.setHidden(false);
-				id = (Integer) GenericDao.saveGeneric(ses, hub);
-			}
+			Hubs hub = hubDao.findByFqdn(ses, baseUrl);
+			if (hub != null) throw new BusinessException(baseUrl+" is a known hub and cannot be added");
+			
+			//Doesn't exist, a new one is created
+			hub = new Hubs();
+			hub.setBaseUrl(baseUrl);
+			hub.setFqdn(new URL(baseUrl).getHost());
+			hub.setLastSuccessfulPollTime(AppConstants.DATE_FAR_PAST);
+			hub.setCreationTime(pollTime);
+			hub.setIdLastHubStats(0);
+			hub.setDeleted(false);
+			hub.setHidden(false);
+			id = (Integer) GenericDao.saveGeneric(ses, hub);
 			
 			//First poll
-			Statistics stats = new Statistics();
-			stats.setHub(hub);
-			stats.setPollTime(pollTime);
-			try {
-				stats = PollBusiness.retrieveTransientStats(ses, hub, pollTime);
-			} catch (UrlException e) {/* ignore errors from http requests */}
-			Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
-			hub.setIdLastHubStats(idStats);
-			GenericDao.updateGeneric(ses, hub.getId(), hub);
+			retrieveStats(ses, hub, pollTime);
 			
 			trn.commit();
 		} catch (OrmException e) {
@@ -99,6 +71,46 @@ public class HubBusiness {
 			ses.close();
 		}
 		return id;
+	}
+	
+	public static Integer reviveHub(String baseUrl) throws BusinessException, OrmException,
+			MalformedURLException {
+		Integer id = null;
+		Session ses = HibernateSessionFactory.getSession();
+		Transaction trn = ses.beginTransaction();
+		try {
+			Date pollTime = new Date();
+			//Exists
+			Hubs hub = hubDao.findByFqdn(ses, baseUrl);
+			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
+			if (hub.getDeleted()) {
+				retrieveStats(ses, hub, pollTime);
+			} else {
+				//It's ok, a live hub doesn't need to be revived
+			}
+			trn.commit();
+		} catch (OrmException e) {
+			trn.rollback();
+			throw new OrmException(e.getMessage(), e);
+		} catch (BusinessException e) {
+			trn.rollback();
+			throw new BusinessException(e.getMessage(), e);
+		} finally {
+			ses.close();
+		}
+		return id;
+	}
+	private static void retrieveStats(Session ses, Hubs hub, Date pollTime) throws OrmException {
+		//First poll
+		Statistics stats = new Statistics();
+		stats.setHub(hub);
+		stats.setPollTime(pollTime);
+		try {
+			stats = PollBusiness.retrieveTransientStats(ses, hub, pollTime);
+		} catch (UrlException e) {/* ignore errors from http requests */}
+		Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
+		hub.setIdLastHubStats(idStats);
+		GenericDao.updateGeneric(ses, hub.getId(), hub);
 	}
 
 	public static List<StatisticBean> findLatestStatisticBeans(

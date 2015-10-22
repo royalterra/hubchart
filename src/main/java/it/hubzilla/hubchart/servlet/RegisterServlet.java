@@ -56,16 +56,9 @@ public class RegisterServlet extends HttpServlet {
 		try {
 			if (baseUrlParam != null) {
 				baseUrlParam = HubBusiness.cleanBaseUrl(baseUrlParam);
-				pollUrl = baseUrlParam+AppConstants.JSON_SUFFIX_RED;
+				pollUrl = baseUrlParam+AppConstants.JSON_SITEINFO;
 				if (urlExists(pollUrl)) {
 					baseUrl = baseUrlParam;
-				//} else {
-				//	if (!AppConstants.USE_ONLY_RED_SITEINFO) {
-				//		pollUrl = baseUrlParam+AppConstants.JSON_SUFFIX_DIASPORA;
-				//		if (urlExists(pollUrl)) {
-				//			baseUrl = baseUrlParam;
-				//		}
-				//	}
 				}
 			}
 			
@@ -73,11 +66,19 @@ public class RegisterServlet extends HttpServlet {
 			LOG.debug("response from pollUrl = "+pollUrl);
 			
 			if (baseUrl != null) {
-				//Statistics URL exists
 				try {
-					hubId = HubBusiness.initHub(baseUrl, true);
-					message = "Your hub have been correctly registered.<br />"
-							+ "It will be included in global statistics within 24 hours.";
+					//Revive or add hub
+					try {
+						//First: check if it can be revived
+						hubId = HubBusiness.reviveHub(baseUrl);
+						message = "Your hub is marked as live.<br />"
+								+ "It will be included in global statistics within 24 hours.";
+					} catch (Exception e) {
+						//Second: If it cannot be revived then it must be added
+						hubId = HubBusiness.addHub(baseUrl);
+						message = "Your hub have been correctly registered.<br />"
+								+ "It will be included in global statistics within 24 hours.";
+					}
 					LOG.debug(message);
 					success = true;
 				} catch (BusinessException e) {

@@ -29,8 +29,7 @@ public class AppConstants {
 	public static final int GLOBAL_CHART_HEIGHT = 160;
 	
 	// STATISTICS CONSTANTS
-	public static final String JSON_SUFFIX_DIASPORA ="/statistics.json";
-	public static final String JSON_SUFFIX_RED ="/siteinfo/json";
+	public static final String JSON_SITEINFO ="/siteinfo/json";
 	
 	// FEED CONSTANTS
 	public static final String FEED_DEFAULT_TYPE = "rss_2.0";

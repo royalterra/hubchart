@@ -96,3 +96,6 @@ CREATE TABLE feed_entries (
 	description_value text NOT NULL,
 	PRIMARY KEY(id)
 );
+
+alter table hubs drop column feature_diaspora;
+alter table hubs drop column feature_rss;
