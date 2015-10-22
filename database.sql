@@ -37,8 +37,8 @@ CREATE TABLE image_cache (
 	update_time timestamp NOT NULL,
 	PRIMARY KEY(id)
 );
-ALTER TABLE hub_stats ADD CONSTRAINT FK9E8070D591A2711D FOREIGN KEY (id_registered_hub) REFERENCES hubs(id);
-CREATE INDEX IDX9E8070D591A2711D ON hub_stats(id_registered_hub);
+ALTER TABLE hub_stats ADD CONSTRAINT fk_registered_hub FOREIGN KEY (id_registered_hub) REFERENCES hubs(id);
+CREATE INDEX idx_registered_hub ON hub_stats(id_registered_hub);
 CREATE TABLE global_stats (
 	id int NOT NULL auto_increment,
 	poll_time timestamp,
@@ -48,10 +48,6 @@ CREATE TABLE global_stats (
 	total_posts int,
 	PRIMARY KEY(id)
 );
-
-***
-
-/* https://nuvola.red/siteinfo/json */
 alter table hubs change poll_url fqdn varchar(512);
 alter table hubs change description info varchar(1024);
 alter table hubs change logo_url plugins varchar(1024);
@@ -69,7 +65,7 @@ alter table hubs change poll_time poll_time datetime NOT NULL;
 alter table hub_stats change poll_time poll_time datetime NOT NULL;
 alter table global_stats change poll_time poll_time datetime NOT NULL;
 rename table hub_stats TO statistics;
-alter table statistics drop foreign key FK9E8070D591A2711D;
+alter table statistics drop foreign key fk_registered_hub;
 alter table statistics change id_registered_hub id_hub int DEFAULT NULL;
 alter table image_cache drop column name;
 drop table global_stats;
