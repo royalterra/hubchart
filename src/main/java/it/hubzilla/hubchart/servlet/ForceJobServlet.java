@@ -24,7 +24,7 @@ public class ForceJobServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String jobName = request.getParameter("name");
 		String jobGroup = request.getParameter("group");
-		if (jobGroup==null) jobGroup = "tarine";
+		if (jobGroup==null) jobGroup = "hubzilla";
 		if (jobName==null) {
 			LOG.debug("ForceJobServlet non eseguita perché jobName o jobGroup non devono essere vuoti");
 			return;
