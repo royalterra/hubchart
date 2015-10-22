@@ -61,12 +61,6 @@ public class Hubs extends BaseEntity {
 	@Column(name = "version_tag", length = 32)
 	private String versionTag;
 	@Basic(optional = false)
-	@Column(name = "feature_diaspora", nullable = false)
-	private boolean featureDiaspora;
-	@Basic(optional = false)
-	@Column(name = "feature_rss", nullable = false)
-	private boolean featureRss;
-	@Basic(optional = false)
 	@Column(name = "hidden", nullable = false)
 	private boolean hidden;
 	@Basic(optional = false)
@@ -248,22 +242,6 @@ public class Hubs extends BaseEntity {
 
 	public void setVersion(String version) {
 		this.version = version;
-	}
-
-	public boolean getFeatureDiaspora() {
-		return featureDiaspora;
-	}
-
-	public void setFeatureDiaspora(boolean featureDiaspora) {
-		this.featureDiaspora = featureDiaspora;
-	}
-
-	public boolean getFeatureRss() {
-		return featureRss;
-	}
-
-	public void setFeatureRss(boolean featureRss) {
-		this.featureRss = featureRss;
 	}
 
 	public boolean isHidden() {

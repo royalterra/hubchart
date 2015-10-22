@@ -261,19 +261,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 						<table class="table table-condensed small"
 							style="width: 100%; border-collapse: collapse">
 							<tbody>
-								<c:if test="${stat.hub.featureDiaspora || stat.hub.featureRss}">
-									<tr>
-										<td>Features</td>
-										<td>
-											<c:if test="${stat.hub.featureDiaspora}">
-												<img src="<%=AppConstants.NETWORK_ICON_DIASPORA%>" />&nbsp;diaspora&nbsp;
-			          						</c:if>
-			          						<c:if test="${stat.hub.featureRss}">
-												<img src="<%=AppConstants.NETWORK_ICON_RSS%>" />&nbsp;rss&nbsp;
-											</c:if>
-			          					</td>
-									</tr>
-								</c:if>
 								<c:if test='${not empty stat.hub.plugins}'>
 									<tr>
 										<td>Plugins</td>
