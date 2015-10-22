@@ -278,7 +278,7 @@ public class HubBusiness {
 	
 	public static Integer findCountryStatCount() throws OrmException {
 		Session ses = HibernateSessionFactory.getSession();
-		Integer result = null;
+		Integer result = -1;
 		try {
 			List<Object[]> list = hubDao.countHubsByCountry(ses, 0, Integer.MAX_VALUE);
 			result = list.size();

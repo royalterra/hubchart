@@ -424,7 +424,7 @@ public class PollBusiness {
 	}
 
 	public static StatisticBean findLatestGlobalStats() throws OrmException {
-		StatisticBean result = null;
+		StatisticBean result = new StatisticBean();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			Statistics s = new StatisticsDao().findLastGlobalStats(ses);
@@ -447,7 +447,7 @@ public class PollBusiness {
 	}
 	
 	public static List<Statistics> findGlobalStats(Date beginDt, Date endDt) throws OrmException {
-		List<Statistics> result = null;
+		List<Statistics> result = new ArrayList<Statistics>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			result = new StatisticsDao().findGlobalStats(ses, beginDt, endDt);
@@ -460,7 +460,7 @@ public class PollBusiness {
 	}
 	
 	public static StatisticBean findFirstGlobalStats() throws OrmException {
-		StatisticBean result = null;
+		StatisticBean result = new StatisticBean();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			Statistics s = new StatisticsDao().findFirstGlobalStats(ses);
