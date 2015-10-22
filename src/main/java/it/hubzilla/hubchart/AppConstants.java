@@ -111,10 +111,12 @@ public class AppConstants {
 		NETWORK_TYPES.put("red matrix", NETWORK_TYPE_RED);
 		NETWORK_TYPES.put("Red Matrix", NETWORK_TYPE_RED);
 	};
+	public static final String NETWORK_ICON_UNKNOWN = "images/skull-16.png";
 	public static final String NETWORK_ICON_HUBZILLA = "images/hz-16.png";
 	public static final String NETWORK_ICON_RED = "images/rm-16.png";
 	public static final Map<String, String> NETWORK_ICONS = new HashMap<String, String>();
 	static {
+		NETWORK_ICONS.put(NETWORK_TYPE_UNKNOWN, NETWORK_ICON_UNKNOWN);
 		NETWORK_ICONS.put(NETWORK_TYPE_HUBZILLA,NETWORK_ICON_HUBZILLA);
 		NETWORK_ICONS.put(NETWORK_TYPE_RED,NETWORK_ICON_RED);
 	};
