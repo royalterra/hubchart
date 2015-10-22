@@ -254,7 +254,9 @@ public class PollBusiness {
 		}
 		// Network type
 		try {
-			hub.setNetworkType(AppConstants.NETWORK_TYPES.get(jo.getString("platform")));// "redmatrix","hubzilla"...
+			String networkType = AppConstants.NETWORK_TYPES.get(jo.getString("platform"));
+			if (networkType == null) networkType = AppConstants.NETWORK_TYPE_UNKNOWN;
+			hub.setNetworkType(networkType);
 		} catch (Exception e) { }
 		// Version
 		try {
