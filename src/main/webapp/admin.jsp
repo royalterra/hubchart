@@ -39,20 +39,19 @@ request.setAttribute("accessKey", accessKey);
 		
 		<c:if test="${not empty accessKey}">
 		
+			&nbsp;<br/>
 			<div class="row">
 				<form action="/forcejob" method="post">
 					<div class="col-sm-1">
 						<img src="images/home-32.png" align="middle" />
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-4">
 						Force hub list <b>polling</b>
 						<input type="hidden" name="name" value="poll"></input>
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-3">
 						Access key
 						<input type="text" name="accessKey"></input>
-					</div>
-					<div class="col-sm-1">
 						<button type="submit">Go!</button>
 					</div>
 				</form>
@@ -63,15 +62,13 @@ request.setAttribute("accessKey", accessKey);
 					<div class="col-sm-1">
 						<img src="images/home-32.png" align="middle" />
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-4">
 						Force hub network <b>discovery</b>
 						<input type="hidden" name="name" value="crawler"></input>
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-3">
 						Access key
 						<input type="text" name="accessKey"></input>
-					</div>
-					<div class="col-sm-1">
 						<button type="submit">Go!</button>
 					</div>
 				</form>
