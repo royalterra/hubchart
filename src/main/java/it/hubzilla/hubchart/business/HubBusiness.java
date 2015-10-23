@@ -381,8 +381,10 @@ public class HubBusiness {
 					int max = MAX_VERSIONS_SHOWN;
 					if (stats.size() < MAX_VERSIONS_SHOWN) max = stats.size();
 					for (int i=0; i<max; i++) {
-						result += "<b>"+stats.get(i).getNetworkTypeName()+
-								"</b> ("+stats.get(i).getPercentage()+") ";
+						String networkTypeIcon = AppConstants.NETWORK_ICONS.get(stats.get(i).getNetworkTypeName());
+						result += "&nbsp;<img src='"+networkTypeIcon+
+								"' title='"+stats.get(i).getNetworkTypeName()+
+								"'/> "+stats.get(i).getPercentage()+" ";
 					}
 				}
 			}
