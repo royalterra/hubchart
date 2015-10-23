@@ -1,5 +1,9 @@
 package it.hubzilla.hubchart.servlet;
 
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.business.SettingsBusiness;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -24,11 +28,32 @@ public class ForceJobServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String jobName = request.getParameter("name");
 		String jobGroup = request.getParameter("group");
+		String accessKey = request.getParameter(AppConstants.SETTINGS_ACCESS_KEY);
+		
 		if (jobGroup==null) jobGroup = "hubzilla";
-		if (jobName==null) {
-			LOG.debug("ForceJobServlet non eseguita perché jobName o jobGroup non devono essere vuoti");
+		if (jobName==null || accessKey == null) {
+			jobName="";
+			accessKey="";
+		}
+		if (jobName.equals("") || jobName.equals("")) {
+			LOG.debug("ForceJobServlet has been stopped because some parameters are missing");
 			return;
 		}
+		
+		//Access key verification
+		try {
+			String dbKey = SettingsBusiness.getAccessKey();
+			if (dbKey == null) {
+				throw new ServletException("No accessKey has been defined. Please run the installer.");
+			}
+			if (!dbKey.equals(accessKey)) {
+				throw new ServletException("accessKey is wrong");
+			}
+		} catch (OrmException e) {
+			throw new ServletException(e.getMessage(), e);
+		}
+		
+		//Force job
 		try {
 			Scheduler scheduler;
 			scheduler = StdSchedulerFactory.getDefaultScheduler();

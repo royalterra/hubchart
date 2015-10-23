@@ -99,3 +99,12 @@ CREATE TABLE feed_entries (
 alter table hubs drop column feature_diaspora;
 alter table hubs drop column feature_rss;
 INSERT INTO `hubchart`.`hubs` (`id`, `base_url`, `info`, `plugins`, `name`, `ip_address`, `country_code`, `network_type`, `registration_policy`, `version`, `last_successful_poll_time`, `id_last_hub_stats`, `country_name`, `creation_time`, `directory_mode`, `id_language`, `admin_name`, `admin_address`, `admin_channel`, `hidden`, `fqdn`, `version_tag`, `deleted`) VALUES (NULL, 'https://hubzilla.it', NULL, NULL, NULL, NULL, NULL, 'HUBZ', NULL, NULL, CURRENT_TIMESTAMP, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, b'0', 'hubzilla.it', NULL, b'0');
+
+CREATE TABLE settings (
+	id int NOT NULL auto_increment,
+	name varchar(32) NOT NULL,
+	value varchar(256) NOT NULL,
+	PRIMARY KEY(id)
+);
+create index idx_settings_name on settings(name);
+ALTER TABLE settings ADD CONSTRAINT ux_settings_name UNIQUE (name);

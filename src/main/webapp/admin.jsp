@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.hubzilla.hubchart.business.SettingsBusiness"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
-
+String accessKey = SettingsBusiness.getAccessKey();
+request.setAttribute("accessKey", accessKey);
 %>
 <html>
 <head>
@@ -36,26 +38,56 @@
 			</div>
 		</div>
 		
-		<div class="row">
-			<form action="/forcejob">
-				<div class="col-sm-1">
-					<img src="images/home-32.png" align="middle" />
-				</div>
-				<div class="col-sm-5">
-					Force hub list <b>polling</b>
-					<input type="hidden" name="name" value="poll"></input>
-				</div>
-				<div class="col-sm-5">
-					Access key
-					<input type="text" name="accessKey"></input>
-				</div>
-				<div class="col-sm-1">
-					<button type="submit" title="Go"></button>
-				</div>
-			</form>
-		</div>
-			
+		<c:if test="${not empty accessKey}">
 		
+			<div class="row">
+				<form action="/forcejob">
+					<div class="col-sm-1">
+						<img src="images/home-32.png" align="middle" />
+					</div>
+					<div class="col-sm-5">
+						Force hub list <b>polling</b>
+						<input type="hidden" name="name" value="poll"></input>
+					</div>
+					<div class="col-sm-5">
+						Access key
+						<input type="text" name="accessKey"></input>
+					</div>
+					<div class="col-sm-1">
+						<button type="submit" title="Go"></button>
+					</div>
+				</form>
+			</div>
+		
+			<div class="row">
+				<form action="/forcejob">
+					<div class="col-sm-1">
+						<img src="images/home-32.png" align="middle" />
+					</div>
+					<div class="col-sm-5">
+						Force hub <b>discovery</b>
+						<input type="hidden" name="name" value="crawler"></input>
+					</div>
+					<div class="col-sm-5">
+						Access key
+						<input type="text" name="accessKey"></input>
+					</div>
+					<div class="col-sm-1">
+						<button type="submit" title="Go"></button>
+					</div>
+				</form>
+			</div>
+		</c:if>
+		
+		<c:if test="${empty accessKey}">
+			<form action="/install">
+				Define an access key for administration <i>(take note of it)</i><br/>
+				<input type="text" name="accessKey"></input><br/>
+				Insert a seed hub <b>base url</b> to start network discovery<br/>
+				<input type="text" name="seedHub" value="https://"></input><br/>
+				<button type="submit" title="Go"></button>
+			</form>
+		</c:if>
 	</div>
 	<!-- /container -->
 

@@ -10,11 +10,12 @@ import java.util.Map;
 
 public class AppConstants {
 
-	// CONFIG FILES
+	// CONFIGURATION
 	public static final String HIBERNATE_CONFIG_FILE="/hibernate.cfg.xml";
 	public static final String QUARTZ_CONFIG_FILE = "/quartz-jobs.xml";
 	public static final String APP_PROPERTY_FILE = "/app.properties";
 	public static final String TESTING_PROPERTY_FILE = "/testing.properties";
+	public static final String SETTINGS_ACCESS_KEY = "accessKey";
 	
 	public static final int HUB_EXPIRATION_DAYS = 15;
 	public static final int HUB_DELETION_DAYS = 120;
