@@ -73,18 +73,6 @@ public class InstallServlet extends HttpServlet {
 		} catch (OrmException e) {
 			throw new ServletException(e.getMessage(), e);
 		}
-		//Hub list should be empty
-		try {
-			List<Hubs> hubList = HubBusiness.findAllHubs(true, false);
-			if (hubList != null) {
-				if (hubList.size() > 0) {
-					throw new ServletException("Seeding hub has already been defined.");
-				}
-			}
-		} catch (OrmException e) {
-			throw new ServletException(e.getMessage(), e);
-		}
-		
 		//Set accessKey
 		try {
 			SettingsBusiness.setAccessKey(accessKey);
@@ -93,44 +81,60 @@ public class InstallServlet extends HttpServlet {
 		}
 		message += "Access key has been correctly set.<br/><br/>";
 		
-		//Look for hub baseUrl
-		String pollUrl = null;
-		Integer hubId = null;
+		//Hub list should be empty
+		boolean emptyHubList = true;
 		try {
-			if (baseUrl != null) {
-				String baseUrlParam = HubBusiness.cleanBaseUrl(baseUrl);
-				pollUrl = baseUrlParam+AppConstants.JSON_SITEINFO;
-				if (urlExists(pollUrl)) {
-					baseUrl = baseUrlParam;
+			List<Hubs> hubList = HubBusiness.findAllHubs(true, false);
+			if (hubList != null) {
+				if (hubList.size() > 0) {
+					message += "The first hub has already been defined.";
+					emptyHubList = false;
 				}
 			}
-			LOG.debug("baseUrl = "+baseUrl);
-			LOG.debug("response from pollUrl = "+pollUrl);
-			
-			if (baseUrl != null) {
-				try {
-					//Revive or add hub
-					hubId = HubBusiness.addHub(baseUrl);
-					message += "Your hub have been correctly registered.<br />"
-							+ "It will be included in global statistics within 24 hours.";
-					success = true;
-				} catch (BusinessException e) {
-					message = e.getMessage();
-				} catch (OrmException e) {
-					message = e.getMessage();
-					LOG.error(message, e);
-				}
-			} else {
-				message = "The hub base URL is incorrect. Please re-submit this page using the same access key.";
-			}
-		} catch (ProtocolException e) {
-			message = e.getMessage();
-			LOG.debug(e.getMessage(), e);
-		} catch (IOException e) {
-			message = e.getMessage();
-			LOG.debug(e.getMessage(), e);
+		} catch (OrmException e) {
+			throw new ServletException(e.getMessage(), e);
 		}
-
+		//Set the seed
+		Integer hubId = null;
+		if (emptyHubList) {
+			//Look for hub baseUrl
+			String pollUrl = null;
+			try {
+				if (baseUrl != null) {
+					String baseUrlParam = HubBusiness.cleanBaseUrl(baseUrl);
+					pollUrl = baseUrlParam+AppConstants.JSON_SITEINFO;
+					if (urlExists(pollUrl)) {
+						baseUrl = baseUrlParam;
+					}
+				}
+				LOG.debug("baseUrl = "+baseUrl);
+				LOG.debug("response from pollUrl = "+pollUrl);
+				
+				if (baseUrl != null) {
+					try {
+						//Revive or add hub
+						hubId = HubBusiness.addHub(baseUrl);
+						message += "Your hub have been correctly registered.<br />"
+								+ "It will be included in global statistics within 24 hours.";
+						success = true;
+					} catch (BusinessException e) {
+						message = e.getMessage();
+					} catch (OrmException e) {
+						message = e.getMessage();
+						LOG.error(message, e);
+					}
+				} else {
+					message = "The hub base URL is incorrect. Please re-submit this page.";
+				}
+			} catch (ProtocolException e) {
+				message = e.getMessage();
+				LOG.debug(e.getMessage(), e);
+			} catch (IOException e) {
+				message = e.getMessage();
+				LOG.debug(e.getMessage(), e);
+			}
+		}
+		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
@@ -143,23 +147,25 @@ public class InstallServlet extends HttpServlet {
 				"<img src='images/banner_hubzilla_370.png' /><br />&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");
-			try {
-				out.println("<p>");
-				Hubs hub = HubBusiness.findHubById(hubId);
-				out.println("Name: "+hub.getName()+"<br />");
-				out.println("Base URL: "+hub.getBaseUrl()+"<br />");
-				out.println("Network: <img src='"+
-						AppConstants.NETWORK_ICONS.get(hub.getNetworkType())+
-						"' border='0'/> "+
-						AppConstants.NETWORK_DESCRIPTIONS.get(hub.getNetworkType())+"<br />");
-				out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
-						hub.getCountryName()+"<br />");
-				out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
-						.get(hub.getRegistrationPolicy())+"<br />");
-				out.println("Version: "+hub.getVersion()+"<br />");
-				out.println("</p>");
-			} catch (OrmException e) {
-				out.println("<p style='color:#c60032;'>ERROR: "+e.getMessage()+"</p>");
+			if (hubId != null) {
+				try {
+					out.println("<p>");
+					Hubs hub = HubBusiness.findHubById(hubId);
+					out.println("Name: "+hub.getName()+"<br />");
+					out.println("Base URL: "+hub.getBaseUrl()+"<br />");
+					out.println("Network: <img src='"+
+							AppConstants.NETWORK_ICONS.get(hub.getNetworkType())+
+							"' border='0'/> "+
+							AppConstants.NETWORK_DESCRIPTIONS.get(hub.getNetworkType())+"<br />");
+					out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
+							hub.getCountryName()+"<br />");
+					out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
+							.get(hub.getRegistrationPolicy())+"<br />");
+					out.println("Version: "+hub.getVersion()+"<br />");
+					out.println("</p>");
+				} catch (OrmException e) {
+					out.println("<p style='color:#c60032;'>ERROR: "+e.getMessage()+"</p>");
+				}
 			}
 		} else {
 			out.println("<p style='color:#c60032;'>ERROR: "+message+"</p>");

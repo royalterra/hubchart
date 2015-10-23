@@ -54,7 +54,7 @@ request.setAttribute("accessKey", accessKey);
 						<input type="text" name="accessKey"></input>
 					</div>
 					<div class="col-sm-1">
-						<button type="submit" title="Go"></button>
+						<button type="submit" value="Go"></button>
 					</div>
 				</form>
 			</div>
@@ -73,7 +73,7 @@ request.setAttribute("accessKey", accessKey);
 						<input type="text" name="accessKey"></input>
 					</div>
 					<div class="col-sm-1">
-						<button type="submit" title="Go"></button>
+						<button type="submit" value="Go"></button>
 					</div>
 				</form>
 			</div>
