@@ -65,7 +65,7 @@ request.setAttribute("firstGs", firstGs);
 		<div class="row">
 			<div class="col-sm-7">
 				<img src="images/logo_hubzilla_400.png" align="middle" /><br />
-				<a href="https://github.com/redmatrix/hubzilla"><b>hubzilla</b></a> community server<br />
+				Statistics for <a href="https://github.com/redmatrix/hubzilla"><b>hubzilla</b></a> community server<br />
 				&nbsp;<br />
 				<h3>grid status</h3>
 				<%@ include file="jspf/totalBox.jspf" %>
@@ -127,18 +127,6 @@ request.setAttribute("firstGs", firstGs);
 			</div>
 		</div>
 		
-		&nbsp;<br />
-		<div class="row">
-			<div class="panel panel-default">
-				<div class="col-sm-6">					
-					<script type="text/javascript" src="http://www.openhub.net/p/623130/widgets/project_basic_stats.js"></script>
-				</div>
-				<div class="col-sm-6">
-					<script type="text/javascript" src="http://www.openhub.net/p/623130/widgets/project_languages.js"></script>
-				</div>
-			</div>
-		</div>
-
 		<div class="row">
 			<div class="panel panel-default">
 

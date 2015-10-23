@@ -14,7 +14,7 @@ import com.xeiam.xchart.SeriesMarker;
 
 public class ChartBuilder {
 
-	private static final Color RED = new Color(198, 00, 50);
+	private static final Color BRAND_COLOUR = new Color(67, 72, 138);//43488A
 	private static final Color LIGHTGRAY = new Color(240, 240, 240);
 	
 	//private Series totalChannels = null;
@@ -58,7 +58,7 @@ public class ChartBuilder {
 		//Active channels
 		Series activeChannels = chart.addSeries("active channels", actChanTime, actChanData);
 		activeChannels.setLineStyle(SeriesLineStyle.SOLID);
-		activeChannels.setLineColor(RED);
+		activeChannels.setLineColor(BRAND_COLOUR);
 		activeChannels.setMarker(SeriesMarker.NONE);
 		
 		byte[] imageBytes = BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
