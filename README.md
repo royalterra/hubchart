@@ -1,6 +1,11 @@
-## Install instructions
+![hubchart](images/banner_hubchart.png)
 
-# Openshift platform
+Statistic panel for the hubzilla/zot community network
+
+Install instructions
+--------------------
+
+** Openshift platform **
 Cartridges to add:
 * JBoss Application Server 7 
 * MySQL 5.5 

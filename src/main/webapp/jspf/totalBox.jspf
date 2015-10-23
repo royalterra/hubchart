@@ -33,8 +33,8 @@
 				<td class="text-right"><b><c:out value="${requestScope.gs.averageHubChannels}" /></b></td>
 			</tr>
 			<tr>
-				<td>Deployed versions</td>
-				<td class="text-right"><%=HubBusiness.printVersionTagStat() %></td>
+				<td>Network types</td>
+				<td class="text-right"><%=HubBusiness.printNetworkTypeStat() %></td>
 			</tr>
 			<tr>
 				<td>Deployed versions</td>
