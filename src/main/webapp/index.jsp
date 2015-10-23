@@ -65,7 +65,7 @@ request.setAttribute("firstGs", firstGs);
 		<div class="row">
 			<div class="col-sm-7">
 				<img src="images/banner_hubzilla_370.png" align="middle" /><br />
-				Statistics for <a href="https://github.com/redmatrix/hubzilla"><b>hubzilla</b></a> community server<br />
+				Statistics for <a href="https://github.com/redmatrix/hubzilla"><b>hubzilla</b></a>'s community server grid<br />
 				&nbsp;<br />
 				<h3>grid status</h3>
 				<%@ include file="jspf/totalBox.jspf" %>

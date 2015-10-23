@@ -57,6 +57,7 @@
 		<mapping class="it.hubzilla.hubchart.model.Ip2nation"/>
 		<mapping class="it.hubzilla.hubchart.model.Ip2nationCountries"/>
 		<mapping class="it.hubzilla.hubchart.model.Languages"/>
+		<mapping class="it.hubzilla.hubchart.model.Settings"/>
 		<mapping class="it.hubzilla.hubchart.model.Statistics"/>
     </session-factory>
 </hibernate-configuration>
