@@ -18,7 +18,7 @@ import javax.persistence.Table;
  * @author paolo
  */
 @Entity
-@Table(name = "languages")
+@Table(name = "settings")
 public class Settings extends BaseEntity {
 	private static final long serialVersionUID = 7093739642078435584L;
 	@Id

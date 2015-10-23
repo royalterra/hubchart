@@ -116,7 +116,7 @@ public class FeedEntries extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "RegisteredHubs[id=" + id + "]";
+		return "FeedEntries[id=" + id + "]";
 	}
 
 }
