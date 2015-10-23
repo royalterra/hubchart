@@ -65,7 +65,7 @@ request.setAttribute("accessKey", accessKey);
 						<img src="images/home-32.png" align="middle" />
 					</div>
 					<div class="col-sm-5">
-						Force hub <b>discovery</b>
+						Force hub network <b>discovery</b>
 						<input type="hidden" name="name" value="crawler"></input>
 					</div>
 					<div class="col-sm-5">
