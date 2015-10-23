@@ -1,6 +1,6 @@
 ![hubchart](src/main/webapp/images/banner_hubchart.png)
 
-Statistic panel for the hubzilla/zot community network
+Statistics panel for the hubzilla/zot community network
 
 Install instructions
 --------------------
