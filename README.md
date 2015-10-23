@@ -5,7 +5,7 @@ Statistics panel for the hubzilla/zot community network
 Install instructions
 --------------------
 
-** Openshift platform **
+*Openshift platform*
 
 Cartridges to add:
 

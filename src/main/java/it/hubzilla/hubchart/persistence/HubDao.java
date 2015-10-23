@@ -81,7 +81,7 @@ public class HubDao {
 		List<Hubs> result = null;		
 		try {
 			String hql = "from Hubs h where h.deleted = :b1 and "+
-			"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
+			"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
 			"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
@@ -107,7 +107,7 @@ public class HubDao {
 			cal.add(Calendar.DAY_OF_MONTH, (-1)*(days+1));
 			Date startDt = cal.getTime();
 			String hql = "from Hubs h where h.deleted = :b1 and "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2) and "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2)  "+
 					"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);

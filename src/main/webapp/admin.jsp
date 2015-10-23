@@ -45,11 +45,11 @@ request.setAttribute("accessKey", accessKey);
 					<div class="col-sm-1">
 						<img src="images/home-32.png" align="middle" />
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						Force hub list <b>polling</b>
 						<input type="hidden" name="name" value="poll"></input>
 					</div>
-					<div class="col-sm-7">
+					<div class="col-sm-8">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -62,11 +62,11 @@ request.setAttribute("accessKey", accessKey);
 					<div class="col-sm-1">
 						<img src="images/home-32.png" align="middle" />
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						Force hub network <b>discovery</b>
 						<input type="hidden" name="name" value="crawler"></input>
 					</div>
-					<div class="col-sm-7">
+					<div class="col-sm-8">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
