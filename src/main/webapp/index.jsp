@@ -64,7 +64,7 @@ request.setAttribute("firstGs", firstGs);
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-7">
-				<img src="images/banner_hubzilla_370.png" align="middle" /><br />
+				<h1><img src="images/hz-64.png" align="middle" />hubchart</h1>
 				Statistics for <a href="https://github.com/redmatrix/hubzilla"><b>hubzilla</b></a>'s community server grid<br />
 				&nbsp;<br />
 				<h3>grid status</h3>

@@ -7,10 +7,9 @@
 </HEAD>
 <BODY>
 
-<H1>WebApp JSP Snoop page</H1>
-<img src="images/banner_hubzilla_370.png">
-
-<h2>JVM Memory Monitor</h2>
+<h1><img src="images/hz-64.png" align="middle" />hubchart</h1>
+<h3>WebApp JSP Snoop page</h3>
+<h4>JVM Memory Monitor</h4>
  
  
 <table border="0" width="100%">
@@ -89,7 +88,7 @@ MemoryPoolMXBean item = (MemoryPoolMXBean) iter.next();
 }
 %>
 
-<H2>Request information</H2>
+<h4>Request information</h4>
 
 <TABLE>
 <TR>
@@ -190,7 +189,7 @@ MemoryPoolMXBean item = (MemoryPoolMXBean) iter.next();
 	e = request.getParameterNames();
 	if(e != null && e.hasMoreElements()) {
 %>
-<H2>Request parameters</H2>
+<h4>Request parameters</h4>
 <TABLE>
 <TR valign=top>
 	<TH align=left>Parameter:</TH>
@@ -227,7 +226,7 @@ MemoryPoolMXBean item = (MemoryPoolMXBean) iter.next();
 	e = request.getAttributeNames();
 	if(e != null && e.hasMoreElements()) {
 %>
-<H2>Request Attributes</H2>
+<h4>Request Attributes</h4>
 <TABLE>
 <TR valign=top>
 	<TH align=left>Attribute:</TH>
@@ -255,7 +254,7 @@ MemoryPoolMXBean item = (MemoryPoolMXBean) iter.next();
 	e = getServletConfig().getInitParameterNames();
 	if(e != null && e.hasMoreElements()) {
 %>
-<H2>Init parameters</H2>
+<h4>Init parameters</h4>
 <TABLE>
 <TR valign=top>
 	<TH align=left>Parameter:</TH>
