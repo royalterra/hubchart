@@ -20,9 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.json.Json;
@@ -372,49 +370,7 @@ public class PollBusiness {
 		stats.getHub().setHidden(hidden);
 		return stats;
 	}
-	
-	public static boolean markUnresponsiveAsDeleted(Session ses, Hubs hub)
-			throws OrmException {
-		//is hub's last valid poll later than 'expiryDays' ago?
-		Calendar cal = new GregorianCalendar();
-		Date now = cal.getTime();
-		cal.setTime(hub.getLastSuccessfulPollTime());
-		cal.add(Calendar.DAY_OF_MONTH, AppConstants.HUB_DELETION_DAYS);
-		Date deleteDate = cal.getTime();
-		if (deleteDate.before(now)) {
-			//Expired!
-			hub.setDeleted(true);
-			GenericDao.updateGeneric(ses, hub.getId(), hub);
-			LOG.info("Marked as deleted "+hub.getBaseUrl());
-			return true;
-		} else {
-			LOG.debug("Polled "+hub.getBaseUrl());
-		}
-		return false;
-	}
-	
-	//public static boolean deleteDeadHub(Session ses, Hubs hub, int deleteDays)
-	//		throws OrmException {
-	//	//is hub's last valid poll later than 'expiryDays' ago?
-	//	Calendar cal = new GregorianCalendar();
-	//	Date now = cal.getTime();
-	//	cal.setTime(hub.getPollTime());
-	//	cal.add(Calendar.DAY_OF_MONTH, deleteDays);
-	//	Date deleteDate = cal.getTime();
-	//	if (deleteDate.before(now)) {
-	//		//Delete statistics
-	//		List<Statistics> stats = new StatisticsDao().findByHub(ses, hub.getId());
-	//		for (Statistics stat:stats) {
-	//			GenericDao.deleteGeneric(ses, stat.getId(), stat);
-	//		}
-	//		//Delete hub
-	//		GenericDao.deleteGeneric(ses, hub.getId(), hub);
-	//		LOG.info("Deleted hub "+hub.getBaseUrl());
-	//		return true;
-	//	}
-	//	return false;
-	//}
-	
+
 	public static Long ipToLong(String addr) {
 		String[] addrArray = addr.split("\\.");
 		long num = 0;

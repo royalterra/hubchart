@@ -75,7 +75,7 @@ public class InstallServlet extends HttpServlet {
 		}
 		//Hub list should be empty
 		try {
-			List<Hubs> hubList = HubBusiness.findAllHubs(true, true);
+			List<Hubs> hubList = HubBusiness.findAllHubs(true, false);
 			if (hubList != null) {
 				if (hubList.size() > 0) {
 					throw new ServletException("Seeding hub has already been defined.");

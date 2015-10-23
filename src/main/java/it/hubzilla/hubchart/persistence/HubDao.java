@@ -6,6 +6,7 @@ import it.hubzilla.hubchart.model.Hubs;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -73,16 +74,19 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Hubs> findExpired(Session ses) throws OrmException {
+	public List<Hubs> findLiveHubs(Session ses, int daysBeforeDeath) throws OrmException {
 		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*daysBeforeDeath);
 		Date lastValidDate = cal.getTime();
-		List<Hubs> result = null;
+		List<Hubs> result = null;		
 		try {
-			String hql = "from Hubs h where "+
-					"h.lastSuccessfulPollTime < :dt1";
+			String hql = "from Hubs h where h.deleted = :b1 and "+
+			"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
+			"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
+			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();
 			result = list;
@@ -91,6 +95,53 @@ public class HubDao {
 		}
 		return result;
 	}
+	
+	public List<Hubs> findDeadHubsToCheck(Session ses, int[] checkDays) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		List<Hubs> result = new ArrayList<Hubs>();
+		for (int i=0; i < checkDays.length; i++) {
+			int days = checkDays[i];
+			cal.setTime(new Date());
+			cal.add(Calendar.DAY_OF_MONTH, (-1)*days);
+			Date endDt = cal.getTime();
+			cal.add(Calendar.DAY_OF_MONTH, (-1)*(days+1));
+			Date startDt = cal.getTime();
+			String hql = "from Hubs h where h.deleted = :b1 and "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2) and "+
+					"order by h.lastSuccessfulPollTime asc";
+			Query q = ses.createQuery(hql);
+			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
+			q.setParameter("dt1", startDt, TimestampType.INSTANCE);
+			q.setParameter("dt2", endDt, TimestampType.INSTANCE);
+			@SuppressWarnings("unchecked")
+			List<Hubs> list = q.list();
+			if (list != null) {
+				if (list.size() > 0) {
+					result.addAll(list);
+				}
+			}
+		}
+		return result;
+	}
+	
+//	public List<Hubs> findExpired(Session ses) throws OrmException {
+//		Calendar cal = new GregorianCalendar();
+//		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+//		Date lastValidDate = cal.getTime();
+//		List<Hubs> result = null;
+//		try {
+//			String hql = "from Hubs h where "+
+//					"h.lastSuccessfulPollTime < :dt1";
+//			Query q = ses.createQuery(hql);
+//			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+//			@SuppressWarnings("unchecked")
+//			List<Hubs> list = q.list();
+//			result = list;
+//		} catch (HibernateException e) {
+//			throw new OrmException(e.getMessage(), e);
+//		}
+//		return result;
+//	}
 	
 	public Long countHiddenHubs(Session ses) throws OrmException {
 		try {

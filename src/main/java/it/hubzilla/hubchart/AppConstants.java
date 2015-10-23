@@ -11,15 +11,13 @@ import java.util.Map;
 public class AppConstants {
 
 	// CONFIGURATION
+	public static final int HUB_EXPIRATION_DAYS = 7;
 	public static final String HIBERNATE_CONFIG_FILE="/hibernate.cfg.xml";
 	public static final String QUARTZ_CONFIG_FILE = "/quartz-jobs.xml";
 	public static final String APP_PROPERTY_FILE = "/app.properties";
 	public static final String TESTING_PROPERTY_FILE = "/testing.properties";
 	public static final String SETTINGS_ACCESS_KEY = "accessKey";
-	
-	public static final int HUB_EXPIRATION_DAYS = 15;
-	public static final int HUB_DELETION_DAYS = 120;
-	
+		
 	// IMAGES
 	public static final String FLAG_ICONS_PATH = "images/flags_16/";
 	public static final String IMAGE_MIME_TYPE = "image/png";
@@ -40,6 +38,7 @@ public class AppConstants {
 	public static final int FEED_DAYS_BEFORE_DELETION = 10;
 	
 	// FORMATS
+	public static final String STRING_SEPARATOR = ";";
 	public static final String PATTERN_TIMESTAMP = "dd/MM/yyyy HH:mm:ss z";//"dd/MM/yyyy HH:mm";
 	public static final String PATTERN_DAY = "dd/MM/yyyy";
 	public static final String PATTERN_DAY_SQL = "yyyy-MM-dd";

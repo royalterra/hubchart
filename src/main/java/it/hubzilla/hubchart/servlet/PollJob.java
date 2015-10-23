@@ -1,5 +1,6 @@
 package it.hubzilla.hubchart.servlet;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.FeedBusiness;
@@ -11,6 +12,7 @@ import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubDao;
 import it.hubzilla.hubchart.persistence.ImageCacheDao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,56 +27,59 @@ import org.slf4j.LoggerFactory;
 public class PollJob implements Job {
 	
 	private final Logger LOG = LoggerFactory.getLogger(PollJob.class);
-	private HubDao hubDao = new HubDao();
 	
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 		
+		//param: afterDeathCheckDays[]
+		String afterDeathCheckDaysParam = (String) jobCtx.getMergedJobDataMap().get("afterDeathCheckDays");
+		if (afterDeathCheckDaysParam == null) throw new JobExecutionException("afterDeathCheckDays is undefined");
+		if (afterDeathCheckDaysParam.equals("")) throw new JobExecutionException("afterDeathCheckDays is undefined");
+		String[] afterDeathCheckDaysS = afterDeathCheckDaysParam.split(AppConstants.STRING_SEPARATOR);
+		int[] afterDeathCheckDays = new int[afterDeathCheckDaysS.length];
+		for (int i=0; i<afterDeathCheckDaysS.length; i++) {
+			afterDeathCheckDays[i] = Integer.parseInt(afterDeathCheckDaysS[i]);
+		}
+		
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
-			
 			//Poll and save
 			Date pollTime = new Date();
-			List<Hubs> activeHubs = hubDao.findAll(ses, false, false);//include expired and hidden hubs
-			List<Statistics> statList = PollBusiness.pollHubList(ses, activeHubs, pollTime);
+			HubDao hubDao = new HubDao();
+			
+			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
+			List<Hubs> liveHubsToPoll = hubDao.findLiveHubs(ses, AppConstants.HUB_EXPIRATION_DAYS);
+			List<Hubs> deadHubsToPoll = hubDao.findDeadHubsToCheck(ses, afterDeathCheckDays);
+			hubsToPoll.addAll(liveHubsToPoll);
+			hubsToPoll.addAll(deadHubsToPoll);
+			
+			List<Statistics> statList = PollBusiness.pollHubList(ses, hubsToPoll, pollTime);
 			for (Statistics stat:statList) {
 				Integer idStats = (Integer) GenericDao.saveGeneric(ses, stat);
 				stat.getHub().setIdLastHubStats(idStats);
 				GenericDao.updateGeneric(ses, stat.getHub().getId(), stat.getHub());
 			}
 			
-			//Mark hubs as deleted if unresponsive for more than HUB_DELETION_DAYS
-			List<Hubs> expiredHubs = hubDao.findExpired(ses);
-			for (Hubs hub:expiredHubs) {
-				PollBusiness.markUnresponsiveAsDeleted(ses, hub);
-			}
-			
-			//Remove deleted hubs from activeHubs list
-			List<Hubs> cleanHubs = hubDao.findAll(ses, false, false);
-			int deletedCount = activeHubs.size()-cleanHubs.size();
-			if (deletedCount > 0) LOG.info(deletedCount+" expired hubs have been deleted");
-			activeHubs = cleanHubs;
-			
-			//INFO log about non-responsive
-			String nonResponsive = "";
-			int nonResponsiveCount = 0;
-			for (Hubs actHub:activeHubs) {
+			//INFO log about timed out polls
+			String silentHubs = "";
+			int silentCount = 0;
+			for (Hubs hub:hubsToPoll) {
 				boolean found = false;
 				for (Statistics stat:statList) {
-					if (stat.getHub().getId() == actHub.getId()) found = true;
+					if (stat.getHub().getId() == hub.getId()) found = true;
 				}
 				if (!found) {
-					nonResponsive += actHub.getFqdn()+" ";
-					nonResponsiveCount++;
+					silentHubs += hub.getFqdn()+"; ";
+					silentCount++;
 				}
 			}
-			LOG.info(nonResponsiveCount+" non responsive hubs: "+nonResponsive);
+			LOG.info(silentCount+" silent hubs: "+silentHubs);
 			
 			//Aggregate and save
-			Statistics global = createGlobalStats(ses, activeHubs);
+			Statistics global = createGlobalStats(ses, hubsToPoll);
 			GenericDao.saveGeneric(ses, global);
 			//Clear cache
 			new ImageCacheDao().clearCache(ses);

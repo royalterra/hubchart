@@ -122,7 +122,7 @@ public class HubBusiness {
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			List<Statistics> sList = statisticsDao.findLatest(ses,
-					filterExpired, filterHidden, page, pageSize, orderBy);
+					filterHidden, page, pageSize, orderBy);
 			for (Statistics s:sList) {
 				StatisticBean bean = new StatisticBean();
 				PropertyUtils.copyProperties(bean, s);

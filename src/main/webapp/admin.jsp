@@ -81,7 +81,7 @@ request.setAttribute("accessKey", accessKey);
 		
 		<c:if test="${empty accessKey}">
 			<form action="/install">
-				Define an access key for administration <i>(take note of it)</i><br/>
+				Define an access key for administration <i>(take note!)</i><br/>
 				<input type="text" name="accessKey"></input><br/>
 				Insert a seed hub <b>base url</b> to start network discovery<br/>
 				<input type="text" name="seedHub" value="https://"></input><br/>

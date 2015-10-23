@@ -10,6 +10,9 @@
 			<group>hubzilla</group>
 			<description>Registered hubs' stats are checked daily</description>
 			<job-class>it.hubzilla.hubchart.servlet.PollJob</job-class>
+			<job-data-map>
+				<entry><key>afterDeathCheckDays</key><value>14;21;30;60;90;120;180;360;540;720</value></entry>
+			</job-data-map>
 		</job>
 		<trigger>
 			<cron>
