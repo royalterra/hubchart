@@ -52,7 +52,9 @@ public class PollJob implements Job {
 			
 			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
 			List<Hubs> liveHubsToPoll = hubDao.findLiveHubs(ses, AppConstants.HUB_EXPIRATION_DAYS);
+			LOG.debug("Live hubs to poll: "+liveHubsToPoll.size());
 			List<Hubs> deadHubsToPoll = hubDao.findDeadHubsToCheck(ses, afterDeathCheckDays);
+			LOG.debug("Dead hubs to poll: "+deadHubsToPoll.size());
 			hubsToPoll.addAll(liveHubsToPoll);
 			hubsToPoll.addAll(deadHubsToPoll);
 			

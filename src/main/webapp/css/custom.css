@@ -1,7 +1,9 @@
-@font-face {font-family: 'Designosaur'; font-weight: normal; font-style: normal;
-	src: url('../fonts/designosaur/Designosaur-Regular.otf') format('opentype');}
-@font-face {font-family: 'Designosaur'; font-weight: normal; font-style: italic;
-	src: url('../fonts/designosaur/Designosaur-Italic.otf') format('opentype');}
+@font-face {font-family: 'Crusoe'; font-weight: normal; font-style: normal;
+	src: url('../fonts/crusoe/CrusoeText-Regular.otf') format('opentype');}
+@font-face {font-family: 'Crusoe'; font-weight: normal; font-style: italic;
+	src: url('../fonts/crusoe/CrusoeText-Italic.otf') format('opentype');}
+@font-face {font-family: 'Crusoe'; font-weight: bold; font-style: normal;
+	src: url('../fonts/crusoe/CrusoeText-Bold.otf') format('opentype');}
 @font-face {font-family: 'Roboto'; font-style: normal; font-weight: normal;
 	src: url('../fonts/roboto/Roboto-Regular.woff') format('woff');}
 @font-face {font-family: 'Roboto'; font-style: normal; font-weight: bold;
@@ -15,5 +17,5 @@ body {
 }
 h1, h2, h3, h4, h5 {
 	color: #3c3c3c;
-	font-family: 'Designosaur', sans-serif;
+	font-family: 'Crusoe', sans-serif;
 }

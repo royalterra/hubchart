@@ -107,7 +107,7 @@ public class RegisterServlet extends HttpServlet {
 				"<link href='css/bootstrap.min.css' rel='stylesheet'>"+
 				"</head> \n" + "<body> \n" +
 				"<div class='container'>"+
-				"<img src='images/logo_hubzilla_400.png' /><br />&nbsp;<br />");
+				"<img src='images/banner_hubzilla_370.png' /><br />&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");
 			try {

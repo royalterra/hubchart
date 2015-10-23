@@ -32,7 +32,7 @@ request.setAttribute("accessKey", accessKey);
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-7">
-				<img src="images/logo_hubzilla_400.png" align="middle" /><br />
+				<img src="images/banner_hubzilla_370.png" align="middle" /><br />
 				&nbsp;<br />
 				Administration panel<br />
 			</div>

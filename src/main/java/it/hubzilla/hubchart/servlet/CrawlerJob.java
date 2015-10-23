@@ -44,6 +44,7 @@ public class CrawlerJob implements Job {
 			for (Hubs hub:knownHubList) knownHubMap.put(hub.getBaseUrl(), hub);
 			if (hubToCheckList == null) hubToCheckList = new ArrayList<Hubs>();
 			if (hubToCheckList.size() == 0) {
+				//If no directory is known, then all hubs are polled
 				hubToCheckList = knownHubList;
 			}
 		} catch (OrmException e) {
