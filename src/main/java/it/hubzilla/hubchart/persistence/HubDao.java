@@ -74,9 +74,9 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Hubs> findLiveHubs(Session ses, int daysBeforeDeath) throws OrmException {
+	public List<Hubs> findLiveHubs(Session ses) throws OrmException {
 		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.DAY_OF_MONTH, (-1)*daysBeforeDeath);
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
 		List<Hubs> result = null;		
 		try {
@@ -143,15 +143,21 @@ public class HubDao {
 //		return result;
 //	}
 	
-	public Long countHiddenHubs(Session ses) throws OrmException {
+	public Long countLiveHiddenHubs(Session ses) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
 		try {
 			String hql = "select count(id) from Hubs h where "+
+				"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
 				"h.deleted = :b1 and "+
 				"h.hidden = :b2 "+
 				"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("b2", Boolean.TRUE, BooleanType.INSTANCE);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Object> list = q.list();
 			if (list != null) {
@@ -185,16 +191,22 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Object[]> countHubsByCountry(Session ses, int offset, int pageSize) throws OrmException {
+	public List<Object[]> countLiveHubsByCountry(Session ses, int offset, int pageSize) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
 					"h.deleted = :b1 and "+
 					"h.countryCode is not null "+
 					"group by h.countryCode, h.countryName "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
 			@SuppressWarnings("unchecked")
@@ -206,15 +218,21 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Object[]> countHubsByLanguage(Session ses, int offset, int pageSize) throws OrmException {
+	public List<Object[]> countLiveHubsByLanguage(Session ses, int offset, int pageSize) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.language from Hubs h where "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
 					"h.deleted = :b1 "+
 					"group by h.language "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
 			@SuppressWarnings("unchecked")
@@ -226,10 +244,14 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Object[]> countVersionTags(Session ses) throws OrmException {
+	public List<Object[]> countLiveVersionTags(Session ses) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.versionTag from Hubs h where "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
 					"h.deleted = :b1 and "+
 					"h.versionTag is not null and "+
 					"h.versionTag != :s1 "+
@@ -238,6 +260,35 @@ public class HubDao {
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("s1", "", StringType.INSTANCE);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = q.list();
+			result = list;
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return result;
+	}
+	
+	public List<Object[]> countLiveNetworkTypes(Session ses) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
+		List<Object[]> result = null;
+		try {
+			String hql = "select count(h.id) as liveHubs, h.networkType from Hubs h where "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
+					"h.deleted = :b1 and "+
+					"h.networkType is not null and "+
+					"h.networkType != :s1 "+
+					"group by h.networkType "+
+					"order by liveHubs desc";
+			Query q = ses.createQuery(hql);
+			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
+			q.setParameter("s1", AppConstants.NETWORK_TYPE_UNKNOWN, StringType.INSTANCE);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Object[]> list = q.list();
 			result = list;

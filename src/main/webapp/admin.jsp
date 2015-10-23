@@ -33,7 +33,7 @@ request.setAttribute("accessKey", accessKey);
 		<div class="row">
 			<div class="col-sm-7">
 				<h1><img src="images/hz-64.png" align="middle" />hubchart</h1>
-				Administration panel<br />
+				<h4>Administration panel</h4>
 			</div>
 		</div>
 		
@@ -53,7 +53,7 @@ request.setAttribute("accessKey", accessKey);
 						<input type="text" name="accessKey"></input>
 					</div>
 					<div class="col-sm-1">
-						<button type="submit" value="Go"></button>
+						<button type="submit" value="Go!"></button>
 					</div>
 				</form>
 			</div>
@@ -72,7 +72,7 @@ request.setAttribute("accessKey", accessKey);
 						<input type="text" name="accessKey"></input>
 					</div>
 					<div class="col-sm-1">
-						<button type="submit" value="Go"></button>
+						<button type="submit" value="Go!"></button>
 					</div>
 				</form>
 			</div>
@@ -84,7 +84,7 @@ request.setAttribute("accessKey", accessKey);
 				<input type="text" name="accessKey"></input><br/>
 				Insert a seed hub <b>base url</b> to start network discovery<br/>
 				<input type="text" name="seedHub" value="https://"></input><br/>
-				<button type="submit" title="Go"></button>
+				<button type="submit" value="Save"></button>
 			</form>
 		</c:if>
 	</div>

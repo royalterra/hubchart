@@ -6,6 +6,7 @@ import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.UrlException;
 import it.hubzilla.hubchart.beans.CountryStatBean;
 import it.hubzilla.hubchart.beans.LanguageStatBean;
+import it.hubzilla.hubchart.beans.NetworkTypeStatBean;
 import it.hubzilla.hubchart.beans.StatisticBean;
 import it.hubzilla.hubchart.beans.VersionTagStatBean;
 import it.hubzilla.hubchart.model.Hubs;
@@ -220,7 +221,7 @@ public class HubBusiness {
 		Integer result = 0;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			Long count = hubDao.countHiddenHubs(ses);
+			Long count = hubDao.countLiveHiddenHubs(ses);
 			if (count != null) result = count.intValue();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -259,7 +260,7 @@ public class HubBusiness {
 		int offset = page*pageSize;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countHubsByCountry(ses, offset, pageSize);
+			List<Object[]> list = hubDao.countLiveHubsByCountry(ses, offset, pageSize);
 			for (Object[] obj:list) {
 				try {
 					CountryStatBean cs = new CountryStatBean();
@@ -281,7 +282,7 @@ public class HubBusiness {
 		Session ses = HibernateSessionFactory.getSession();
 		Integer result = -1;
 		try {
-			List<Object[]> list = hubDao.countHubsByCountry(ses, 0, Integer.MAX_VALUE);
+			List<Object[]> list = hubDao.countLiveHubsByCountry(ses, 0, Integer.MAX_VALUE);
 			result = list.size();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -298,7 +299,7 @@ public class HubBusiness {
 		int offset = page*pageSize;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countHubsByLanguage(ses, offset, pageSize);
+			List<Object[]> list = hubDao.countLiveHubsByLanguage(ses, offset, pageSize);
 			for (Object[] obj:list) {
 				try {
 					LanguageStatBean cs = new LanguageStatBean();
@@ -319,7 +320,7 @@ public class HubBusiness {
 		Integer result = null;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countHubsByLanguage(ses, 0, Integer.MAX_VALUE);
+			List<Object[]> list = hubDao.countLiveHubsByLanguage(ses, 0, Integer.MAX_VALUE);
 			result = list.size();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -352,12 +353,52 @@ public class HubBusiness {
 		List<VersionTagStatBean> result = new ArrayList<VersionTagStatBean>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countVersionTags(ses);
+			List<Object[]> list = hubDao.countLiveVersionTags(ses);
 			for (Object[] obj:list) {
 				try {
 					VersionTagStatBean vts = new VersionTagStatBean(totalHubs);
 					vts.setLiveHubs(((Long)obj[0]).intValue());
 					vts.setVersionTag((String)obj[1]);
+					result.add(vts);
+				} catch (Exception e) {/*ignore cast and nullpointer*/}
+			}
+		} catch (OrmException e) {
+			throw new OrmException(e.getMessage(), e);
+		} finally {
+			ses.close();
+		}
+		return result;
+	}
+	
+	public static String printNetworkTypeStat() throws OrmException {
+		String result ="--";
+		StatisticBean gs = PollBusiness.findLatestGlobalStats();
+		if (gs != null) {
+			List<NetworkTypeStatBean> stats = findNetworkTypeStatBeans(gs.getActiveHubs());
+			if (stats != null) {
+				if (stats.size() > 0) {
+					result = "";
+					int max = MAX_VERSIONS_SHOWN;
+					if (stats.size() < MAX_VERSIONS_SHOWN) max = stats.size();
+					for (int i=0; i<max; i++) {
+						result += "<b>"+stats.get(i).getNetworkTypeName()+"</b> ("+stats.get(i).getPercentage()+") ";
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	public static List<NetworkTypeStatBean> findNetworkTypeStatBeans(Integer totalHubs) throws OrmException {
+		List<NetworkTypeStatBean> result = new ArrayList<NetworkTypeStatBean>();
+		Session ses = HibernateSessionFactory.getSession();
+		try {
+			List<Object[]> list = hubDao.countLiveNetworkTypes(ses);
+			for (Object[] obj:list) {
+				try {
+					NetworkTypeStatBean vts = new NetworkTypeStatBean(totalHubs);
+					vts.setLiveHubs(((Long)obj[0]).intValue());
+					vts.setNetworkTypeName((String)obj[1]);
 					result.add(vts);
 				} catch (Exception e) {/*ignore cast and nullpointer*/}
 			}

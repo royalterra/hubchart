@@ -7,6 +7,7 @@ import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.SettingsDao;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class SettingsBusiness {
 
@@ -34,9 +35,12 @@ public class SettingsBusiness {
 	
 	public static void setValue(String name, String value) throws OrmException {
 		Session ses = HibernateSessionFactory.getSession();
+		Transaction trn = ses.beginTransaction();
 		try {
 			new SettingsDao().saveOrUpdateValueByName(ses, name, value);
+			trn.commit();
 		} catch (OrmException e) {
+			trn.rollback();
 			throw new OrmException(e.getMessage(), e);
 		} finally {
 			ses.close();

@@ -61,7 +61,6 @@ request.setAttribute("firstGs", firstGs);
 <body>
 
 	<div class="container">
-		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-7">
 				<h1><img src="images/hz-64.png" align="middle" />hubchart</h1>
