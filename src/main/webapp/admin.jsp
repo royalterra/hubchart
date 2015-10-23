@@ -40,7 +40,7 @@ request.setAttribute("accessKey", accessKey);
 		<c:if test="${not empty accessKey}">
 		
 			<div class="row">
-				<form action="/forcejob">
+				<form action="/forcejob" method="post">
 					<div class="col-sm-1">
 						<img src="images/home-32.png" align="middle" />
 					</div>
@@ -53,13 +53,13 @@ request.setAttribute("accessKey", accessKey);
 						<input type="text" name="accessKey"></input>
 					</div>
 					<div class="col-sm-1">
-						<button type="submit" value="Go!"></button>
+						<button type="submit">Go!</button>
 					</div>
 				</form>
 			</div>
 		
 			<div class="row">
-				<form action="/forcejob">
+				<form action="/forcejob" method="post">
 					<div class="col-sm-1">
 						<img src="images/home-32.png" align="middle" />
 					</div>
@@ -72,19 +72,19 @@ request.setAttribute("accessKey", accessKey);
 						<input type="text" name="accessKey"></input>
 					</div>
 					<div class="col-sm-1">
-						<button type="submit" value="Go!"></button>
+						<button type="submit">Go!</button>
 					</div>
 				</form>
 			</div>
 		</c:if>
 		
 		<c:if test="${empty accessKey}">
-			<form action="/install">
+			<form action="/install" method="post">
 				Define an access key for administration <i>(take note!)</i><br/>
 				<input type="text" name="accessKey"></input><br/>
 				Insert a seed hub <b>base url</b> to start network discovery<br/>
 				<input type="text" name="seedHub" value="https://"></input><br/>
-				<button type="submit" value="Save"></button>
+				<button type="submit">Save</button>
 			</form>
 		</c:if>
 	</div>
