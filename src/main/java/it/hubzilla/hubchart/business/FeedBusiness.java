@@ -76,16 +76,16 @@ public class FeedBusiness {
 				"<h2>Network status</h2>"+
 				"<table>"+
 				"<tr>"+
+					"<td>Active hubs</td>"+
+					"<td><b>"+global.getActiveHubs()+"</b></td>"+
+				"</tr>"+
+				"<tr>"+
 					"<td>Active channels (6 months)</td>"+
 					"<td><b>"+global.getActiveChannelsLast6Months()+"</b></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Total channels</td>"+
 					"<td><b>"+global.getTotalChannels()+"</b></td>"+
-				"</tr>"+
-				"<tr>"+
-					"<td>Active hubs</td>"+
-					"<td><b>"+global.getActiveHubs()+"</b></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Network Types</td>"+

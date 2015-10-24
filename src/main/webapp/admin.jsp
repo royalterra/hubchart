@@ -40,16 +40,15 @@ request.setAttribute("accessKey", accessKey);
 		<c:if test="${not empty accessKey}">
 		
 			&nbsp;<br/>
+			&nbsp;<br/>
 			<div class="row">
 				<form action="/forcejob" method="post">
-					<div class="col-sm-1">
-						<img src="images/home-32.png" align="middle" />
-					</div>
 					<div class="col-sm-3">
+						<img src="images/home-32.png" align="middle" />
 						Force hub list <b>polling</b>
 						<input type="hidden" name="name" value="poll"></input>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-9">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -59,14 +58,12 @@ request.setAttribute("accessKey", accessKey);
 		
 			<div class="row">
 				<form action="/forcejob" method="post">
-					<div class="col-sm-1">
-						<img src="images/home-32.png" align="middle" />
-					</div>
 					<div class="col-sm-3">
+						<img src="images/home-32.png" align="middle" />
 						Force hub network <b>discovery</b>
 						<input type="hidden" name="name" value="crawler"></input>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-9">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -77,7 +74,8 @@ request.setAttribute("accessKey", accessKey);
 		
 		<c:if test="${empty accessKey}">
 			<form action="/install" method="post">
-				Define an access key for administration <i>(take note!)</i><br/>
+				Define an access key for administration<br/>
+				<i>(it can be read/modified in the settings database table)</i><br/>
 				<input type="text" name="accessKey"></input><br/>
 				Insert a seed hub <b>base url</b> to start network discovery<br/>
 				<input type="text" name="seedHub" value="https://"></input><br/>

@@ -11,6 +11,10 @@
 		style="width: 100%; border-collapse: collapse">
 		<tbody class="small">
 			<tr>
+				<td>Active hubs</td>
+				<td class="text-right"><b><c:out value="${requestScope.gs.activeHubs}" /></b></td>
+			</tr>
+			<tr>
 				<td>Active channels (6 months)</td>
 				<td class="text-right"><b><c:out
 							value="${requestScope.gs.activeChannelsLast6Months}" /></b></td>
@@ -23,10 +27,6 @@
 			<tr>
 				<td>Total posts</td>
 				<td class="text-right"><b><c:out value="${requestScope.gs.totalPosts}" /></b></td>
-			</tr>
-			<tr>
-				<td>Active hubs</td>
-				<td class="text-right"><b><c:out value="${requestScope.gs.activeHubs}" /></b></td>
 			</tr>
 			<tr>
 				<td>Channels/hub</td>
