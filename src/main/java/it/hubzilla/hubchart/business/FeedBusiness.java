@@ -84,20 +84,16 @@ public class FeedBusiness {
 					"<td><b>"+global.getTotalChannels()+"</b></td>"+
 				"</tr>"+
 				"<tr>"+
-					"<td>Total posts</td>"+
-					"<td><b>"+global.getTotalPosts()+"</b></td>"+
-				"</tr>"+
-				"<tr>"+
 					"<td>Active hubs</td>"+
 					"<td><b>"+global.getActiveHubs()+"</b></td>"+
 				"</tr>"+
 				"<tr>"+
-					"<td>Channels/hub</td>"+
-					"<td><b>"+global.getAverageHubChannels()+"</b></td>"+
+					"<td>Network Types</td>"+
+					"<td>"+HubBusiness.printNetworkTypeStats()+"</td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Deployed versions</td>"+
-					"<td>"+HubBusiness.printVersionTagStat()+"</td>"+
+					"<td>"+HubBusiness.printVersionTagStats()+"</td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Last update</td>"+

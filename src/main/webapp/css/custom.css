@@ -13,12 +13,13 @@ body {
 	color: #4d4d4d;
 	font-family: 'Roboto', sans-serif;
 }
-h1, h2 {
+h1 {
+	font-size: 3.0em;
 	color: #43488A;
 	font-family: 'Ruda', sans-serif;
 	font-weight: bold;
 }
-h3, h4, h5 {
+ h2, h3, h4, h5 {
 	color: #3c3c3c;
 	font-family: 'Ruda', sans-serif;
 	font-weight: bold;

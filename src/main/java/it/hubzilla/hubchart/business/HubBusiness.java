@@ -330,7 +330,7 @@ public class HubBusiness {
 		return result;
 	}
 	
-	public static String printVersionTagStat() throws OrmException {
+	public static String printVersionTagStats() throws OrmException {
 		String result ="--";
 		StatisticBean gs = PollBusiness.findLatestGlobalStats();
 		if (gs != null) {
@@ -370,7 +370,7 @@ public class HubBusiness {
 		return result;
 	}
 	
-	public static String printNetworkTypeStat() throws OrmException {
+	public static String printNetworkTypeStats() throws OrmException {
 		String result ="--";
 		StatisticBean gs = PollBusiness.findLatestGlobalStats();
 		if (gs != null) {
