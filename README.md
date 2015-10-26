@@ -19,7 +19,13 @@ Open phpMyAdmin and execute all *.sql scripts you find in the project root folde
 
 Navigate to the /admin.jsp page and define an accessKey and a seed hub.
 
-After the accessKey is defined the /admin.jsp will allow you to force a network discovery or a general poll.
+Defining an accessKey will allow you to use the /admin.jsp page to launch a network discovery and enqueue hubs to be polled.
 
-The OpenShift `jbossas` cartridge documentation can be found at:
-http://openshift.github.io/documentation/oo_cartridge_guide.html#jbossas
+
+Hubchart jobs
+-------------
+
+discover [daily] - uses known hubs to obtain lists of yet-to-be-known hubs
+enqueue [daily] - marks the order in which the known hubs will be polled (based on the last successful poll time)
+poll [hourly] - consumes a part of the hubs queue every hour, the queue is emptied during the day
+draw [daily] - calculates the statistic data, draws graphics and creates the rss feed
