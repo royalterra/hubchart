@@ -4,6 +4,7 @@ import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Hubs;
 
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -74,15 +75,16 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Hubs> findLiveHubs(Session ses) throws OrmException {
+	public List<Hubs> findLiveHubs(Session ses, boolean excludeEnqueued) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
 		List<Hubs> result = null;		
 		try {
-			String hql = "from Hubs h where h.deleted = :b1 and "+
-			"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
-			"order by h.lastSuccessfulPollTime asc";
+			String hql = "from Hubs h where h.deleted = :b1 and ";
+			if (excludeEnqueued) hql += "h.pollQueue is null and ";
+			hql += "(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
+					"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -96,7 +98,7 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Hubs> findDeadHubsToCheck(Session ses, int[] checkDays) throws OrmException {
+	public List<Hubs> findDeadHubsToCheck(Session ses, int[] checkDays, boolean excludeEnqueued) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		List<Hubs> result = new ArrayList<Hubs>();
 		for (int i=0; i < checkDays.length; i++) {
@@ -106,8 +108,9 @@ public class HubDao {
 			Date endDt = cal.getTime();
 			cal.add(Calendar.DAY_OF_MONTH, (-1)*(days+1));
 			Date startDt = cal.getTime();
-			String hql = "from Hubs h where h.deleted = :b1 and "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2)  "+
+			String hql = "from Hubs h where h.deleted = :b1 and ";
+			if (excludeEnqueued) hql += "h.pollQueue is null and ";
+			hql += "(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2)  "+
 					"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
@@ -292,6 +295,26 @@ public class HubDao {
 			@SuppressWarnings("unchecked")
 			List<Object[]> list = q.list();
 			result = list;
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return result;
+	}
+	
+	public BigInteger findLastPollQueueNumber(Session ses) throws OrmException {
+		BigInteger result = null;
+		try {
+			String hql = "select max(pollQueue) from Hubs h";
+			Query q = ses.createQuery(hql);
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = q.list();
+			if (list != null) {
+				if (list.size() > 0) {
+					if (list.get(0).length > 0) {
+						result = (BigInteger) list.get(0)[0];
+					}
+				}
+			}
 		} catch (HibernateException e) {
 			throw new OrmException(e.getMessage(), e);
 		}
