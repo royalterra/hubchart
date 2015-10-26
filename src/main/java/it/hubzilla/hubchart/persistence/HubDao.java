@@ -73,7 +73,7 @@ public class HubDao {
 		return result;
 	}
 	
-	public List<Hubs> findLiveHubs(Session ses, boolean excludeEnqueued) throws OrmException {
+	public List<Hubs> findLiveAndNewHubs(Session ses, boolean excludeEnqueued) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
@@ -290,7 +290,7 @@ public class HubDao {
 			List<Object[]> list = q.list();
 			if (list != null) {
 				if (list.size() > 0) {
-					if (list.get(0).length > 0) {
+					if (list.get(0) != null) {
 						result = (BigInteger) list.get(0)[0];
 					}
 				}
