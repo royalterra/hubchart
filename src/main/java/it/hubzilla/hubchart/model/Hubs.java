@@ -2,6 +2,7 @@ package it.hubzilla.hubchart.model;
 
 import it.hubzilla.hubchart.AppConstants;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -86,6 +87,8 @@ public class Hubs extends BaseEntity {
     @JoinColumn(name = "id_language", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Languages language;
+	@Column(name = "poll_queue", nullable = true)
+	private BigInteger pollQueue;
 
 	public Hubs() {
 	}
@@ -330,6 +333,14 @@ public class Hubs extends BaseEntity {
 
 	public void setLastSuccessfulPollTime(Date lastSuccessfulPollTime) {
 		this.lastSuccessfulPollTime = lastSuccessfulPollTime;
+	}
+
+	public BigInteger getPollQueue() {
+		return pollQueue;
+	}
+
+	public void setPollQueue(BigInteger pollQueue) {
+		this.pollQueue = pollQueue;
 	}
 
 	@Override

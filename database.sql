@@ -108,3 +108,5 @@ CREATE TABLE settings (
 );
 create index idx_settings_name on settings(name);
 ALTER TABLE settings ADD CONSTRAINT ux_settings_name UNIQUE (name);
+alter table hubs add column poll_queue bigint DEFAULT NULL;
+create index idx_hubs_poll_queue on hubs(poll_queue);
