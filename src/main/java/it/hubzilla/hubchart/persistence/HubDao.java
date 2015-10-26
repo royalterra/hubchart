@@ -107,7 +107,7 @@ public class HubDao {
 			Date startDt = cal.getTime();
 			String hql = "from Hubs h where ";
 			if (excludeEnqueued) hql += "h.pollQueue is null and ";
-			hql += "(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2)  "+
+			hql += "(h.lastSuccessfulPollTime > :dt1 and h.lastSuccessfulPollTime < :dt2)  "+
 					"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", startDt, TimestampType.INSTANCE);

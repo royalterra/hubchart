@@ -43,12 +43,12 @@ request.setAttribute("accessKey", accessKey);
 			&nbsp;<br/>
 			<div class="row">
 				<form action="forcejob" method="post">
-					<div class="col-sm-3">
+					<div class="col-sm-4">
 						<img src="images/home-32.png" align="middle" />
-						Force hub network <b>discovery</b>
+						Launch hub network <b>discovery</b>
 						<input type="hidden" name="name" value="discover"></input>
 					</div>
-					<div class="col-sm-9">
+					<div class="col-sm-8">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -58,12 +58,42 @@ request.setAttribute("accessKey", accessKey);
 			
 			<div class="row">
 				<form action="forcejob" method="post">
-					<div class="col-sm-3">
+					<div class="col-sm-4">
 						<img src="images/home-32.png" align="middle" />
-						Force hub list <b>polling</b>
+						<b>Enqueue</b> hubs to be polled
+						<input type="hidden" name="name" value="enqueue"></input>
+					</div>
+					<div class="col-sm-8">
+						Access key
+						<input type="text" name="accessKey"></input>
+						<button type="submit">Go!</button>
+					</div>
+				</form>
+			</div>
+			
+			<div class="row">
+				<form action="forcejob" method="post">
+					<div class="col-sm-4">
+						<img src="images/home-32.png" align="middle" />
+						Launch <b>polling</b> of enqueued hubs
 						<input type="hidden" name="name" value="poll"></input>
 					</div>
-					<div class="col-sm-9">
+					<div class="col-sm-8">
+						Access key
+						<input type="text" name="accessKey"></input>
+						<button type="submit">Go!</button>
+					</div>
+				</form>
+			</div>
+			
+			<div class="row">
+				<form action="forcejob" method="post">
+					<div class="col-sm-4">
+						<img src="images/home-32.png" align="middle" />
+						<b>Draw</b> graphics and feed with latest stats
+						<input type="hidden" name="name" value="draw"></input>
+					</div>
+					<div class="col-sm-8">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
