@@ -20,7 +20,7 @@ import org.hibernate.type.BooleanType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 
-public class HubDao {
+public class HubsDao {
 	
 	public Hubs findByFqdn(Session ses, String baseUrl) throws OrmException, MalformedURLException {
 		Hubs result = null;

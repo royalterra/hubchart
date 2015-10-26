@@ -7,7 +7,7 @@ import it.hubzilla.hubchart.beans.StatisticBean;
 import it.hubzilla.hubchart.beans.VersionTagStatBean;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubDao;
+import it.hubzilla.hubchart.persistence.HubsDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.hibernate.Session;
 public class PresentationBusiness {
 	
 	private static final int MAX_VERSIONS_SHOWN = 4;
-	private static HubDao hubDao = new HubDao();
+	private static HubsDao hubsDao = new HubsDao();
 	
 	public static String printVersionTagStats() throws OrmException {
 		String result ="--";
@@ -42,7 +42,7 @@ public class PresentationBusiness {
 		List<VersionTagStatBean> result = new ArrayList<VersionTagStatBean>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countLiveVersionTags(ses);
+			List<Object[]> list = hubsDao.countLiveVersionTags(ses);
 			for (Object[] obj:list) {
 				try {
 					VersionTagStatBean vts = new VersionTagStatBean(totalHubs);
@@ -85,7 +85,7 @@ public class PresentationBusiness {
 		List<NetworkTypeStatBean> result = new ArrayList<NetworkTypeStatBean>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countLiveNetworkTypes(ses);
+			List<Object[]> list = hubsDao.countLiveNetworkTypes(ses);
 			for (Object[] obj:list) {
 				try {
 					NetworkTypeStatBean vts = new NetworkTypeStatBean(totalHubs);

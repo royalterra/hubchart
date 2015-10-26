@@ -7,7 +7,7 @@ import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubDao;
+import it.hubzilla.hubchart.persistence.HubsDao;
 import it.hubzilla.hubchart.persistence.ImageCacheDao;
 
 import java.util.Date;
@@ -33,10 +33,10 @@ public class DrawJob implements Job {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
-			HubDao hubDao = new HubDao();
+			HubsDao hubsDao = new HubsDao();
 			
 			//Find live hubs
-			List<Hubs> liveHubsList = hubDao.findLiveAndNewHubs(ses, false);
+			List<Hubs> liveHubsList = hubsDao.findLiveAndNewHubs(ses, false);
 			
 			//Aggregate and save
 			Statistics global = createGlobalStats(ses, liveHubsList);

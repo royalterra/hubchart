@@ -4,7 +4,7 @@ import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubDao;
+import it.hubzilla.hubchart.persistence.HubsDao;
 
 import java.util.Date;
 import java.util.List;
@@ -31,12 +31,12 @@ public class PollJob implements Job {
 		try {			
 			//Poll queue
 			Date pollTime = new Date();
-			HubDao hubDao = new HubDao();
+			HubsDao hubsDao = new HubsDao();
 			
 			//Number of hubs to poll = live hubs count / 20
-			Long liveHubsNumber = hubDao.countLiveHubs(ses, false, false);
+			Long liveHubsNumber = hubsDao.countLiveHubs(ses, false, false);
 			Integer queueSize = new Double(liveHubsNumber/20L).intValue();
-			List<Hubs> pollQueue = hubDao.findPollQueue(ses, queueSize);
+			List<Hubs> pollQueue = hubsDao.findPollQueue(ses, queueSize);
 			
 			//Poll the queue to create persisted stats
 			//Hub info is updated accordingly in this method

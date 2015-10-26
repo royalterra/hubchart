@@ -12,7 +12,7 @@ import it.hubzilla.hubchart.model.Languages;
 import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubDao;
+import it.hubzilla.hubchart.persistence.HubsDao;
 import it.hubzilla.hubchart.persistence.StatisticsDao;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,7 @@ import org.hibernate.Transaction;
 public class HubBusiness {
 	
 	//private static final Logger LOG = LoggerFactory.getLogger(HubBusiness.class);
-	private static HubDao hubDao = new HubDao();
+	private static HubsDao hubsDao = new HubsDao();
 	private static StatisticsDao statisticsDao = new StatisticsDao();
 	
 	public static Integer addHub(String baseUrl) throws BusinessException, OrmException,
@@ -40,7 +40,7 @@ public class HubBusiness {
 		try {
 			Date pollTime = new Date();
 			//Check uniqueness
-			Hubs hub = hubDao.findByFqdn(ses, baseUrl);
+			Hubs hub = hubsDao.findByFqdn(ses, baseUrl);
 			if (hub != null) throw new BusinessException(baseUrl+" is a known hub and cannot be added");
 			
 			//Doesn't exist, a new one is created
@@ -78,7 +78,7 @@ public class HubBusiness {
 		try {
 			Date pollTime = new Date();
 			//Exists
-			Hubs hub = hubDao.findByFqdn(ses, baseUrl);
+			Hubs hub = hubsDao.findByFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
 			retrieveStats(ses, hub, pollTime);
 			
@@ -180,7 +180,7 @@ public class HubBusiness {
 		List<Hubs> result = new ArrayList<Hubs>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			result = hubDao.findAll(ses, filterExpired, filterHidden);
+			result = hubsDao.findAll(ses, filterExpired, filterHidden);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} finally {
@@ -217,7 +217,7 @@ public class HubBusiness {
 		Integer result = 0;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			Long count = hubDao.countLiveHubs(ses, true, false);
+			Long count = hubsDao.countLiveHubs(ses, true, false);
 			if (count != null) result = count.intValue();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -231,7 +231,7 @@ public class HubBusiness {
 		List<Hubs> result = new ArrayList<Hubs>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			result = hubDao.findDirectories(ses);
+			result = hubsDao.findDirectories(ses);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} finally {
@@ -256,7 +256,7 @@ public class HubBusiness {
 		int offset = page*pageSize;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countLiveHubsByCountry(ses, offset, pageSize);
+			List<Object[]> list = hubsDao.countLiveHubsByCountry(ses, offset, pageSize);
 			for (Object[] obj:list) {
 				try {
 					CountryStatBean cs = new CountryStatBean();
@@ -278,7 +278,7 @@ public class HubBusiness {
 		Session ses = HibernateSessionFactory.getSession();
 		Integer result = -1;
 		try {
-			List<Object[]> list = hubDao.countLiveHubsByCountry(ses, 0, Integer.MAX_VALUE);
+			List<Object[]> list = hubsDao.countLiveHubsByCountry(ses, 0, Integer.MAX_VALUE);
 			result = list.size();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -295,7 +295,7 @@ public class HubBusiness {
 		int offset = page*pageSize;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countLiveHubsByLanguage(ses, offset, pageSize);
+			List<Object[]> list = hubsDao.countLiveHubsByLanguage(ses, offset, pageSize);
 			for (Object[] obj:list) {
 				try {
 					LanguageStatBean cs = new LanguageStatBean();
@@ -316,7 +316,7 @@ public class HubBusiness {
 		Integer result = null;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubDao.countLiveHubsByLanguage(ses, 0, Integer.MAX_VALUE);
+			List<Object[]> list = hubsDao.countLiveHubsByLanguage(ses, 0, Integer.MAX_VALUE);
 			result = list.size();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);

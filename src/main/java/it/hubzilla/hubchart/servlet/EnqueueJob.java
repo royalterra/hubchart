@@ -5,7 +5,7 @@ import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubDao;
+import it.hubzilla.hubchart.persistence.HubsDao;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -41,20 +41,20 @@ public class EnqueueJob implements Job {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
-			HubDao hubDao = new HubDao();
+			HubsDao hubsDao = new HubsDao();
 			
 			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
 			//Find live hubs to poll
-			List<Hubs> liveHubsToPoll = hubDao.findLiveAndNewHubs(ses, true);
+			List<Hubs> liveHubsToPoll = hubsDao.findLiveAndNewHubs(ses, true);
 			LOG.info("Live hubs to poll: "+liveHubsToPoll.size());
 			//Find dead hubs to check if really dead
-			List<Hubs> deadHubsToPoll = hubDao.findDeadHubsToCheck(ses, afterDeathCheckDays, true);
+			List<Hubs> deadHubsToPoll = hubsDao.findDeadHubsToCheck(ses, afterDeathCheckDays, true);
 			LOG.info("Dead hubs to poll: "+deadHubsToPoll.size());
 			hubsToPoll.addAll(liveHubsToPoll);
 			hubsToPoll.addAll(deadHubsToPoll);
 			
 			//Find last queue number
-			BigInteger number = hubDao.findLastPollQueueNumber(ses);
+			BigInteger number = hubsDao.findLastPollQueueNumber(ses);
 			
 			//Enqueue found hubs
 			for(Hubs hub:hubsToPoll) {
