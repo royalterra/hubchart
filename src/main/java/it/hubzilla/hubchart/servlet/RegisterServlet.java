@@ -76,7 +76,7 @@ public class RegisterServlet extends HttpServlet {
 					//Revive or add hub
 					try {
 						//First: check if it can be revived
-						hubId = HubBusiness.reviveHub(baseUrl);
+						hubId = HubBusiness.attemptToReviveHub(baseUrl);
 						message = "Your hub is marked as live.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 					} catch (Exception e) {

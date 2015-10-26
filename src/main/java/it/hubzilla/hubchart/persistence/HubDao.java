@@ -55,7 +55,8 @@ public class HubDao {
 		Date lastValidDate = cal.getTime();
 		List<Hubs> result = null;		
 		try {
-			String hql = "from Hubs h where ";
+			String hql = "from Hubs h ";
+			if (filterExpired && filterHidden) hql += "where ";
 			if (filterExpired) hql += "h.lastSuccessfulPollTime > :dt1 ";
 			if (filterExpired && filterHidden) hql += "and ";
 			if (filterHidden) hql += "h.hidden = :b1 ";
@@ -170,7 +171,6 @@ public class HubDao {
 			if (onlyHidden) q.setParameter("b2", Boolean.TRUE, BooleanType.INSTANCE);
 			if (onlyPublic) q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Object> list = q.list();
 			if (list != null) {
@@ -193,13 +193,12 @@ public class HubDao {
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
+					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.countryCode is not null "+
 					"group by h.countryCode, h.countryName "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
 			@SuppressWarnings("unchecked")
@@ -218,12 +217,11 @@ public class HubDao {
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.language from Hubs h where "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
+					"h.lastSuccessfulPollTime > :dt1 "+
 					"group by h.language "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
 			@SuppressWarnings("unchecked")
@@ -242,7 +240,7 @@ public class HubDao {
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.versionTag from Hubs h where "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
+					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.versionTag is not null and "+
 					"h.versionTag != :s1 "+
 					"group by h.versionTag "+
@@ -250,7 +248,6 @@ public class HubDao {
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", "", StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Object[]> list = q.list();
 			result = list;
@@ -267,7 +264,7 @@ public class HubDao {
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.networkType from Hubs h where "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
+					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.networkType is not null and "+
 					"h.networkType != :s1 "+
 					"group by h.networkType "+
@@ -275,7 +272,6 @@ public class HubDao {
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", AppConstants.NETWORK_TYPE_UNKNOWN, StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Object[]> list = q.list();
 			result = list;

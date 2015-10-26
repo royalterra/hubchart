@@ -89,11 +89,11 @@ public class FeedBusiness {
 				"</tr>"+
 				"<tr>"+
 					"<td>Network Types</td>"+
-					"<td>"+HubBusiness.printNetworkTypeStats()+"</td>"+
+					"<td>"+PresentationBusiness.printNetworkTypeStats()+"</td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Deployed versions</td>"+
-					"<td>"+HubBusiness.printVersionTagStats()+"</td>"+
+					"<td>"+PresentationBusiness.printVersionTagStats()+"</td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Last update</td>"+

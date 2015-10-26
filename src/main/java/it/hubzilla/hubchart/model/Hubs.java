@@ -1,6 +1,7 @@
 package it.hubzilla.hubchart.model;
 
 import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.business.PresentationBusiness;
 
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -116,38 +117,10 @@ public class Hubs extends BaseEntity {
 		return result;
 	}
 	
-//	public String getVersionFriendly() {
-//		String result = "";
-//		//Date
-//		Date update = null;
-//		if (this.version != null) {
-//			if (this.version.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}.*")) {//[0-9]{2}/[0-9]{2}/[0-9]{4}
-//				//Starts with a date
-//				try {
-//					String date = this.version.substring(0,10);
-//					update = AppConstants.FORMAT_DAY_SQL.parse(date);
-//				} catch (ParseException e) { /* do nothing */}
-//			} else {
-//				//doesn't start with a date
-//				result = this.version;
-//			}
-//		}
-//		//Adds VersionTag if possible
-//		if (result.length() == 0) {
-//			if (this.versionTag != null) {
-//				if (this.versionTag.length() > 0) {
-//					result += this.versionTag +" ("+
-//							AppConstants.FORMAT_DAY.format(update)+") ";
-//				} else {
-//					result += AppConstants.FORMAT_DAY.format(update)+" ";
-//				}
-//			} else {
-//				result += AppConstants.FORMAT_DAY.format(update)+" ";
-//			}
-//		}
-//		return result;
-//	}
-	
+	public String getFormattedPlugins() {
+		return PresentationBusiness.printPluginList(this);
+	}
+		
 	public Integer getId() {
 		return id;
 	}
@@ -179,7 +152,7 @@ public class Hubs extends BaseEntity {
 	public void setInfo(String info) {
 		this.info = info;
 	}
-
+	
 	public String getPlugins() {
 		return plugins;
 	}

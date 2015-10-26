@@ -34,11 +34,11 @@
 			</tr>
 			<tr>
 				<td>Network types</td>
-				<td class="text-right"><%=HubBusiness.printNetworkTypeStats() %></td>
+				<td class="text-right"><%=PresentationBusiness.printNetworkTypeStats() %></td>
 			</tr>
 			<tr>
 				<td>Deployed versions</td>
-				<td class="text-right"><%=HubBusiness.printVersionTagStats() %></td>
+				<td class="text-right"><%=PresentationBusiness.printVersionTagStats() %></td>
 			</tr>
 			<tr>
 				<td>Last update</td>

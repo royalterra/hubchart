@@ -264,7 +264,7 @@ request.setAttribute("pageCount", pageCount.intValue());
 								<c:if test='${not empty stat.hub.plugins}'>
 									<tr>
 										<td>Plugins</td>
-										<td>${stat.hub.plugins}<br />
+										<td>${stat.hub.formattedPlugins}<br />
 										</td>
 									</tr>
 								</c:if>
