@@ -3,43 +3,63 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_1_8.xsd"
   version="1.8">
-  
+ 
 	<schedule>
 		<job>
-			<name>poll</name>
+			<name>discover</name>
 			<group>hubzilla</group>
-			<description>Registered hubs' stats are checked daily</description>
-			<job-class>it.hubzilla.hubchart.servlet.PollJob</job-class>
-			<job-data-map>
-				<entry><key>afterDeathCheckDays</key><value>14;21;30;60;90;120;180;360;540;720</value></entry>
-			</job-data-map>
+			<description>Discover and register new hubs</description>
+			<job-class>it.hubzilla.hubchart.servlet.DiscoverJob</job-class>
 		</job>
 		<trigger>
 			<cron>
-				<name>cronPoll</name>
+				<name>discoverCron</name>
 				<group>hubzilla</group>
-				<job-name>poll</job-name>
+				<job-name>discover</job-name>
 				<job-group>hubzilla</job-group>
-				<cron-expression>0 10 00 ? * *</cron-expression>
+				<cron-expression>0 30 12 ? * *</cron-expression><!--0 00 18 ? * SAT-->
 			</cron>
 		</trigger>
 	</schedule>
 	
 	<schedule>
 		<job>
-			<name>crawler</name>
+			<name>enqueue</name>
 			<group>hubzilla</group>
-			<description>Register new hubs found by crawling known hubs</description>
-			<job-class>it.hubzilla.hubchart.servlet.CrawlerJob</job-class>
+			<description>Enqueue hubs to poll</description>
+			<job-class>it.hubzilla.hubchart.servlet.EnqueueJob</job-class>
+			<job-data-map>
+				<entry><key>afterDeathCheckDays</key><value>14;21;30;60;90;120;180;360;540;720</value></entry>
+			</job-data-map>
 		</job>
 		<trigger>
 			<cron>
-				<name>cronCrawler</name>
+				<name>enqueueCron</name>
 				<group>hubzilla</group>
-				<job-name>crawler</job-name>
+				<job-name>enqueue</job-name>
 				<job-group>hubzilla</job-group>
-				<cron-expression>0 00 12 ? * *</cron-expression><!--0 00 18 ? * SAT-->
+				<cron-expression>0 30 00 ? * *</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>
+	
+	<schedule>
+		<job>
+			<name>poll</name>
+			<group>hubzilla</group>
+			<description>Poll hubs by poll_queque numbers</description>
+			<job-class>it.hubzilla.hubchart.servlet.PollJob</job-class>
+		</job>
+		<trigger>
+			<cron>
+				<name>pollCron</name>
+				<group>hubzilla</group>
+				<job-name>poll</job-name>
+				<job-group>hubzilla</job-group>
+				<cron-expression>0 0 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
+	
+
 </job-scheduling-data> 

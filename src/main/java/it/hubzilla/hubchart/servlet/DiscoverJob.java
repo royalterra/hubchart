@@ -27,9 +27,9 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CrawlerJob implements Job {
+public class DiscoverJob implements Job {
 	
-	private final Logger LOG = LoggerFactory.getLogger(CrawlerJob.class);
+	private final Logger LOG = LoggerFactory.getLogger(DiscoverJob.class);
 	private static String SERVER_LIST_SUFFIX = "/sitelist/json?start=0&limit=1000000";
 	
 	@Override
