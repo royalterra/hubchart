@@ -82,6 +82,7 @@ public class DiscoverJob implements Job {
 	private List<String> retrieveAndFilterNewUrls(Collection<Hubs> hubToCheckList, Map<String, Hubs> knownHubMap) {
 		List<String> newUrlList = new ArrayList<String>();
 		int count=0;
+		//Scan known hubs to find new hubs they're connected with
 		for (Hubs knownHub:hubToCheckList) {
 			try {
 				LOG.debug(count+"/"+hubToCheckList.size()+" Retrieving hubs from "+knownHub.getBaseUrl());
