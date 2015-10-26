@@ -26,24 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Servlet implementation class RegisterServlet
- */
 @WebServlet("/install")
 public class InstallServlet extends HttpServlet {
-	private static final long serialVersionUID = 7794721577903409031L;
+	private static final long serialVersionUID = 3013147604613167496L;
 
 	private final Logger LOG = LoggerFactory.getLogger(InstallServlet.class);
 	
 	public static final String PARAM_SEED_HUB = "seedHub"; 
 	
-	/**
-     * @see HttpServlet#HttpServlet()
-     */
-    public InstallServlet() {
-        super();
-    }
-
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

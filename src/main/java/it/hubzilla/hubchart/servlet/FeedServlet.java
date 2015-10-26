@@ -31,9 +31,6 @@ import com.rometools.rome.feed.synd.SyndFeedImpl;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedOutput;
 
-/**
- * Servlet implementation class RegisterServlet
- */
 @WebServlet("/feed")
 public class FeedServlet extends HttpServlet {
 	private static final long serialVersionUID = 7127936402319986884L;

@@ -109,9 +109,12 @@ public class HubBusiness {
 		stats.setPollTime(pollTime);
 		try {
 			stats = PollBusiness.retrieveTransientStats(ses, hub, pollTime);
-		} catch (UrlException e) {/* ignore errors from http requests */}
-		Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
-		hub.setIdLastHubStats(idStats);
+			Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
+			hub.setIdLastHubStats(idStats);
+			hub.setLastSuccessfulPollTime(pollTime);
+		} catch (UrlException e) {
+			//Exceptions are discarded
+		}
 		GenericDao.updateGeneric(ses, hub.getId(), hub);
 	}
 

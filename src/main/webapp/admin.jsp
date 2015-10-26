@@ -42,7 +42,22 @@ request.setAttribute("accessKey", accessKey);
 			&nbsp;<br/>
 			&nbsp;<br/>
 			<div class="row">
-				<form action="/forcejob" method="post">
+				<form action="forcejob" method="post">
+					<div class="col-sm-3">
+						<img src="images/home-32.png" align="middle" />
+						Force hub network <b>discovery</b>
+						<input type="hidden" name="name" value="discover"></input>
+					</div>
+					<div class="col-sm-9">
+						Access key
+						<input type="text" name="accessKey"></input>
+						<button type="submit">Go!</button>
+					</div>
+				</form>
+			</div>
+			
+			<div class="row">
+				<form action="forcejob" method="post">
 					<div class="col-sm-3">
 						<img src="images/home-32.png" align="middle" />
 						Force hub list <b>polling</b>
@@ -55,25 +70,10 @@ request.setAttribute("accessKey", accessKey);
 					</div>
 				</form>
 			</div>
-		
-			<div class="row">
-				<form action="/forcejob" method="post">
-					<div class="col-sm-3">
-						<img src="images/home-32.png" align="middle" />
-						Force hub network <b>discovery</b>
-						<input type="hidden" name="name" value="crawler"></input>
-					</div>
-					<div class="col-sm-9">
-						Access key
-						<input type="text" name="accessKey"></input>
-						<button type="submit">Go!</button>
-					</div>
-				</form>
-			</div>
 		</c:if>
 		
 		<c:if test="${empty accessKey}">
-			<form action="/install" method="post">
+			<form action="install" method="post">
 				Define an access key for administration<br/>
 				<i>(it can be read/modified in the settings database table)</i><br/>
 				<input type="text" name="accessKey"></input><br/>

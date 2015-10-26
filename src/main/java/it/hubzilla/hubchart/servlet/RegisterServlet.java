@@ -111,6 +111,8 @@ public class RegisterServlet extends HttpServlet {
 				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"> \n" + "<title>Hubzilla hub registration</title> \n" +
 				"<meta name='viewport' content='width=device-width, initial-scale=1'>"+
 				"<link href='css/bootstrap.min.css' rel='stylesheet'>"+
+				"<link href='css/custom.css' rel='stylesheet' />"+
+				"<link href='images/hz-16.png' rel='shortcut icon' type='image/png' />"+
 				"</head> \n" + "<body> \n" +
 				"<div class='container'>"+
 				"<h1><img src='images/hz-64.png' align='middle' />hubchart</h1>"+

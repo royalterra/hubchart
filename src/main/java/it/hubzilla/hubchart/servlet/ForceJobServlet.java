@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +20,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@WebServlet("/forcejob")
 public class ForceJobServlet extends HttpServlet {
-
 	private static final long serialVersionUID = 8068195193843175753L;
 	private final Logger LOG = LoggerFactory.getLogger(ForceJobServlet.class);
 	
