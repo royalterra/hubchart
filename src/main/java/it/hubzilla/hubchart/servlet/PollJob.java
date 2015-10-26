@@ -1,6 +1,5 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.FeedBusiness;
@@ -12,7 +11,6 @@ import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubDao;
 import it.hubzilla.hubchart.persistence.ImageCacheDao;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,48 +30,28 @@ public class PollJob implements Job {
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 		
-		//param: afterDeathCheckDays[]
-		String afterDeathCheckDaysParam = (String) jobCtx.getMergedJobDataMap().get("afterDeathCheckDays");
-		if (afterDeathCheckDaysParam == null) throw new JobExecutionException("afterDeathCheckDays is undefined");
-		if (afterDeathCheckDaysParam.equals("")) throw new JobExecutionException("afterDeathCheckDays is undefined");
-		String[] afterDeathCheckDaysS = afterDeathCheckDaysParam.split(AppConstants.STRING_SEPARATOR);
-		int[] afterDeathCheckDays = new int[afterDeathCheckDaysS.length];
-		for (int i=0; i<afterDeathCheckDaysS.length; i++) {
-			afterDeathCheckDays[i] = Integer.parseInt(afterDeathCheckDaysS[i]);
-		}
-		
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
-		try {
-			//Poll and save
+		try {			
+			//Poll queue
 			Date pollTime = new Date();
 			HubDao hubDao = new HubDao();
 			
-			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
-			List<Hubs> liveHubsToPoll = hubDao.findLiveHubs(ses);
-			LOG.info("Live hubs to poll: "+liveHubsToPoll.size());
-			List<Hubs> deadHubsToPoll = hubDao.findDeadHubsToCheck(ses, afterDeathCheckDays);
-			LOG.info("Dead hubs to poll: "+deadHubsToPoll.size());
-			hubsToPoll.addAll(liveHubsToPoll);
-			hubsToPoll.addAll(deadHubsToPoll);
+			//Number of hubs to poll = live hubs count / 20
+			Long liveHubsNumber = hubDao.countLiveHubs(ses, false, false);
+			Integer queueSize = new Double(liveHubsNumber/20L).intValue();
+			List<Hubs> pollQueue = hubDao.findPollQueue(ses, queueSize);
 			
-			List<Statistics> statList = PollBusiness.pollHubList(ses, hubsToPoll, pollTime);
-			for (Statistics stat:statList) {
-				Integer idStats = (Integer) GenericDao.saveGeneric(ses, stat);
-				stat.getHub().setIdLastHubStats(idStats);
-				GenericDao.updateGeneric(ses, stat.getHub().getId(), stat.getHub());
-			}
+			//Poll the queue to create persisted stats
+			//Hub info is updated accordingly in this method
+			PollBusiness.pollHubList(ses, pollQueue, pollTime);
 			
-			//INFO log about timed out polls
+			//Print INFO log about failed polls
 			String silentHubs = "";
 			int silentCount = 0;
-			for (Hubs hub:hubsToPoll) {
-				boolean found = false;
-				for (Statistics stat:statList) {
-					if (stat.getHub().getId() == hub.getId()) found = true;
-				}
-				if (!found) {
+			for (Hubs hub:pollQueue) {
+				if (hub.getLastSuccessfulPollTime().before(pollTime)) {
 					silentHubs += hub.getFqdn()+"; ";
 					silentCount++;
 				}
@@ -81,7 +59,7 @@ public class PollJob implements Job {
 			LOG.info(silentCount+" silent hubs: "+silentHubs);
 			
 			//Aggregate and save
-			Statistics global = createGlobalStats(ses, hubsToPoll);
+			Statistics global = createGlobalStats(ses, pollQueue);
 			GenericDao.saveGeneric(ses, global);
 			//Clear cache
 			new ImageCacheDao().clearCache(ses);

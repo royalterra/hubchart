@@ -49,6 +49,7 @@ public class PollBusiness {
 
 	private static Ip2nationDao nationDao = new Ip2nationDao();
 
+	/** Return persisted statistics list for the provided hubList */
 	public static List<Statistics> pollHubList(Session ses, List<Hubs> hubList, Date pollTime)
 			throws OrmException {
 		List<Statistics> statList = new ArrayList<Statistics>();
@@ -56,16 +57,24 @@ public class PollBusiness {
 		for (Hubs hub:hubList) {
 			try {
 				LOG.debug(count+"/"+hubList.size()+" Polling "+hub.getBaseUrl());
-				Statistics stat = retrieveTransientStats(ses, hub, pollTime);
+				Statistics stat = retrieveTransientStats(ses, hub, pollTime);//Not responding -> exception
+				
+				//Save the stats
 				if (stat != null) {
+					Integer idStats = (Integer) GenericDao.saveGeneric(ses, stat);
 					statList.add(stat);
-					GenericDao.updateGeneric(ses, hub.getId(),  hub);
+					hub.setIdLastHubStats(idStats);
+					hub.setLastSuccessfulPollTime(pollTime);
 				} else {
 					LOG.debug(count+"/"+hubList.size()+" Exception: hub is not responsive");
 				}
 			} catch (UrlException e) {
 				LOG.debug(count+"/"+hubList.size()+" Exception: "+e.getMessage());
 			}
+			
+			//Always update the hub info after poll (successful or not)
+			hub.setPollQueue(null);
+			GenericDao.updateGeneric(ses, hub.getId(),  hub);
 			count++;
 		}
 		LOG.info("Responsive hubs: "+statList.size()+"/"+hubList.size());
@@ -86,13 +95,7 @@ public class PollBusiness {
 			LOG.debug(e.getMessage());
 			throw new UrlException(e.getMessage(), e);
 		}
-		
-		// Last poll time
-		if (stats != null) {
-			hub.setLastSuccessfulPollTime(pollTime);
-			hub.setDeleted(false);
-			stats.setPollTime(pollTime);
-		}
+
 		return stats;
 	}
 
@@ -221,6 +224,7 @@ public class PollBusiness {
 		stats.setTotalChannels(0);
 		stats.setTotalPosts(0);
 		stats.setHub(hub);
+		stats.setPollTime(pollTime);
 		
 		// Handle json response
 		JsonReader jsonReader = Json.createReader(new StringReader(responseBody));

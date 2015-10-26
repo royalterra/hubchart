@@ -127,6 +127,23 @@ public class HubDao {
 		return result;
 	}
 	
+	public List<Hubs> findPollQueue(Session ses, int queueSize) throws OrmException {
+		List<Hubs> result = null;
+		try {
+			String hql = "from Hubs h where "+
+					"h.pollQueue is not null "+
+					"order by h.pollQueue asc";
+			Query q = ses.createQuery(hql);
+			q.setMaxResults(queueSize);
+			@SuppressWarnings("unchecked")
+			List<Hubs> list = q.list();
+			result = list;
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return result;
+	}
+	
 //	public List<Hubs> findExpired(Session ses) throws OrmException {
 //		Calendar cal = new GregorianCalendar();
 //		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
@@ -146,36 +163,6 @@ public class HubDao {
 //		return result;
 //	}
 	
-	public Long countLiveHiddenHubs(Session ses) throws OrmException {
-		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
-		Date lastValidDate = cal.getTime();
-		try {
-			String hql = "select count(id) from Hubs h where "+
-				"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
-				"h.deleted = :b1 and "+
-				"h.hidden = :b2 "+
-				"order by h.lastSuccessfulPollTime asc";
-			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
-			q.setParameter("b2", Boolean.TRUE, BooleanType.INSTANCE);
-			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
-			@SuppressWarnings("unchecked")
-			List<Object> list = q.list();
-			if (list != null) {
-				if (list.size() > 0) {
-					if (list.get(0) instanceof Long) {
-						return (Long) list.get(0);
-					}
-				}
-			}
-		} catch (HibernateException e) {
-			throw new OrmException(e.getMessage(), e);
-		}
-		return null;
-	}
-	
 	public List<Hubs> findDirectories(Session ses) throws OrmException {
 		List<Hubs> result = null;
 		try {
@@ -192,6 +179,37 @@ public class HubDao {
 			throw new OrmException(e.getMessage(), e);
 		}
 		return result;
+	}
+	
+	public Long countLiveHubs(Session ses, boolean onlyHidden, boolean onlyPublic) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
+		try {
+			String hql = "select count(id) from Hubs h where ";
+			if (onlyHidden || onlyPublic) hql += "h.hidden = :b2 and ";
+			hql += "h.lastSuccessfulPollTime > :dt1 and "+
+				"h.deleted = :b1 "+
+				"order by h.lastSuccessfulPollTime asc";
+			Query q = ses.createQuery(hql);
+			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
+			if (onlyHidden) q.setParameter("b2", Boolean.TRUE, BooleanType.INSTANCE);
+			if (onlyPublic) q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
+			@SuppressWarnings("unchecked")
+			List<Object> list = q.list();
+			if (list != null) {
+				if (list.size() > 0) {
+					if (list.get(0) instanceof Long) {
+						return (Long) list.get(0);
+					}
+				}
+			}
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return null;
 	}
 	
 	public List<Object[]> countLiveHubsByCountry(Session ses, int offset, int pageSize) throws OrmException {
