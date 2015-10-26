@@ -1,112 +1,102 @@
-DROP TABLE IF EXISTS global_stats;
-DROP TABLE IF EXISTS hub_stats;
-DROP TABLE IF EXISTS hubs;
-CREATE TABLE hubs (
-	id int NOT NULL auto_increment,
-	base_url varchar(512) NOT NULL,
-	poll_url varchar(512) NOT NULL,
-	description varchar(1024),
-	logo_url varchar(1024),
-	name varchar(256),
-	ip_address varchar(64),
-	country_code varchar(4),
-	network_type varchar(32) NOT NULL,
-	registration_policy varchar(4),
-	version varchar(32),
-	expired bit NOT NULL,
-	poll_time timestamp NOT NULL,
-	id_last_hub_stats int NOT NULL,
-	PRIMARY KEY(id)
-);
-CREATE TABLE hub_stats (
-	id int NOT NULL auto_increment,
-	poll_time timestamp NOT NULL,
-	total_channels int,
-	active_channels_last_month int,
-	active_channels_last_6_months int,
-	total_posts int,
-	id_registered_hub int NOT NULL,
-	PRIMARY KEY(id)
-);
-CREATE TABLE image_cache (
-	id int NOT NULL auto_increment,
-	name varchar(128),
-	image mediumblob NOT NULL,
-	mime_type varchar(128) NOT NULL,
-	id_registered_hub int,
-	update_time timestamp NOT NULL,
-	PRIMARY KEY(id)
-);
-ALTER TABLE hub_stats ADD CONSTRAINT fk_registered_hub FOREIGN KEY (id_registered_hub) REFERENCES hubs(id);
-CREATE INDEX idx_registered_hub ON hub_stats(id_registered_hub);
-CREATE TABLE global_stats (
-	id int NOT NULL auto_increment,
-	poll_time timestamp,
-	total_channels int,
-	active_channels_last_month int,
-	active_channels_last_6_months int,
-	total_posts int,
-	PRIMARY KEY(id)
-);
-alter table hubs change poll_url fqdn varchar(512);
-alter table hubs change description info varchar(1024);
-alter table hubs change logo_url plugins varchar(1024);
-alter table hubs add column feature_diaspora bit NOT NULL;
-alter table hubs add column feature_rss bit NOT NULL;
-alter table hubs drop column fqdn;
-alter table hubs add column country_name varchar(256);
-alter table hubs add column poll_failed bit NOT NULL DEFAULT FALSE;
-create index IDX_HUB_BASE_URL on hubs(base_url);
-alter table hubs change feature_diaspora feature_diaspora bit NOT NULL DEFAULT FALSE;
-alter table hubs change feature_rss feature_rss bit NOT NULL DEFAULT FALSE;
-alter table image_cache change id_registered_hub id_stat int NOT NULL;
-alter table image_cache change update_time update_time datetime NOT NULL;
-alter table hubs change poll_time poll_time datetime NOT NULL;
-alter table hub_stats change poll_time poll_time datetime NOT NULL;
-alter table global_stats change poll_time poll_time datetime NOT NULL;
-rename table hub_stats TO statistics;
-alter table statistics drop foreign key fk_registered_hub;
-alter table statistics change id_registered_hub id_hub int DEFAULT NULL;
-alter table image_cache drop column name;
-drop table global_stats;
-alter table hubs add column creation_time datetime DEFAULT NULL;
-alter table hubs add column directory_mode  varchar(4) DEFAULT NULL;
-alter table hubs change plugins plugins varchar(2048);
-alter table hubs add column id_language int DEFAULT NULL;
-alter table statistics add column active_hubs int DEFAULT NULL;
-alter table image_cache add column chart_type varchar(4) NOT NULL;
-alter table image_cache add column title varchar(128) DEFAULT NULL;
-alter table hubs add column admin_name varchar(512) DEFAULT NULL;
-alter table hubs add column admin_address varchar(512) DEFAULT NULL;
-alter table hubs add column admin_channel varchar(512) DEFAULT NULL;
-alter table hubs add column hidden bit NOT NULL DEFAULT FALSE;
-alter table hubs add column fqdn varchar(512) NOT NULL;
-alter table hubs add column version_tag varchar(32) NOT NULL;
-alter table hubs change poll_time last_successful_poll_time timestamp NOT NULL;
-alter table hubs add column deleted bit NOT NULL DEFAULT FALSE;
-alter table hubs drop column expired;
-alter table hubs drop column poll_failed;
-alter table hubs change version_tag version_tag varchar(32) DEFAULT NULL;
-CREATE TABLE feed_entries (
-	id int NOT NULL auto_increment,
-	title varchar(1024) NOT NULL,
-	link varchar(1024) NOT NULL,
-	published_date timestamp,
-	description_type varchar(256) NOT NULL,
-	description_value text NOT NULL,
-	PRIMARY KEY(id)
-);
-alter table hubs drop column feature_diaspora;
-alter table hubs drop column feature_rss;
-INSERT INTO `hubchart`.`hubs` (`id`, `base_url`, `info`, `plugins`, `name`, `ip_address`, `country_code`, `network_type`, `registration_policy`, `version`, `last_successful_poll_time`, `id_last_hub_stats`, `country_name`, `creation_time`, `directory_mode`, `id_language`, `admin_name`, `admin_address`, `admin_channel`, `hidden`, `fqdn`, `version_tag`, `deleted`) VALUES (NULL, 'https://hubzilla.it', NULL, NULL, NULL, NULL, NULL, 'HUBZ', NULL, NULL, CURRENT_TIMESTAMP, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, b'0', 'hubzilla.it', NULL, b'0');
-
-CREATE TABLE settings (
-	id int NOT NULL auto_increment,
-	name varchar(32) NOT NULL,
-	value varchar(256) NOT NULL,
-	PRIMARY KEY(id)
-);
-create index idx_settings_name on settings(name);
-ALTER TABLE settings ADD CONSTRAINT ux_settings_name UNIQUE (name);
-alter table hubs add column poll_queue bigint DEFAULT NULL;
-create index idx_hubs_poll_queue on hubs(poll_queue);
+--
+-- Table structure for table `image_cache`
+--
+DROP TABLE IF EXISTS `image_cache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image_cache` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `image` mediumblob NOT NULL,
+  `mime_type` varchar(128) NOT NULL,
+  `id_stat` int(11) NOT NULL,
+  `update_time` datetime NOT NULL,
+  `chart_type` varchar(4) NOT NULL,
+  `title` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `feed_entries`
+--
+DROP TABLE IF EXISTS `feed_entries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feed_entries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(1024) NOT NULL,
+  `link` varchar(1024) NOT NULL,
+  `published_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `description_type` varchar(256) NOT NULL,
+  `description_value` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `settings`
+--
+DROP TABLE IF EXISTS `settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  `value` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_settings_name` (`name`),
+  KEY `idx_settings_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `statistics`
+--
+DROP TABLE IF EXISTS `statistics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `poll_time` datetime NOT NULL,
+  `total_channels` int(11) DEFAULT NULL,
+  `active_channels_last_month` int(11) DEFAULT NULL,
+  `active_channels_last_6_months` int(11) DEFAULT NULL,
+  `total_posts` int(11) DEFAULT NULL,
+  `id_hub` int(11) DEFAULT NULL,
+  `active_hubs` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_registered_hub` (`id_hub`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `hubs`
+--
+DROP TABLE IF EXISTS `hubs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hubs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `base_url` varchar(512) NOT NULL,
+  `info` varchar(1024) DEFAULT NULL,
+  `plugins` varchar(2048) DEFAULT NULL,
+  `name` varchar(256) DEFAULT NULL,
+  `ip_address` varchar(64) DEFAULT NULL,
+  `country_code` varchar(4) DEFAULT NULL,
+  `network_type` varchar(32) NOT NULL,
+  `registration_policy` varchar(4) DEFAULT NULL,
+  `version` varchar(32) DEFAULT NULL,
+  `last_successful_poll_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id_last_hub_stats` int(11) NOT NULL,
+  `country_name` varchar(256) DEFAULT NULL,
+  `creation_time` datetime DEFAULT NULL,
+  `directory_mode` varchar(4) DEFAULT NULL,
+  `id_language` int(11) DEFAULT NULL,
+  `admin_name` varchar(512) DEFAULT NULL,
+  `admin_address` varchar(512) DEFAULT NULL,
+  `admin_channel` varchar(512) DEFAULT NULL,
+  `hidden` bit(1) NOT NULL DEFAULT b'0',
+  `fqdn` varchar(512) NOT NULL,
+  `version_tag` varchar(32) DEFAULT NULL,
+  `deleted` bit(1) NOT NULL DEFAULT b'0',
+  `poll_queue` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_hubs_base_url` (`base_url`),
+  KEY `idx_hubs_poll_queue` (`poll_queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

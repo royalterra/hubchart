@@ -144,25 +144,6 @@ public class HubDao {
 		return result;
 	}
 	
-//	public List<Hubs> findExpired(Session ses) throws OrmException {
-//		Calendar cal = new GregorianCalendar();
-//		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
-//		Date lastValidDate = cal.getTime();
-//		List<Hubs> result = null;
-//		try {
-//			String hql = "from Hubs h where "+
-//					"h.lastSuccessfulPollTime < :dt1";
-//			Query q = ses.createQuery(hql);
-//			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-//			@SuppressWarnings("unchecked")
-//			List<Hubs> list = q.list();
-//			result = list;
-//		} catch (HibernateException e) {
-//			throw new OrmException(e.getMessage(), e);
-//		}
-//		return result;
-//	}
-	
 	public List<Hubs> findDirectories(Session ses) throws OrmException {
 		List<Hubs> result = null;
 		try {
