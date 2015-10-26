@@ -38,7 +38,7 @@
 				<group>hubzilla</group>
 				<job-name>enqueue</job-name>
 				<job-group>hubzilla</job-group>
-				<cron-expression>0 30 00 ? * *</cron-expression>
+				<cron-expression>0 30 03 ? * *</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>
@@ -61,5 +61,21 @@
 		</trigger>
 	</schedule>
 	
-
+	<schedule>
+		<job>
+			<name>draw</name>
+			<group>hubzilla</group>
+			<description>Aggregate stats data and draw charts + feed</description>
+			<job-class>it.hubzilla.hubchart.servlet.DrawJob</job-class>
+		</job>
+		<trigger>
+			<cron>
+				<name>drawCron</name>
+				<group>hubzilla</group>
+				<job-name>draw</job-name>
+				<job-group>hubzilla</job-group>
+				<cron-expression>0 30 06 ? * *</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
 </job-scheduling-data> 

@@ -1,15 +1,10 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.business.FeedBusiness;
 import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
-import it.hubzilla.hubchart.model.Statistics;
-import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubDao;
-import it.hubzilla.hubchart.persistence.ImageCacheDao;
 
 import java.util.Date;
 import java.util.List;
@@ -56,13 +51,7 @@ public class PollJob implements Job {
 					silentCount++;
 				}
 			}
-			LOG.info(silentCount+" silent hubs: "+silentHubs);
-			
-			//Aggregate and save
-			Statistics global = createGlobalStats(ses, pollQueue);
-			GenericDao.saveGeneric(ses, global);
-			//Clear cache
-			new ImageCacheDao().clearCache(ses);
+			LOG.info(silentCount+" failed polls: "+silentHubs);
 			
 			trn.commit();
 		} catch (OrmException e) {
@@ -73,48 +62,7 @@ public class PollJob implements Job {
 			ses.close();
 		}
 		
-		// Generate RSS feed
-		try {
-			LOG.info("Generating feed entry");
-			FeedBusiness.createFeedEntry();
-			LOG.info("Removing old feed entries");
-			FeedBusiness.deleteOlderFeedEntries();
-		} catch (BusinessException e) {
-			LOG.error(e.getMessage(), e);
-			throw new JobExecutionException(e.getMessage(), e);
-		}
-		
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	
-	private Statistics createGlobalStats(Session ses, List<Hubs> activeHubs) 
-			throws OrmException {
-		Statistics global = new Statistics();
-		global.setTotalChannels(0);
-		global.setActiveChannelsLastMonth(0);
-		global.setActiveChannelsLast6Months(0);
-		global.setTotalPosts(0);
-		global.setActiveHubs(0);
-		global.setPollTime(new Date());
-		global.setActiveHubs(activeHubs.size());
-		for (Hubs hub:activeHubs) {
-			if (hub.getIdLastHubStats() != null) {
-				Statistics stat = GenericDao.findById(ses, Statistics.class, hub.getIdLastHubStats());
-				if (stat != null) addToGlobal(global, stat);
-			}
-		}
-		return global;
-	}
-	
-	private void addToGlobal(Statistics global, Statistics stat) {
-		if (stat.getTotalChannels() != null)
-				global.setTotalChannels(global.getTotalChannels()+stat.getTotalChannels());
-		if (stat.getActiveChannelsLastMonth() != null)
-				global.setActiveChannelsLastMonth(global.getActiveChannelsLastMonth()+stat.getActiveChannelsLastMonth());
-		if (stat.getActiveChannelsLast6Months() != null)
-				global.setActiveChannelsLast6Months(global.getActiveChannelsLast6Months()+stat.getActiveChannelsLast6Months());
-		if (stat.getTotalPosts() != null)
-				global.setTotalPosts(global.getTotalPosts()+stat.getTotalPosts());
-	}
-
 }
