@@ -55,7 +55,6 @@ public class HubBusiness {
 			hub.setLastSuccessfulPollTime(AppConstants.DATE_FAR_PAST);
 			hub.setCreationTime(pollTime);
 			hub.setIdLastHubStats(0);
-			hub.setDeleted(false);
 			hub.setHidden(false);
 			id = (Integer) GenericDao.saveGeneric(ses, hub);
 			
@@ -85,11 +84,8 @@ public class HubBusiness {
 			//Exists
 			Hubs hub = hubDao.findByFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
-			if (hub.getDeleted()) {
-				retrieveStats(ses, hub, pollTime);
-			} else {
-				//It's ok, a live hub doesn't need to be revived
-			}
+			retrieveStats(ses, hub, pollTime);
+			
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();

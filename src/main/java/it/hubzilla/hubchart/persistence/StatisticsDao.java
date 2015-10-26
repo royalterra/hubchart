@@ -78,13 +78,11 @@ public class StatisticsDao {
 					+ "lastSuccessfulPollTime is not null "
 					+ "and registrationPolicy is not null "
 					+ "and hidden = :b1 "
-					+ "and deleted = :b2 "
 					+ "order by creationTime desc";
 			Query q = ses.createQuery(hql);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
-			q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();
 			for (Hubs hub:list) {

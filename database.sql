@@ -94,7 +94,6 @@ CREATE TABLE `hubs` (
   `hidden` bit(1) NOT NULL DEFAULT b'0',
   `fqdn` varchar(512) NOT NULL,
   `version_tag` varchar(32) DEFAULT NULL,
-  `deleted` bit(1) NOT NULL DEFAULT b'0',
   `poll_queue` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_hubs_base_url` (`base_url`),

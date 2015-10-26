@@ -65,9 +65,6 @@ public class Hubs extends BaseEntity {
 	@Column(name = "hidden", nullable = false)
 	private boolean hidden;
 	@Basic(optional = false)
-	@Column(name = "deleted", nullable = false)
-	private boolean deleted;
-	@Basic(optional = false)
 	@Column(name = "last_successful_poll_time", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastSuccessfulPollTime;
@@ -318,15 +315,7 @@ public class Hubs extends BaseEntity {
 	public void setVersionTag(String versionTag) {
 		this.versionTag = versionTag;
 	}
-
-	public boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-
+	
 	public Date getLastSuccessfulPollTime() {
 		return lastSuccessfulPollTime;
 	}

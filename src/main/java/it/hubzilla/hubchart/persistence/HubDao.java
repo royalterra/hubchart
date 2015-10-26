@@ -31,8 +31,7 @@ public class HubDao {
 		String fqdnNoWww = urlNoWww.getHost();
 		try {
 			Query q = ses.createQuery("from Hubs h where "+
-					"(h.fqdn like :s1 or h.fqdn like :s2) "+
-					"order by h.deleted asc");
+					"(h.fqdn like :s1 or h.fqdn like :s2) ");
 			q.setParameter("s1", fqdn, StringType.INSTANCE);
 			q.setParameter("s2", fqdnNoWww, StringType.INSTANCE);
 			q.setMaxResults(1);
@@ -56,16 +55,14 @@ public class HubDao {
 		Date lastValidDate = cal.getTime();
 		List<Hubs> result = null;		
 		try {
-			String hql = "from Hubs h where h.deleted = :b1 ";
-			if (filterExpired || filterHidden) hql += "and ";
+			String hql = "from Hubs h where ";
 			if (filterExpired) hql += "h.lastSuccessfulPollTime > :dt1 ";
 			if (filterExpired && filterHidden) hql += "and ";
-			if (filterHidden) hql += "h.hidden = :b2 ";
+			if (filterHidden) hql += "h.hidden = :b1 ";
 			hql += "order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			if (filterExpired) q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			if (filterHidden) q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
+			if (filterHidden) q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();
 			result = list;
@@ -81,12 +78,11 @@ public class HubDao {
 		Date lastValidDate = cal.getTime();
 		List<Hubs> result = null;		
 		try {
-			String hql = "from Hubs h where h.deleted = :b1 and ";
+			String hql = "from Hubs h where  ";
 			if (excludeEnqueued) hql += "h.pollQueue is null and ";
 			hql += "(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
 					"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
@@ -108,12 +104,11 @@ public class HubDao {
 			Date endDt = cal.getTime();
 			cal.add(Calendar.DAY_OF_MONTH, (-1)*(days+1));
 			Date startDt = cal.getTime();
-			String hql = "from Hubs h where h.deleted = :b1 and ";
+			String hql = "from Hubs h where ";
 			if (excludeEnqueued) hql += "h.pollQueue is null and ";
 			hql += "(h.lastSuccessfulPollTime > :dt1 or h.lastSuccessfulPollTime < :dt2)  "+
 					"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", startDt, TimestampType.INSTANCE);
 			q.setParameter("dt2", endDt, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
@@ -169,11 +164,9 @@ public class HubDao {
 		try {
 			String hql = "select count(id) from Hubs h where ";
 			if (onlyHidden || onlyPublic) hql += "h.hidden = :b2 and ";
-			hql += "h.lastSuccessfulPollTime > :dt1 and "+
-				"h.deleted = :b1 "+
+			hql += "h.lastSuccessfulPollTime > :dt1 "+
 				"order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			if (onlyHidden) q.setParameter("b2", Boolean.TRUE, BooleanType.INSTANCE);
 			if (onlyPublic) q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -201,12 +194,10 @@ public class HubDao {
 		try {
 			String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
 					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
-					"h.deleted = :b1 and "+
 					"h.countryCode is not null "+
 					"group by h.countryCode, h.countryName "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
@@ -227,12 +218,10 @@ public class HubDao {
 		List<Object[]> result = null;
 		try {
 			String hql = "select count(h.id) as liveHubs, h.language from Hubs h where "+
-					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
-					"h.deleted = :b1 "+
+					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
 					"group by h.language "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
@@ -254,13 +243,11 @@ public class HubDao {
 		try {
 			String hql = "select count(h.id) as liveHubs, h.versionTag from Hubs h where "+
 					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
-					"h.deleted = :b1 and "+
 					"h.versionTag is not null and "+
 					"h.versionTag != :s1 "+
 					"group by h.versionTag "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("s1", "", StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
@@ -281,13 +268,11 @@ public class HubDao {
 		try {
 			String hql = "select count(h.id) as liveHubs, h.networkType from Hubs h where "+
 					"(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) and "+
-					"h.deleted = :b1 and "+
 					"h.networkType is not null and "+
 					"h.networkType != :s1 "+
 					"group by h.networkType "+
 					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			q.setParameter("s1", AppConstants.NETWORK_TYPE_UNKNOWN, StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
