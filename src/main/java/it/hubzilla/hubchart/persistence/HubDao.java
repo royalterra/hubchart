@@ -56,7 +56,7 @@ public class HubDao {
 		List<Hubs> result = null;		
 		try {
 			String hql = "from Hubs h ";
-			if (filterExpired && filterHidden) hql += "where ";
+			if (filterExpired || filterHidden) hql += "where ";
 			if (filterExpired) hql += "h.lastSuccessfulPollTime > :dt1 ";
 			if (filterExpired && filterHidden) hql += "and ";
 			if (filterHidden) hql += "h.hidden = :b1 ";
