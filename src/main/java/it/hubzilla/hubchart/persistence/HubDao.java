@@ -282,7 +282,7 @@ public class HubDao {
 	}
 	
 	public BigInteger findLastPollQueueNumber(Session ses) throws OrmException {
-		BigInteger result = null;
+		BigInteger result = new BigInteger("0");
 		try {
 			String hql = "select max(pollQueue) from Hubs h";
 			Query q = ses.createQuery(hql);
@@ -291,7 +291,8 @@ public class HubDao {
 			if (list != null) {
 				if (list.size() > 0) {
 					if (list.get(0) != null) {
-						result = (BigInteger) list.get(0)[0];
+						Object number = list.get(0);
+						result = (BigInteger) number; 
 					}
 				}
 			}
