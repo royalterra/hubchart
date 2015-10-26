@@ -75,8 +75,8 @@ request.setAttribute("accessKey", accessKey);
 				<form action="forcejob" method="post">
 					<div class="col-sm-4">
 						<img src="images/home-32.png" align="middle" />
-						Launch <b>polling</b> of enqueued hubs
-						<input type="hidden" name="name" value="poll"></input>
+						Launch <b>polling</b> of <i>all</i> enqueued hubs
+						<input type="hidden" name="name" value="fullPoll"></input>
 					</div>
 					<div class="col-sm-8">
 						Access key

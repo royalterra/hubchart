@@ -60,6 +60,26 @@
 			</cron>
 		</trigger>
 	</schedule>
+	<schedule>
+		<job>
+			<name>fullPoll</name>
+			<group>hubzilla</group>
+			<description>Poll hubs by poll_queque numbers</description>
+			<job-class>it.hubzilla.hubchart.servlet.PollJob</job-class>
+			<job-data-map>
+				<entry><key>type</key><value>full</value></entry>
+			</job-data-map>
+		</job>
+		<trigger>
+			<cron>
+				<name>fullPollCron</name>
+				<group>hubzilla</group>
+				<job-name>fullPoll</job-name>
+				<job-group>hubzilla</job-group>
+				<cron-expression>0 0 1 1 1 ?</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
 	
 	<schedule>
 		<job>

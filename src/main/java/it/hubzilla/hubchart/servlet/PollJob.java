@@ -25,6 +25,12 @@ public class PollJob implements Job {
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 		
+		boolean full = false;
+		String typeParam = (String) jobCtx.getMergedJobDataMap().get("type");
+		if (typeParam != null) {
+			if (typeParam.equals("full")) full=true;
+		}
+			
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
@@ -33,10 +39,16 @@ public class PollJob implements Job {
 			Date pollTime = new Date();
 			HubsDao hubsDao = new HubsDao();
 			
-			//Number of hubs to poll = live hubs count / 20
+			List<Hubs> pollQueue = null;
 			Long liveHubsNumber = hubsDao.countLiveHubs(ses, false, false);
-			Integer queueSize = new Double(liveHubsNumber/20L).intValue();
-			List<Hubs> pollQueue = hubsDao.findPollQueue(ses, queueSize);
+			if (full) {
+				//The full queue
+				pollQueue = hubsDao.findPollQueue(ses, liveHubsNumber.intValue());
+			} else {
+				//Number of hubs to poll = live hubs count / 20
+				Integer queueSize = new Double(liveHubsNumber/20L).intValue();
+				pollQueue = hubsDao.findPollQueue(ses, queueSize);
+			}
 			
 			//Poll the queue to create persisted stats
 			//Hub info is updated accordingly in this method
