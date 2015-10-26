@@ -36,7 +36,7 @@ public class DrawJob implements Job {
 			HubsDao hubsDao = new HubsDao();
 			
 			//Find live hubs
-			List<Hubs> liveHubsList = hubsDao.findLiveAndNewHubs(ses, false);
+			List<Hubs> liveHubsList = hubsDao.findLiveHubs(ses, false, false);
 			
 			//Aggregate and save
 			Statistics global = createGlobalStats(ses, liveHubsList);

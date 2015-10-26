@@ -45,7 +45,7 @@ public class EnqueueJob implements Job {
 			
 			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
 			//Find live hubs to poll
-			List<Hubs> liveHubsToPoll = hubsDao.findLiveAndNewHubs(ses, true);
+			List<Hubs> liveHubsToPoll = hubsDao.findLiveHubs(ses, true, true);
 			LOG.info("Live hubs to poll: "+liveHubsToPoll.size());
 			//Find dead hubs to check if really dead
 			List<Hubs> deadHubsToPoll = hubsDao.findDeadHubsToCheck(ses, afterDeathCheckDays, true);

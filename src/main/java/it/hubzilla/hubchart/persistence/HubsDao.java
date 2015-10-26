@@ -73,7 +73,7 @@ public class HubsDao {
 		return result;
 	}
 	
-	public List<Hubs> findLiveAndNewHubs(Session ses, boolean excludeEnqueued) throws OrmException {
+	public List<Hubs> findLiveHubs(Session ses, boolean includeNew, boolean excludeEnqueued) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
@@ -81,11 +81,15 @@ public class HubsDao {
 		try {
 			String hql = "from Hubs h where  ";
 			if (excludeEnqueued) hql += "h.pollQueue is null and ";
-			hql += "(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) "+
-					"order by h.lastSuccessfulPollTime asc";
+			if (includeNew) {
+				hql += "(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) ";
+			} else {
+				hql += "h.lastSuccessfulPollTime > :dt1 ";
+			}
+			hql += "order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
+			if (includeNew) q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();
 			result = list;
