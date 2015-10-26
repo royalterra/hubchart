@@ -109,7 +109,9 @@ public class PresentationBusiness {
 			if (plugins.length() > 0) {
 				String[] pluginArray = plugins.split(AppConstants.STRING_SEPARATOR);
 				for (String plugin:pluginArray) {
-					plugin += "&bull;"+plugin+" ";
+					if (plugin.length() > 0) {
+						plugin += "&bull;"+plugin+" ";
+					}
 				}
 			}
 		}

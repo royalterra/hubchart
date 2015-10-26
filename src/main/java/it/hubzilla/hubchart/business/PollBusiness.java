@@ -288,13 +288,12 @@ public class PollBusiness {
 			String plugins = "";
 			JsonArray pluginsArray = jo.getJsonArray("plugins");
 			if (pluginsArray != null) {
-//				List<JsonValue> list = pluginsArray.getValuesAs(JsonValue.class);
-//				for (JsonValue jv:list) plugins += jv.toString()+" ";
-//				plugins = plugins.trim();
-//				plugins = " "+plugins.replaceAll("\"", "");
-//				if (plugins.length() > 2) plugins = plugins.replaceAll("\\s+", " &bull;");
 				List<JsonValue> list = pluginsArray.getValuesAs(JsonValue.class);
-				for (JsonValue jv:list) plugins += jv.toString()+AppConstants.STRING_SEPARATOR;
+				for (JsonValue jv:list) {
+					if (plugins.length() > 0) plugins += AppConstants.STRING_SEPARATOR;
+					String plugin = jv.toString().replaceAll("\"", "");
+					plugins += plugin;
+				}
 			}
 			hub.setPlugins(plugins);
 		} catch (Exception e) { }
