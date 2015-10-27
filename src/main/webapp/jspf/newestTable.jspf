@@ -20,10 +20,10 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 				Hub
 			</th>
 			<th>
-				Can I join?
+				Version
 			</th>
 			<th>
-				Version
+				Can I join?
 			</th>
 			<th>
 				Default language
@@ -49,10 +49,11 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 				</span>
 			</td>
 			<td>
-				<c:if test="${not empty stat.hub.networkType}">
-					<img src="${stat.networkTypeIcon}"
-						border="0" title="${stat.networkTypeDescr}" />
-				</c:if>
+				<span title="${stat.hub.version}" style="font-size: 0.75em;">
+					<c:out value="${stat.hub.versionDescription}" escapeXml="false" />
+				</span>
+			</td>
+			<td>
 				<c:if test="${not empty stat.hub.registrationPolicy}">
 					<c:choose>
 						<c:when test="${stat.hub.registrationPolicy == 'PRIV'}">
@@ -63,11 +64,6 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 						</c:otherwise>
 					</c:choose>
 				</c:if>
-			</td>
-			<td>
-				<span title="${stat.hub.version}" style="font-size: 0.75em;">
-					<c:out value="${stat.hub.versionDescription}" />
-				</span>
 			</td>
 			<td>
 				<c:if test="${not empty stat.hub.language}">

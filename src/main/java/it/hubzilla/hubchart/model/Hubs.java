@@ -92,7 +92,15 @@ public class Hubs extends BaseEntity {
 	}
 
 	public String getVersionDescription() {
-		String result = "";
+		//Icon
+		String result = "<img src='"+AppConstants.NETWORK_ICONS.get(this.networkType)+"' "+
+				"border='0' title='"+this.networkType+"' />";
+		//Adds VersionTag if possible
+		if (this.versionTag != null) {
+			if (this.versionTag.length() > 0) {
+				result += "<b>"+this.versionTag+"</b>";
+			}
+		}
 		//Date
 		Date update = null;
 		if (this.version != null) {
@@ -101,17 +109,11 @@ public class Hubs extends BaseEntity {
 				try {
 					String date = this.version.substring(0,10);
 					update = AppConstants.FORMAT_DAY_SQL.parse(date);
-					result += AppConstants.FORMAT_DAY.format(update)+" ";
+					result += " ("+AppConstants.FORMAT_DAY.format(update)+")";
 				} catch (ParseException e) { /* do nothing */}
 			} else {
 				//doesn't start with a date
-				result += this.version+" ";
-			}
-		}
-		//Adds VersionTag if possible
-		if (this.versionTag != null) {
-			if (this.versionTag.length() > 0) {
-				result += "("+this.versionTag+") ";
+				result += this.version;
 			}
 		}
 		return result;

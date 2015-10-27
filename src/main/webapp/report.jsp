@@ -45,9 +45,9 @@ request.setAttribute("logList", logList);
 				<c:out value="${log.level}" />
 			</c:if></b>-->
 			<b><c:if test="${not empty log.service}">
-				<c:out value="${log.service}" escapeXml="false"/>
+				<c:out value="${log.service}" />
 			</c:if></b>
-			<c:out value="${log.message}" /><br/>
+			<c:out value="${log.message}" escapeXml="false"/><br/>
 		</c:forEach>
 		
 	</div><!-- /container -->

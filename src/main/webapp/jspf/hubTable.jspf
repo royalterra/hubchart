@@ -33,18 +33,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 			</th>
 			<th>
 				<c:choose>
-				<c:when test="${sessionScope.order == 'regs'}">
-					<a href="index.jsp?order=regs&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Can I join?</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
-				</c:when>
-				<c:otherwise>
-					<a href="index.jsp?order=regs&asc=true&pag=0">Can I join?</a>
-				</c:otherwise>
-				</c:choose>
-			</th>
-			<th>
-				<c:choose>
 				<c:when test="${sessionScope.order == 'version'}">
 					<a href="index.jsp?order=version&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Version</a>
 					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
@@ -52,6 +40,18 @@ request.setAttribute("pageCount", pageCount.intValue());
 				</c:when>
 				<c:otherwise>
 					<a href="index.jsp?order=version&asc=false&pag=0">Version</a>
+				</c:otherwise>
+				</c:choose>
+			</th>
+			<th>
+				<c:choose>
+				<c:when test="${sessionScope.order == 'regs'}">
+					<a href="index.jsp?order=regs&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Can I join?</a>
+					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
+					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
+				</c:when>
+				<c:otherwise>
+					<a href="index.jsp?order=regs&asc=true&pag=0">Can I join?</a>
 				</c:otherwise>
 				</c:choose>
 			</th>
@@ -107,10 +107,11 @@ request.setAttribute("pageCount", pageCount.intValue());
 				</span>
 			</td>
 			<td>
-				<c:if test="${not empty stat.hub.networkType}">
-					<img src="${stat.networkTypeIcon}"
-						border="0" title="${stat.networkTypeDescr}" />
-				</c:if>
+				<span title="${stat.hub.version}" style="font-size: 0.75em;">
+					<c:out value="${stat.hub.versionDescription}" escapeXml="false" />
+				</span>
+			</td>
+			<td>
 				<c:if test="${not empty stat.hub.registrationPolicy}">
 					<c:choose>
 						<c:when test="${stat.hub.registrationPolicy == 'PRIV'}">
@@ -121,11 +122,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 						</c:otherwise>
 					</c:choose>
 				</c:if>
-			</td>
-			<td>
-				<span title="${stat.hub.version}" style="font-size: 0.75em;">
-					<c:out value="${stat.hub.versionDescription}" />
-				</span>
 			</td>
 			<td>
 				<c:if test="${not empty stat.hub.language}">
@@ -158,7 +154,7 @@ request.setAttribute("pageCount", pageCount.intValue());
 								style="width: 100%; border-collapse: collapse">
 								<thead>
 									<tr>
-										<td colspan="2"><b>Channels</b></td>
+										<td colspan="2"><b>Channels on this hub</b></td>
 									</tr>
 								</thead>
 								<tbody>
@@ -219,6 +215,10 @@ request.setAttribute("pageCount", pageCount.intValue());
 										</td>
 									</tr>
 								</c:if>
+								<tr>
+									<td>Version</td>
+									<td><b><c:out value="${stat.hub.versionTag}" /></b> (<c:out value="${stat.hub.version}" />)</td>
+								</tr>
 								<c:if test="${not empty stat.hub.language}">
 									<tr>
 										<td>Default language</td>
@@ -228,27 +228,11 @@ request.setAttribute("pageCount", pageCount.intValue());
 									</tr>
 								</c:if>
 								<tr>
-									<td>Geo IP location</td>
+									<td>Server location</td>
 									<td>
 										<img src="${stat.countryFlag}" />&nbsp;<b><c:out value="${stat.hub.countryName}" /></b>
 									</td>
 								</tr>
-								<tr>
-									<td>Version</td>
-									<td><b><c:out value="${stat.hub.versionTag}" /></b> (<c:out value="${stat.hub.version}" />)</td>
-								</tr>
-								<tr>
-									<td>Last poll</td>
-									<td>${stat.hub.lastSuccessfulPollTime}</td>
-								</tr>
-								<c:if test="${not empty stat.hub.directoryMode}">
-									<c:if test="${stat.directory}">
-										<tr>
-											<td>Directory</td>
-											<td><b>${stat.directoryDescr}</b></td>
-										</tr>
-									</c:if>
-								</c:if>
 							</tbody>
 						</table>
 					</div>
@@ -261,13 +245,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 						<table class="table table-condensed small"
 							style="width: 100%; border-collapse: collapse">
 							<tbody>
-								<c:if test='${not empty stat.hub.plugins}'>
-									<tr>
-										<td>Plugins</td>
-										<td>${stat.hub.formattedPlugins}<br />
-										</td>
-									</tr>
-								</c:if>
 								<c:if test='${not empty stat.hub.adminChannel}'>
 									<tr>
 										<td>Admin</td>
@@ -275,6 +252,25 @@ request.setAttribute("pageCount", pageCount.intValue());
 										</td>
 									</tr>
 								</c:if>
+								<c:if test='${not empty stat.hub.plugins}'>
+									<tr>
+										<td>Plugins</td>
+										<td>${stat.hub.formattedPlugins}<br />
+										</td>
+									</tr>
+								</c:if>
+								<c:if test="${not empty stat.hub.directoryMode}">
+									<c:if test="${stat.directory}">
+										<tr>
+											<td>Directory mode</td>
+											<td><b>${stat.directoryDescr}</b></td>
+										</tr>
+									</c:if>
+								</c:if>
+								<tr>
+									<td>Last poll</td>
+									<td>${stat.hub.lastSuccessfulPollTime}</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
