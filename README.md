@@ -13,17 +13,17 @@ Cartridges to add:
 * MySQL 5.5 
 * phpMyAdmin 4.0 
 
-1. Push the git whole git repository to openshift private repository.
+1. Push the cloned github repository to your openshift private repository.
 
 2. Open phpMyAdmin and execute all *.sql scripts you find in the project root folder.
 
 3. Navigate to the /admin.jsp page and define an accessKey and a seed hub.
 
-4. Defining an accessKey will allow you to use the /admin.jsp page to launch a network discovery and enqueue hubs to be polled.
+4. The accessKey will allow you to use the /admin.jsp page to launch these jobs: discover, enqueue, poll and draw.
 
 
-Hubchart jobs
--------------
+Hubchart scheduled jobs
+----------------------
 
 **discover** [daily] - uses known hubs to obtain lists of yet-to-be-known hubs
 
