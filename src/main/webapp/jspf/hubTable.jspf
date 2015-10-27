@@ -238,7 +238,7 @@ request.setAttribute("pageCount", pageCount.intValue());
 									<td><b><c:out value="${stat.hub.versionTag}" /></b> (<c:out value="${stat.hub.version}" />)</td>
 								</tr>
 								<tr>
-									<td>Last poll time</td>
+									<td>Last poll</td>
 									<td>${stat.hub.lastSuccessfulPollTime}</td>
 								</tr>
 								<c:if test="${not empty stat.hub.directoryMode}">

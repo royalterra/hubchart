@@ -30,7 +30,8 @@ public class PresentationBusiness {
 					int max = MAX_VERSIONS_SHOWN;
 					if (stats.size() < MAX_VERSIONS_SHOWN) max = stats.size();
 					for (int i=0; i<max; i++) {
-						result += "<b>"+stats.get(i).getVersionTag()+"</b> ("+stats.get(i).getPercentage()+") ";
+						String networkTypeIcon = "<img src='"+AppConstants.NETWORK_ICONS.get(stats.get(i).getNetworkType())+"' />";
+						result += networkTypeIcon+"<b>"+stats.get(i).getVersionTag()+"</b>&nbsp;"+stats.get(i).getPercentage()+" ";
 					}
 				}
 			}
@@ -48,6 +49,7 @@ public class PresentationBusiness {
 					VersionTagStatBean vts = new VersionTagStatBean(totalHubs);
 					vts.setLiveHubs(((Long)obj[0]).intValue());
 					vts.setVersionTag((String)obj[1]);
+					vts.setNetworkType((String)obj[2]);
 					result.add(vts);
 				} catch (Exception e) {/*ignore cast and nullpointer*/}
 			}

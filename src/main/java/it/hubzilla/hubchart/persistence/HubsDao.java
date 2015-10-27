@@ -243,7 +243,7 @@ public class HubsDao {
 		Date lastValidDate = cal.getTime();
 		List<Object[]> result = null;
 		try {
-			String hql = "select count(h.id) as liveHubs, h.versionTag from Hubs h where "+
+			String hql = "select count(h.id) as liveHubs, h.versionTag, h.networkType from Hubs h where "+
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.versionTag is not null and "+
 					"h.versionTag != :s1 "+

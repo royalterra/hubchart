@@ -15,7 +15,7 @@
 				<td class="text-right"><b><c:out value="${requestScope.gs.activeHubs}" /></b></td>
 			</tr>
 			<tr>
-				<td>Active channels (6 months)</td>
+				<td>Active channels</td>
 				<td class="text-right"><b><c:out
 							value="${requestScope.gs.activeChannelsLast6Months}" /></b></td>
 			</tr>
@@ -37,7 +37,7 @@
 				<td class="text-right"><%=PresentationBusiness.printNetworkTypeStats() %></td>
 			</tr>
 			<tr>
-				<td>Deployed versions</td>
+				<td>Versions</td>
 				<td class="text-right"><%=PresentationBusiness.printVersionTagStats() %></td>
 			</tr>
 			<tr>
