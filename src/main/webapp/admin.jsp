@@ -32,7 +32,7 @@ request.setAttribute("accessKey", accessKey);
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-7">
-				<h1><img src="images/hubchart3-64.png" align="middle" />hubchart</h1>
+				<h1><img src="images/hubchart3-32.png" align="middle" /> hubchart</h1>
 				<h4>Administration panel</h4>
 			</div>
 		</div>
