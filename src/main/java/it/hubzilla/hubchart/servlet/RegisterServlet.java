@@ -115,7 +115,7 @@ public class RegisterServlet extends HttpServlet {
 				"<link href='images/hubchart1-16.png' rel='shortcut icon' type='image/png' />"+
 				"</head> \n" + "<body> \n" +
 				"<div class='container'>"+
-				"<h1><img src='images/hubchart1-32.png' align='middle' /> hubchart</h1>"+
+				"<h1><a href='index.jsp'><img src='images/hubchart1-32.png' align='middle' /></a> hubchart</h1>"+
 				"&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");
