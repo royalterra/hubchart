@@ -30,7 +30,7 @@ public class DrawJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
-		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "STARTED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "<b>STARTED JOB</b>");
 		
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
@@ -69,7 +69,7 @@ public class DrawJob implements Job {
 			throw new JobExecutionException(e.getMessage(), e);
 		}
 		
-		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "ENDED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	

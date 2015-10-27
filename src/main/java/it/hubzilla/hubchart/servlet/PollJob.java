@@ -7,7 +7,6 @@ import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
-import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +26,7 @@ public class PollJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
-		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "STARTED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "<b>STARTED JOB</b>");
 		
 		boolean full = false;
 		String typeParam = (String) jobCtx.getMergedJobDataMap().get("type");
@@ -82,7 +81,7 @@ public class PollJob implements Job {
 			ses.close();
 		}
 		
-		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "ENDED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	

@@ -17,7 +17,7 @@ public class LogsDao {
 		List<Logs> result = null;
 		try {
 			Query q = ses.createQuery("from Logs l "+
-					"order by l.id ");
+					"order by l.id desc");
 			@SuppressWarnings("unchecked")
 			List<Logs> list = q.list();
 			if (list != null) {

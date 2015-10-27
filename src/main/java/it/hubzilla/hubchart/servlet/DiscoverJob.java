@@ -39,7 +39,7 @@ public class DiscoverJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
-		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "STARTED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "<b>STARTED JOB</b>");
 		//Get all known hubs
 		Map<String,Hubs> knownHubMap = new HashMap<String, Hubs>();
 		List<Hubs> hubToCheckList = null;
@@ -80,7 +80,7 @@ public class DiscoverJob implements Job {
 			throw new JobExecutionException(e);
 		}
 		
-		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "ENDED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	

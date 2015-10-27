@@ -28,7 +28,7 @@ public class EnqueueJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
-		LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "STARTED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "<b>STARTED JOB</b>");
 		
 		//param: afterDeathCheckDays[]
 		String afterDeathCheckDaysParam = (String) jobCtx.getMergedJobDataMap().get("afterDeathCheckDays");
@@ -75,7 +75,7 @@ public class EnqueueJob implements Job {
 			ses.close();
 		}
 				
-		LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "ENDED JOB");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	
