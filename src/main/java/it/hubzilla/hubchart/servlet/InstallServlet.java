@@ -140,7 +140,7 @@ public class InstallServlet extends HttpServlet {
 				"<link href='css/bootstrap.min.css' rel='stylesheet'>"+
 				"</head> \n" + "<body> \n" +
 				"<div class='container'>"+
-				"<h1><img src='images/hz-64.png' align='middle' />hubchart</h1>"+
+				"<h1><img src='images/hubchart3-64.png' align='middle' />hubchart</h1>"+
 				"&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");

@@ -16,7 +16,7 @@ request.setAttribute("accessKey", accessKey);
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
 	<link href="css/custom.css" rel="stylesheet" />
-	<link href="images/hz-16.png" rel="shortcut icon" type="image/png" />
+	<link href="images/hubchart3-16.png" rel="shortcut icon" type="image/png" />
 	<link href="feed" rel="alternate" type="application/rss+xml" title="Hubzilla Statistics feed" />
 	
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -32,7 +32,7 @@ request.setAttribute("accessKey", accessKey);
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-7">
-				<h1><img src="images/hz-64.png" align="middle" />hubchart</h1>
+				<h1><img src="images/hubchart3-64.png" align="middle" />hubchart</h1>
 				<h4>Administration panel</h4>
 			</div>
 		</div>
