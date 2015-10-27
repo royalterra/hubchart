@@ -91,14 +91,14 @@ public class PollBusiness {
 			hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
 			stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
 		} catch (JsonParsingException e) {
-			throw new UrlException(e.getMessage(), e);
+			throw new UrlException("JsonParsingException "+e.getMessage(), e);
 		} catch (IOException e) {
-			throw new UrlException(e.getMessage(), e);
+			throw new UrlException("IOException "+e.getMessage(), e);
 		}
 		return stats;
 	}
 
-	public static String getJsonResponseFromUrl(String url) throws UrlException, IOException {
+	public static String getJsonResponseFromUrl(String url) throws IOException {
 		String jsonText = null;
 		InputStream is = new URL(url).openStream();
 		try {
