@@ -20,6 +20,7 @@ public class AppConstants {
 	
 	// LOG
 	public static final int LOG_EXPIRATION_DAYS = 4;
+	public static final int VISITOR_EXPIRATION_DAYS = 15;
 	public static final String LOG_INFO="INFO";
 	public static final String LOG_ERROR="ERROR";
 	public static final String LOG_DEBUG="DEBUG";

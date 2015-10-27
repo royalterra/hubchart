@@ -100,7 +100,7 @@ CREATE TABLE `hubs` (
   KEY `idx_hubs_poll_queue` (`poll_queue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
--- Table structure for table `image_cache`
+-- Table structure for table `logs`
 --
 DROP TABLE IF EXISTS `logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -111,6 +111,20 @@ CREATE TABLE `logs` (
   `time` datetime NOT NULL,
   `service` varchar(64) DEFAULT NULL,
   `message` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `visitors`
+--
+DROP TABLE IF EXISTS `visitors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `visitors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `time` datetime NOT NULL,
+  `country_code` varchar(4) DEFAULT NULL,
+  `new_visitor` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

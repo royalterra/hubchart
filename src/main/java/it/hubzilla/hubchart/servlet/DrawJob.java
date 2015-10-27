@@ -5,6 +5,7 @@ import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.FeedBusiness;
 import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.VisitorBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
@@ -63,11 +64,14 @@ public class DrawJob implements Job {
 			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old feed entries");
 			FeedBusiness.deleteOlderFeedEntries();
 			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old log entries");
-			LogBusiness.deleteOldLogs();
 		} catch (BusinessException e) {
 			LOG.error(e.getMessage(), e);
 			throw new JobExecutionException(e.getMessage(), e);
 		}
+		
+		//Additionally delete old logging and stuff on the server
+		LogBusiness.deleteOldLogs();
+		VisitorBusiness.deleteOldVisitors();
 		
 		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");

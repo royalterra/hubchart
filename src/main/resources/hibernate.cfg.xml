@@ -60,5 +60,6 @@
 		<mapping class="it.hubzilla.hubchart.model.Logs"/>
 		<mapping class="it.hubzilla.hubchart.model.Settings"/>
 		<mapping class="it.hubzilla.hubchart.model.Statistics"/>
+		<mapping class="it.hubzilla.hubchart.model.Visitors"/>
     </session-factory>
 </hibernate-configuration>
