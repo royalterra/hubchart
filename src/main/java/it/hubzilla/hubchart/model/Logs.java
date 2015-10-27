@@ -1,7 +1,6 @@
 package it.hubzilla.hubchart.model;
 
-import it.hubzilla.hubchart.AppConstants;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -22,6 +21,9 @@ import javax.persistence.TemporalType;
 @Table(name = "logs")
 public class Logs extends BaseEntity {
 	private static final long serialVersionUID = 4809756595556670571L;
+	private static final SimpleDateFormat LOG_TIMESTAMP = new SimpleDateFormat("MM-dd HH:mm:ss");
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
@@ -41,7 +43,7 @@ public class Logs extends BaseEntity {
 
 	public String getFormattedTime() {
 		String result = "";
-		if (time != null) result = AppConstants.FORMAT_TIMESTAMP.format(time);
+		if (time != null) result = LOG_TIMESTAMP.format(time);
 		return result;
 	}
 	

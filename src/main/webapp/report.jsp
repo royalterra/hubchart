@@ -41,9 +41,9 @@ request.setAttribute("logList", logList);
 		
 		<c:forEach items="${requestScope.logList}" var="log" varStatus="status">
 			<i><c:out value="${log.formattedTime}" /></i>
-			<b><c:if test="${not empty log.level}">
+			<!--<b><c:if test="${not empty log.level}">
 				<c:out value="${log.level}" />
-			</c:if></b>
+			</c:if></b>-->
 			<b><c:if test="${not empty log.service}">
 				<c:out value="${log.service}" />
 			</c:if></b>
