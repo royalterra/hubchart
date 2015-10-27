@@ -48,7 +48,7 @@ request.setAttribute("firstGs", firstGs);
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
 	<link href="css/custom.css" rel="stylesheet" />
-	<link href="images/hubchart3-16.png" rel="shortcut icon" type="image/png" />
+	<link href="images/hubchart2-16.png" rel="shortcut icon" type="image/png" />
 	<link href="feed" rel="alternate" type="application/rss+xml" title="Hubzilla Statistics feed" />
 	
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -63,7 +63,7 @@ request.setAttribute("firstGs", firstGs);
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-7">
-				<h1><img src="images/hubchart3-32.png" align="middle" /> hubchart <img src="images/beta.png" align="bottom" /></h1>
+				<h1><img src="images/hubchart2-32.png" align="middle" /> hubchart <img src="images/beta.png" align="bottom" /></h1>
 				<a href="https://github.com/redmatrix/hubzilla"><b>hubzilla - community server</b></a> grid statistics<br />
 				&nbsp;<br />
 				<h3>grid status</h3>

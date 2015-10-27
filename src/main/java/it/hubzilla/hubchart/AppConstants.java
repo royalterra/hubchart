@@ -39,7 +39,7 @@ public class AppConstants {
 	public static final String FEED_DEFAULT_TYPE = "rss_2.0";
 	//rss_0.9, rss_0.91, rss_0.92, rss_0.93,rss_0.94, rss_1.0, rss_2.0, atom_0.3, atom_1.0
 	public static final String FEED_TITLE = "Hubzilla network statistics";
-	public static final String FEED_LINK = "http://hubchart.tarine.net";
+	public static final String FEED_LINK = "http://hubchart.hubzilla.it";
 	public static final String FEED_DESCRIPTION = "Daily Hubzilla grid statistics";
 	public static final int FEED_DAYS_BEFORE_DELETION = 10;
 	
