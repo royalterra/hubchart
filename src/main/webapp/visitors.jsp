@@ -1,19 +1,19 @@
+<%@page import="it.hubzilla.hubchart.business.VisitorBusiness"%>
+<%@page import="it.hubzilla.hubchart.model.Visitors"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="it.hubzilla.hubchart.business.LogBusiness"%>
-<%@ page import="it.hubzilla.hubchart.model.Logs"%>
 <%@ page import="java.util.List"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
-List<Logs> logList = LogBusiness.findLogs();
-request.setAttribute("logList", logList);
+List<Visitors> visitorList = VisitorBusiness.findVisitors();
+request.setAttribute("visitorList", visitorList);
 %>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Hubchart - Report panel</title>
+	<title>Hubchart - Visitor panel</title>
 	
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -35,19 +35,16 @@ request.setAttribute("logList", logList);
 		<div class="row">
 			<div class="col-sm-7">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
-				<h4>Report panel</h4>
+				<h4>Visitor panel</h4>
 			</div>
 		</div>
 		
-		<c:forEach items="${requestScope.logList}" var="log" varStatus="status">
-			<i><c:out value="${log.formattedTime}" /></i>
-			<!--<b><c:if test="${not empty log.level}">
-				<c:out value="${log.level}" />
-			</c:if></b>-->
-			<b><c:if test="${not empty log.service}">
-				<c:out value="${log.service}" />
+		<c:forEach items="${requestScope.visitorList}" var="visitor" varStatus="status">
+			<i><c:out value="${visitor.formattedTime}" /></i>
+			<b><c:if test="${not empty visitor.countryCode}">
+				<c:out value="${visitor.countryCode}" />
 			</c:if></b>
-			<c:out value="${log.message}" escapeXml="false"/><br/>
+			<b><c:if test="${visitor.newVisitor}">NEW</c:if></b><br/>
 		</c:forEach>
 		
 	</div><!-- /container -->

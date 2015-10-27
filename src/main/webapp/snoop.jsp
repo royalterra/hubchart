@@ -7,7 +7,7 @@
 </HEAD>
 <BODY>
 
-<h1><img src="images/hubchart1-32.png" align="middle" /> hubchart</h1>
+<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
 <h3>WebApp JSP Snoop page</h3>
 <h4>JVM Memory Monitor</h4>
  
