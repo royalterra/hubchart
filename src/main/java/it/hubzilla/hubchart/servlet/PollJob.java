@@ -7,6 +7,7 @@ import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
+import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,7 @@ public class PollJob implements Job {
 		try {			
 			//Poll queue
 			Date pollTime = new Date();
+			//LogsDao logsDao = new LogsDao();
 			HubsDao hubsDao = new HubsDao();
 			
 			List<Hubs> pollQueue = null;
@@ -60,16 +62,16 @@ public class PollJob implements Job {
 			//Hub info is updated accordingly in this method
 			PollBusiness.pollHubList(ses, pollQueue, pollTime);
 			
-			//Print INFO log about failed polls
-			String silentHubs = "";
-			int silentCount = 0;
-			for (Hubs hub:pollQueue) {
-				if (hub.getLastSuccessfulPollTime().before(pollTime)) {
-					silentHubs += hub.getFqdn()+"; ";
-					silentCount++;
-				}
-			}
-			LogBusiness.addLog(AppConstants.LOG_INFO, "poll", silentCount+" failed polls: "+silentHubs);
+			////Print INFO log about failed polls
+			//String silentHubs = "";
+			//int silentCount = 0;
+			//for (Hubs hub:pollQueue) {
+			//	if (hub.getLastSuccessfulPollTime().before(pollTime)) {
+			//		silentHubs += hub.getFqdn()+"; ";
+			//		silentCount++;
+			//	}
+			//}
+			//logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", silentCount+" failed polls: "+silentHubs);
 			
 			trn.commit();
 		} catch (OrmException e) {

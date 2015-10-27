@@ -7,6 +7,7 @@ import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
+import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -43,15 +44,16 @@ public class EnqueueJob implements Job {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
+			LogsDao logsDao = new LogsDao();
 			HubsDao hubsDao = new HubsDao();
-			
+		
 			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
 			//Find live hubs to poll
 			List<Hubs> liveHubsToPoll = hubsDao.findLiveHubs(ses, true, true);
-			LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "Live hubs to poll: "+liveHubsToPoll.size());
+			logsDao.addLog(ses, AppConstants.LOG_INFO, "enqueue", "Live hubs to poll: "+liveHubsToPoll.size());
 			//Find dead hubs to check if really dead
 			List<Hubs> deadHubsToPoll = hubsDao.findDeadHubsToCheck(ses, afterDeathCheckDays, true);
-			LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "Dead hubs to poll: "+deadHubsToPoll.size());
+			logsDao.addLog(ses, AppConstants.LOG_INFO, "enqueue", "Dead hubs to poll: "+deadHubsToPoll.size());
 			hubsToPoll.addAll(liveHubsToPoll);
 			hubsToPoll.addAll(deadHubsToPoll);
 			
@@ -68,7 +70,6 @@ public class EnqueueJob implements Job {
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
-			LogBusiness.addLog(AppConstants.LOG_ERROR, "enqueue", e.getMessage());
 			throw new JobExecutionException(e.getMessage(), e);
 		} finally {
 			ses.close();

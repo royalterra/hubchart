@@ -12,6 +12,7 @@ import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.Ip2nationDao;
+import it.hubzilla.hubchart.persistence.LogsDao;
 import it.hubzilla.hubchart.persistence.StatisticsDao;
 
 import java.io.BufferedReader;
@@ -49,10 +50,11 @@ public class PollBusiness {
 	public static List<Statistics> pollHubList(Session ses, List<Hubs> hubList, Date pollTime)
 			throws OrmException {
 		List<Statistics> statList = new ArrayList<Statistics>();
+		LogsDao logsDao = new LogsDao();
 		int count = 1;
 		for (Hubs hub:hubList) {
 			try {
-				LOG.debug(count+"/"+hubList.size()+" Polling "+hub.getBaseUrl());
+				logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" Polling "+hub.getBaseUrl());
 				Statistics stat = retrieveTransientStats(ses, hub, pollTime);//Not responding -> exception
 				
 				//Save the stats
@@ -62,10 +64,10 @@ public class PollBusiness {
 					hub.setIdLastHubStats(idStats);
 					hub.setLastSuccessfulPollTime(pollTime);
 				} else {
-					LOG.debug(count+"/"+hubList.size()+" Exception: hub returned no statistics");
+					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" Exception: hub returned no statistics");
 				}
 			} catch (UrlException e) {
-				LOG.debug(count+"/"+hubList.size()+" Exception: "+e.getMessage());
+				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" Exception: "+e.getMessage());
 			}
 			
 			//Always update the hub info after poll (successful or not)
