@@ -1,6 +1,8 @@
 package it.hubzilla.hubchart.servlet;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.business.LogBusiness;
 import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
@@ -24,13 +26,17 @@ public class PollJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "STARTED JOB");
 		
 		boolean full = false;
 		String typeParam = (String) jobCtx.getMergedJobDataMap().get("type");
 		if (typeParam != null) {
-			if (typeParam.equals("full")) full=true;
+			if (typeParam.equals("full")) {
+				full=true;
+				LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "FULL POLL");
+			}
 		}
-			
+		
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
@@ -63,7 +69,7 @@ public class PollJob implements Job {
 					silentCount++;
 				}
 			}
-			LOG.info(silentCount+" failed polls: "+silentHubs);
+			LogBusiness.addLog(AppConstants.LOG_INFO, "poll", silentCount+" failed polls: "+silentHubs);
 			
 			trn.commit();
 		} catch (OrmException e) {
@@ -74,6 +80,7 @@ public class PollJob implements Job {
 			ses.close();
 		}
 		
+		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "ENDED JOB");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	

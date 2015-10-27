@@ -1,9 +1,11 @@
 package it.hubzilla.hubchart.servlet;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.UrlException;
 import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
 import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 
@@ -37,6 +39,7 @@ public class DiscoverJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "STARTED JOB");
 		//Get all known hubs
 		Map<String,Hubs> knownHubMap = new HashMap<String, Hubs>();
 		List<Hubs> hubToCheckList = null;
@@ -50,6 +53,7 @@ public class DiscoverJob implements Job {
 				hubToCheckList = knownHubList;
 			}
 		} catch (OrmException e) {
+			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover", e.getMessage());
 			LOG.error(e.getMessage(), e);
 			throw new JobExecutionException(e);
 		}
@@ -61,21 +65,22 @@ public class DiscoverJob implements Job {
 			//2) Create corresponding Hub objects
 			//3) New Hub objects become the new list to parse
 			do {
-				LOG.debug("Cycle "+cycleNum);
-				LOG.debug("Saved hubs are now "+knownHubMap.size());
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Cycle "+cycleNum);
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Saved hubs are now "+knownHubMap.size());
 				List<String> newUrlList = retrieveAndFilterNewUrls(hubToCheckList, knownHubMap);
-				LOG.debug("Found "+newUrlList.size()+" new URLs");
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Found "+newUrlList.size()+" new URLs");
 				hubToCheckList = registerHubs(newUrlList);
-				LOG.debug("Saved "+hubToCheckList.size()+" new hubs");
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Saved "+hubToCheckList.size()+" new hubs");
 				cycleNum++;
 				//Repeat 3 times or until there are no new urls to add 
 			} while ((hubToCheckList.size() > 0) && (cycleNum <= 3));
-			LOG.debug("Cycles finished");
+			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Cycles finished");
 		} catch (OrmException e) {
-			LOG.error(e.getMessage(), e);
+			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover", e.getMessage());
 			throw new JobExecutionException(e);
 		}
 		
+		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "ENDED JOB");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	
@@ -85,7 +90,7 @@ public class DiscoverJob implements Job {
 		//Scan known hubs to find new hubs they're connected with
 		for (Hubs knownHub:hubToCheckList) {
 			try {
-				LOG.debug(count+"/"+hubToCheckList.size()+" Retrieving hubs from "+knownHub.getBaseUrl());
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+" Retrieving hubs from "+knownHub.getBaseUrl());
 				String jsonUrl = knownHub.getBaseUrl()+SERVER_LIST_SUFFIX;
 				String responseBody = PollBusiness.getJsonResponseFromUrl(jsonUrl);
 				// Handle json response
@@ -131,7 +136,7 @@ public class DiscoverJob implements Job {
 	private List<Hubs> registerHubs(List<String> urlList) throws OrmException {
 		List<Hubs> newHubList = new ArrayList<Hubs>();
 		for(String url:urlList) {
-			LOG.debug(newHubList.size()+"/"+urlList.size()+" Saving "+url);
+			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", newHubList.size()+"/"+urlList.size()+" Saving "+url);
 			Integer hubId = null;
 			try {
 				hubId = HubBusiness.addHub(url);

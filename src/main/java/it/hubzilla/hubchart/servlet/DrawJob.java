@@ -1,8 +1,10 @@
 package it.hubzilla.hubchart.servlet;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.FeedBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
@@ -28,6 +30,7 @@ public class DrawJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "STARTED JOB");
 		
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
@@ -55,15 +58,18 @@ public class DrawJob implements Job {
 		
 		// Generate RSS feed
 		try {
-			LOG.info("Generating feed entry");
+			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Generating feed entry");
 			FeedBusiness.createFeedEntry();
-			LOG.info("Removing old feed entries");
+			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old feed entries");
 			FeedBusiness.deleteOlderFeedEntries();
+			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old log entries");
+			LogBusiness.deleteOldLogs();
 		} catch (BusinessException e) {
 			LOG.error(e.getMessage(), e);
 			throw new JobExecutionException(e.getMessage(), e);
 		}
 		
+		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "ENDED JOB");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	

@@ -14,9 +14,13 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogBusiness {
-
+	
+	private static final Logger LOG = LoggerFactory.getLogger(LogBusiness.class);
+	
 	public static List<Logs> findLogs() throws OrmException {
 		List<Logs> result = new ArrayList<Logs>();
 		Session ses = HibernateSessionFactory.getSession();
@@ -31,7 +35,7 @@ public class LogBusiness {
 		return result;
 	}
 	
-	public static void addLog(String level, String service, String message) throws OrmException {
+	public static void addLog(String level, String service, String message) {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
@@ -39,13 +43,14 @@ public class LogBusiness {
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
-			throw new OrmException(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
+			//throw new OrmException(e.getMessage(), e);
 		} finally {
 			ses.close();
 		}
 	}
 	
-	public void deleteOldLogs() throws OrmException {
+	public static void deleteOldLogs() {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		GregorianCalendar cal = new GregorianCalendar();
@@ -56,7 +61,8 @@ public class LogBusiness {
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
-			throw new OrmException(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
+			//throw new OrmException(e.getMessage(), e);
 		} finally {
 			ses.close();
 		}
