@@ -14,7 +14,7 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 	<thead>
 		<tr>
 			<th>
-				Birth date
+				Added
 			</th>
 			<th>
 				Hub

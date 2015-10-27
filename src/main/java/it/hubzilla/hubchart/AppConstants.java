@@ -12,6 +12,7 @@ public class AppConstants {
 
 	// CONFIGURATION
 	public static final int HUB_EXPIRATION_DAYS = 7;
+	public static final int LOG_EXPIRATION_DAYS = 4;
 	public static final String HIBERNATE_CONFIG_FILE="/hibernate.cfg.xml";
 	public static final String QUARTZ_CONFIG_FILE = "/quartz-jobs.xml";
 	public static final String APP_PROPERTY_FILE = "/app.properties";
