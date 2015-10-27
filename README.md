@@ -25,7 +25,7 @@ Cartridges to add:
 Hubchart scheduled jobs
 ----------------------
 
-**discover** [daily] - uses known hubs to obtain lists of yet-to-be-known hubs
+**discover** [daily] - obtains a list of new hubs parsing the connections of known hubs
 
 **enqueue** [daily] - marks the order in which the known hubs will be polled (based on the last successful poll time)
 
