@@ -118,10 +118,12 @@ public class VisitorBusiness {
 	private static String getCookie(HttpServletRequest request, String cookieName) {
 		Cookie[] cookies = request.getCookies();
 		String value = null;
-		for(Cookie cookie : cookies){
-		    if(cookieName.equals(cookie.getName())){
-		        value = cookie.getValue();
-		    }
+		if (cookies != null) {
+			for(Cookie cookie:cookies){
+			    if(cookieName.equals(cookie.getName())){
+			        value = cookie.getValue();
+			    }
+			}
 		}
 		return value;
 	}
