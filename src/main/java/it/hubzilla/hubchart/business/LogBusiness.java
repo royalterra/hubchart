@@ -31,11 +31,11 @@ public class LogBusiness {
 		return result;
 	}
 	
-	public static void addLog(String level, String message) throws OrmException {
+	public static void addLog(String level, String service, String message) throws OrmException {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
-			new LogsDao().addLog(ses, level, message);
+			new LogsDao().addLog(ses, level, service, message);
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();

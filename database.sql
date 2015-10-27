@@ -109,6 +109,7 @@ CREATE TABLE `logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `level` varchar(16) DEFAULT NULL,
   `time` datetime NOT NULL,
+  `service` varchar(64) DEFAULT NULL,
   `message` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

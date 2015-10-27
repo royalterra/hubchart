@@ -29,9 +29,10 @@ public class LogsDao {
 		return result;
 	}
 	
-	public void addLog(Session ses, String level, String message) throws OrmException {
+	public void addLog(Session ses, String level, String service, String message) throws OrmException {
 		Logs log = new Logs();
 		log.setLevel(level);
+		log.setService(service);
 		log.setMessage(message);
 		log.setTime(new Date());
 		GenericDao.saveGeneric(ses, log);

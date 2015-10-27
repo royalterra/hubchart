@@ -33,6 +33,8 @@ public class Logs extends BaseEntity {
 	@Column(name = "time", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
+	@Column(name = "service", length = 64)
+	private String service;
 	@Basic(optional = false)
 	@Column(name = "message", nullable=false, length = 65000)
 	private String message;
@@ -75,6 +77,14 @@ public class Logs extends BaseEntity {
 
 	public void setTime(Date time) {
 		this.time = time;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
 	}
 
 	public String getMessage() {
