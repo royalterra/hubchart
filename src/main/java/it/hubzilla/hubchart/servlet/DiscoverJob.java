@@ -135,8 +135,9 @@ public class DiscoverJob implements Job {
 	
 	private List<Hubs> registerHubs(List<String> urlList) throws OrmException {
 		List<Hubs> newHubList = new ArrayList<Hubs>();
+		int count = 0;
 		for(String url:urlList) {
-			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", newHubList.size()+"/"+urlList.size()+" Saving "+url);
+			count++;
 			Integer hubId = null;
 			try {
 				hubId = HubBusiness.addHub(url);
@@ -146,6 +147,9 @@ public class DiscoverJob implements Job {
 			if (hubId != null) {
 				Hubs hub = HubBusiness.findHubById(hubId);
 				newHubList.add(hub);
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" saved "+url);
+			} else {
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" discarded "+url);
 			}
 		}
 		return newHubList;
