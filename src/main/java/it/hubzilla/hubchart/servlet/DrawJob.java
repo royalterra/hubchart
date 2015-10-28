@@ -43,9 +43,11 @@ public class DrawJob implements Job {
 			List<Hubs> liveHubsList = hubsDao.findLiveHubs(ses, false, false);
 			
 			//Aggregate and save
+			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Calculating statistics");
 			Statistics global = createGlobalStats(ses, liveHubsList);
 			GenericDao.saveGeneric(ses, global);
 			//Clear cache
+			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Clearing image cache");
 			new ImageCacheDao().clearCache(ses);
 			
 			trn.commit();
@@ -59,17 +61,17 @@ public class DrawJob implements Job {
 		
 		// Generate RSS feed
 		try {
-			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Generating feed entry");
+			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Building feed entry");
 			FeedBusiness.createFeedEntry();
 			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old feed entries");
 			FeedBusiness.deleteOlderFeedEntries();
-			LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old log entries");
 		} catch (BusinessException e) {
 			LOG.error(e.getMessage(), e);
 			throw new JobExecutionException(e.getMessage(), e);
 		}
 		
 		//Additionally delete old logging and stuff on the server
+		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old log entries");
 		LogBusiness.deleteOldLogs();
 		VisitorBusiness.deleteOldVisitors();
 		

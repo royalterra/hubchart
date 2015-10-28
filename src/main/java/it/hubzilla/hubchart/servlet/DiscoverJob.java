@@ -89,7 +89,12 @@ public class DiscoverJob implements Job {
 		//Scan known hubs to find new hubs they're connected with
 		for (Hubs knownHub:hubToCheckList) {
 			try {
-				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+" Retrieving hubs from "+knownHub.getBaseUrl());
+				String directory = "";
+				if (knownHub.getDirectoryMode() != null) {
+					directory = "("+AppConstants.DIRECTORY_DESCRIPTIONS.get(knownHub.getDirectoryMode())+")";
+				}
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+
+						" Retrieving hubs from <i>"+knownHub.getFqdn()+"</i> "+directory);
 				String jsonUrl = knownHub.getBaseUrl()+SERVER_LIST_SUFFIX;
 				String responseBody = PollBusiness.getJsonResponseFromUrl(jsonUrl);
 				// Handle json response
@@ -138,17 +143,20 @@ public class DiscoverJob implements Job {
 		for(String url:urlList) {
 			count++;
 			Integer hubId = null;
+			String message = "";
 			try {
 				hubId = HubBusiness.addHub(url);
-			} catch (BusinessException e) {/* ignore if URL is already registered */
-			} catch (MalformedURLException e) {/* ignore if URL is malformed */
+			} catch (BusinessException e) {
+				message = e.getMessage();
+			} catch (MalformedURLException e) {
+				message = e.getMessage();
 			}
 			if (hubId != null) {
 				Hubs hub = HubBusiness.findHubById(hubId);
 				newHubList.add(hub);
-				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" saved "+url);
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" saved <b>"+hub.getFqdn()+"</b>");
 			} else {
-				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" discarded "+url);
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" "+url+" "+message);
 			}
 		}
 		return newHubList;

@@ -64,12 +64,12 @@ public class PollBusiness {
 					statList.add(stat);
 					hub.setIdLastHubStats(idStats);
 					hub.setLastSuccessfulPollTime(pollTime);
-					logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" "+hub.getFqdn()+" <b>OK</b>");
+					logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> <b>OK</b>");
 				} else {
-					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" "+hub.getFqdn()+" Exception: statistics are empty");
+					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> Exception: statistics are empty");
 				}
 			} catch (UrlException e) {
-				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" "+hub.getFqdn()+" "+e.getMessage());
+				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> "+e.getMessage());
 			}
 			
 			//Always update the hub info after poll (successful or not)
