@@ -15,15 +15,11 @@ import it.hubzilla.hubchart.persistence.Ip2nationDao;
 import it.hubzilla.hubchart.persistence.LogsDao;
 import it.hubzilla.hubchart.persistence.StatisticsDao;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,13 +32,19 @@ import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PollBusiness {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PollBusiness.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(PollBusiness.class);
 
 	private static Ip2nationDao nationDao = new Ip2nationDao();
 
@@ -54,7 +56,6 @@ public class PollBusiness {
 		int count = 1;
 		for (Hubs hub:hubList) {
 			try {
-				logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" Polling "+hub.getBaseUrl());
 				Statistics stat = retrieveTransientStats(ses, hub, pollTime);//Not responding -> exception
 				
 				//Save the stats
@@ -63,11 +64,12 @@ public class PollBusiness {
 					statList.add(stat);
 					hub.setIdLastHubStats(idStats);
 					hub.setLastSuccessfulPollTime(pollTime);
+					logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" <b>OK</b> "+hub.getBaseUrl());
 				} else {
 					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" Exception: hub returned no statistics");
 				}
 			} catch (UrlException e) {
-				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" Exception: "+e.getMessage());
+				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" "+e.getMessage());
 			}
 			
 			//Always update the hub info after poll (successful or not)
@@ -75,7 +77,7 @@ public class PollBusiness {
 			GenericDao.updateGeneric(ses, hub.getId(),  hub);
 			count++;
 		}
-		LOG.info("Responsive hubs: "+statList.size()+"/"+hubList.size());
+		logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", "Successful polls: "+statList.size()+"/"+hubList.size());
 		return statList;
 	}
 	
@@ -91,59 +93,59 @@ public class PollBusiness {
 			hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
 			stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
 		} catch (JsonParsingException e) {
-			throw new UrlException("JsonParsingException "+e.getMessage(), e);
-		} catch (IOException e) {
-			throw new UrlException("IOException "+e.getMessage(), e);
+			throw new UrlException("JsonParsingException: "+e.getMessage(), e);
+		//} catch (IOException e) {
+		//	throw new UrlException("IOException: "+e.getMessage(), e);
 		}
 		return stats;
 	}
 
-	public static String getJsonResponseFromUrl(String url) throws IOException {
-		String jsonText = null;
-		InputStream is = new URL(url).openStream();
-		try {
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			StringBuilder sb = new StringBuilder();
-			int cp;
-			while ((cp = rd.read()) != -1) {
-				sb.append((char) cp);
-			}
-			jsonText = sb.toString();
-		} finally {
-			is.close();
-		}
-		return jsonText;
-	}
-	
-	/* RESPONSE VIA HTTP CLIENT */
-//	public static String getJsonResponseFromUrl(String url) throws UrlException {
-//		// HTTP CLIENT
-//		CloseableHttpClient httpclient = HttpClients.createDefault();
-//		HttpPost httpget = new HttpPost(url);
-//		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-//			public String handleResponse(final HttpResponse response)
-//					throws ClientProtocolException, IOException {
-//				int status = response.getStatusLine().getStatusCode();
-//				if (status >= 200 && status < 300) {
-//					HttpEntity entity = response.getEntity();
-//					return entity != null ? EntityUtils.toString(entity) : null;
-//				} else {
-//					throw new ClientProtocolException(
-//							"Unexpected response status: " + status);
-//				}
-//			}
-//		};
-//		
-//		String responseBody = null;
+	/* POLL USING INPUTSTREAMREADER */
+//	public static String getJsonResponseFromUrl(String url) throws IOException {
+//		String jsonText = null;
+//		InputStream is = new URL(url).openStream();
 //		try {
-//			responseBody = httpclient.execute(httpget, responseHandler);
-//		} catch (ClientProtocolException e) {
-//			throw new UrlException(e.getMessage(), e);
-//		} catch (IOException e) {
-//			throw new UrlException(e.getClass().getSimpleName()+": "+e.getMessage(), e);
+//			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+//			StringBuilder sb = new StringBuilder();
+//			int cp;
+//			while ((cp = rd.read()) != -1) {
+//				sb.append((char) cp);
+//			}
+//			jsonText = sb.toString();
+//		} finally {
+//			is.close();
 //		}
-//		return responseBody;
+//		return jsonText;
 //	}
+	
+	/* POLL USING HTTP CLIENT */
+	public static String getJsonResponseFromUrl(String url) throws UrlException {
+		// HTTP CLIENT
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpPost httpget = new HttpPost(url);
+		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			public String handleResponse(final HttpResponse response)
+					throws ClientProtocolException, IOException {
+				int status = response.getStatusLine().getStatusCode();
+				if (status >= 200 && status < 300) {
+					HttpEntity entity = response.getEntity();
+					return entity != null ? EntityUtils.toString(entity) : null;
+				} else {
+					throw new ClientProtocolException(
+							"Unexpected response status: " + status);
+				}
+			}
+		};
+		String responseBody = null;
+		try {
+			responseBody = httpclient.execute(httpget, responseHandler);
+		} catch (ClientProtocolException e) {
+			throw new UrlException(e.getClass().getSimpleName()+": "+e.getMessage(), e);
+		} catch (IOException e) {
+			throw new UrlException(e.getClass().getSimpleName()+": "+e.getMessage(), e);
+		}
+		return responseBody;
+	}
 	
 //	private static Statistics parseDiasporaToTransientEntity(Session ses, Statistics stats,
 //			String responseBody, Date pollTime)

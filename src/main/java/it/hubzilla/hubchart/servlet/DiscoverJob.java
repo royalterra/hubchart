@@ -9,7 +9,6 @@ import it.hubzilla.hubchart.business.LogBusiness;
 import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -127,7 +126,7 @@ public class DiscoverJob implements Job {
 					}
 				}
 			} catch (UrlException e) {/* ignore wrong URLs */}
-			catch (IOException e) {/* ignore wrong URLs */}
+			//catch (IOException e) {/* ignore wrong URLs */}
 			count++;
 		}
 		return newUrlList;
