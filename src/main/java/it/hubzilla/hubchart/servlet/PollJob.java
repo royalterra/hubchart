@@ -34,7 +34,6 @@ public class PollJob implements Job {
 		if (typeParam != null) {
 			if (typeParam.equals("full")) {
 				full=true;
-				LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "FULL POLL");
 			}
 		}
 		
@@ -50,30 +49,21 @@ public class PollJob implements Job {
 			List<Hubs> pollQueue = null;
 			if (full) {
 				//The full queue
+				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "FULL POLL");
 				pollQueue = hubsDao.findPollQueue(ses, Integer.MAX_VALUE);
-				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "Queued hubs: "+pollQueue.size());
 			} else {
+				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "Hourly poll");
 				Long liveHubsNumber = hubsDao.countLiveHubs(ses, true);
 				//Number of hubs to poll = live hubs count / 20
-				Integer queueSize = new Double(liveHubsNumber/20L).intValue();
-				pollQueue = hubsDao.findPollQueue(ses, queueSize);
+				Integer maxQueueSize = new Double(liveHubsNumber/20L).intValue();
+				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "max polls: "+maxQueueSize);
+				pollQueue = hubsDao.findPollQueue(ses, maxQueueSize);
 			}
 			
 			//Poll the queue to create persisted stats
 			//Hub info is updated accordingly in this method
+			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "Queue size: "+pollQueue.size());
 			PollBusiness.pollHubList(ses, pollQueue, pollTime);
-			
-			////Print INFO log about failed polls
-			//String silentHubs = "";
-			//int silentCount = 0;
-			//for (Hubs hub:pollQueue) {
-			//	if (hub.getLastSuccessfulPollTime().before(pollTime)) {
-			//		silentHubs += hub.getFqdn()+"; ";
-			//		silentCount++;
-			//	}
-			//}
-			//logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", silentCount+" failed polls: "+silentHubs);
-			
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
