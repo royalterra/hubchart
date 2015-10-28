@@ -7,6 +7,7 @@ import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
+import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.util.Date;
 import java.util.List;
@@ -47,11 +48,12 @@ public class PollJob implements Job {
 			HubsDao hubsDao = new HubsDao();
 			
 			List<Hubs> pollQueue = null;
-			Long liveHubsNumber = hubsDao.countLiveHubs(ses, true);
 			if (full) {
 				//The full queue
-				pollQueue = hubsDao.findPollQueue(ses, liveHubsNumber.intValue());
+				pollQueue = hubsDao.findPollQueue(ses, Integer.MAX_VALUE);
+				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "Queued hubs: "+pollQueue.size());
 			} else {
+				Long liveHubsNumber = hubsDao.countLiveHubs(ses, true);
 				//Number of hubs to poll = live hubs count / 20
 				Integer queueSize = new Double(liveHubsNumber/20L).intValue();
 				pollQueue = hubsDao.findPollQueue(ses, queueSize);
