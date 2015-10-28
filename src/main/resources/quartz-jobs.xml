@@ -17,7 +17,25 @@
 				<group>hubzilla</group>
 				<job-name>discover</job-name>
 				<job-group>hubzilla</job-group>
-				<cron-expression>0 30 12 ? * *</cron-expression><!--0 00 18 ? * SAT-->
+				<cron-expression>0 30 21 ? * *</cron-expression><!-- every day at 21:30 -->
+			</cron>
+		</trigger>
+	</schedule>
+	
+	<schedule>
+		<job>
+			<name>draw</name>
+			<group>hubzilla</group>
+			<description>Aggregate stats data and draw charts + feed</description>
+			<job-class>it.hubzilla.hubchart.servlet.DrawJob</job-class>
+		</job>
+		<trigger>
+			<cron>
+				<name>drawCron</name>
+				<group>hubzilla</group>
+				<job-name>draw</job-name>
+				<job-group>hubzilla</job-group>
+				<cron-expression>0 30 00 ? * *</cron-expression><!-- every day at 0:30 -->
 			</cron>
 		</trigger>
 	</schedule>
@@ -38,7 +56,7 @@
 				<group>hubzilla</group>
 				<job-name>enqueue</job-name>
 				<job-group>hubzilla</job-group>
-				<cron-expression>0 30 03 ? * *</cron-expression>
+				<cron-expression>0 40 00 ? * *</cron-expression><!-- every day at 00:40 -->
 			</cron>
 		</trigger>
 	</schedule>
@@ -56,7 +74,7 @@
 				<group>hubzilla</group>
 				<job-name>poll</job-name>
 				<job-group>hubzilla</job-group>
-				<cron-expression>0 0 * * * ?</cron-expression>
+				<cron-expression>0 01 * * * ?</cron-expression><!-- every hour at minute 01 -->
 			</cron>
 		</trigger>
 	</schedule>
@@ -80,22 +98,5 @@
 			</cron>
 		</trigger>
 	</schedule>
-	
-	<schedule>
-		<job>
-			<name>draw</name>
-			<group>hubzilla</group>
-			<description>Aggregate stats data and draw charts + feed</description>
-			<job-class>it.hubzilla.hubchart.servlet.DrawJob</job-class>
-		</job>
-		<trigger>
-			<cron>
-				<name>drawCron</name>
-				<group>hubzilla</group>
-				<job-name>draw</job-name>
-				<job-group>hubzilla</job-group>
-				<cron-expression>0 30 06 ? * *</cron-expression>
-			</cron>
-		</trigger>
-	</schedule>
+
 </job-scheduling-data> 
