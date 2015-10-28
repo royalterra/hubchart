@@ -217,7 +217,7 @@ public class HubBusiness {
 		Integer result = 0;
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			Long count = hubsDao.countLiveHubs(ses, true, false);
+			Long count = hubsDao.countLiveHiddenHubs(ses);
 			if (count != null) result = count.intValue();
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);

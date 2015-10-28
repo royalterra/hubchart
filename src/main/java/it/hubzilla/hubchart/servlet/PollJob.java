@@ -47,7 +47,7 @@ public class PollJob implements Job {
 			HubsDao hubsDao = new HubsDao();
 			
 			List<Hubs> pollQueue = null;
-			Long liveHubsNumber = hubsDao.countLiveHubs(ses, false, false);
+			Long liveHubsNumber = hubsDao.countLiveHubs(ses, true);
 			if (full) {
 				//The full queue
 				pollQueue = hubsDao.findPollQueue(ses, liveHubsNumber.intValue());
