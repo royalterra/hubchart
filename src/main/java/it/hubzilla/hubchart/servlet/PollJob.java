@@ -36,7 +36,6 @@ public class PollJob implements Job {
 				full=true;
 			}
 		}
-		
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
