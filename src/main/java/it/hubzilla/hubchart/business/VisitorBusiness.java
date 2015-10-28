@@ -45,7 +45,7 @@ public class VisitorBusiness {
 		
 		//IP hash
 		String ipHash = "localhost";
-		if (!ip.equals("127.0.0.1")) ipHash = getMd5ShortenedHash(ip);
+		if (!ip.equals("127.0.0.1")) ipHash = ip;//getMd5ShortenedHash(ip);
 		
 		//New visitor
 		boolean newVisitor = false;
