@@ -141,14 +141,7 @@ public class VisitorBusiness {
 	}
 	
 	private static String getRemoteAddr(HttpServletRequest request) {  
-        String addr = request.getRemoteAddr();
-        if (addr != null) {
-        	if (addr.equals("127.0.0.1")) {
-        		addr = request.getHeader("X-Forwarded-For");
-        	}
-        } else {
-        	addr = request.getHeader("X-Forwarded-For");
-        }
+        String addr = request.getHeader("X-Forwarded-For");
         if (addr == null || addr.length() == 0 || "unknown".equalsIgnoreCase(addr)) {  
             addr = request.getHeader("HTTP_X_FORWARDED_FOR");  
         }
