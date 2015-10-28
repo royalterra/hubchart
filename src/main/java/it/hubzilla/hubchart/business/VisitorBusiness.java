@@ -59,14 +59,17 @@ public class VisitorBusiness {
 	
 	private static String ipToCountryCode(String ip) throws OrmException{
 		String countryCode = null;
-		Session ses = HibernateSessionFactory.getSession();
-		try {
-			Ip2nationCountries c = new Ip2nationDao().findNationCodeByIp(ses, PollBusiness.ipToLong(ip));
-			if (c != null) countryCode = c.getCode();
-		} catch (OrmException e) {
-			throw new OrmException(e.getMessage(), e);
-		} finally {
-			ses.close();
+		if (ip != null) {
+			if (ip.equals("127.0.0.1")) return "--";
+			Session ses = HibernateSessionFactory.getSession();
+			try {
+				Ip2nationCountries c = new Ip2nationDao().findNationCodeByIp(ses, PollBusiness.ipToLong(ip));
+				if (c != null) countryCode = c.getCode();
+			} catch (OrmException e) {
+				throw new OrmException(e.getMessage(), e);
+			} finally {
+				ses.close();
+			}
 		}
 		return countryCode;
 	}
