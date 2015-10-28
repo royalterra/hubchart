@@ -64,7 +64,7 @@ public class DiscoverJob implements Job {
 			//2) Create corresponding Hub objects
 			//3) New Hub objects become the new list to parse
 			do {
-				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Cycle "+cycleNum);
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "<b>Iteration "+cycleNum+"</b>");
 				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Saved hubs are now "+knownHubMap.size());
 				List<String> newUrlList = retrieveAndFilterNewUrls(hubToCheckList, knownHubMap);
 				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Found "+newUrlList.size()+" new URLs");
@@ -73,7 +73,7 @@ public class DiscoverJob implements Job {
 				cycleNum++;
 				//Repeat 3 times or until there are no new urls to add 
 			} while ((hubToCheckList.size() > 0) && (cycleNum <= 3));
-			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Cycles finished");
+			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Iterations finished");
 		} catch (OrmException e) {
 			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover", e.getMessage());
 			throw new JobExecutionException(e);
