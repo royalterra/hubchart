@@ -44,6 +44,9 @@ request.setAttribute("visitorList", visitorList);
 			<b><c:if test="${not empty visitor.countryCode}">
 				<c:out value="${visitor.countryCode}" />
 			</c:if></b>
+			<c:if test="${not empty visitor.ipHash}">
+				<c:out value="${visitor.ipHash}" />
+			</c:if>
 			<b><c:if test="${visitor.newVisitor}">NEW</c:if></b><br/>
 		</c:forEach>
 		

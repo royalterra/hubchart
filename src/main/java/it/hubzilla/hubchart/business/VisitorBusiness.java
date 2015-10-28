@@ -44,7 +44,8 @@ public class VisitorBusiness {
 		if (countryCode == null) return; /* exit silently */
 		
 		//IP hash
-		String ipHash = getMd5ShortenedHash(ip);
+		String ipHash = "localhost";
+		if (!ip.equals("127.0.0.1")) ipHash = getMd5ShortenedHash(ip);
 		
 		//New visitor
 		boolean newVisitor = false;
@@ -123,6 +124,7 @@ public class VisitorBusiness {
 	
 	private static void setCookie(HttpServletResponse response, String cookieName, String value) {
 		Cookie cookie = new Cookie(cookieName, value);
+		cookie.setMaxAge(2592000);//86400*30 seconds = 1 month
 		response.addCookie(cookie);
 	}
 	private static String getCookie(HttpServletRequest request, String cookieName) {
