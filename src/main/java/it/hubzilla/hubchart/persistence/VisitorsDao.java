@@ -29,9 +29,10 @@ public class VisitorsDao {
 		return result;
 	}
 	
-	public void addVisitor(Session ses, String countryCode, boolean newVisitor) throws OrmException {
+	public void addVisitor(Session ses, String countryCode, String ipHash, boolean newVisitor) throws OrmException {
 		Visitors v = new Visitors();
 		v.setCountryCode(countryCode);
+		v.setIpHash(ipHash);
 		v.setNewVisitor(newVisitor);
 		v.setTime(new Date());
 		GenericDao.saveGeneric(ses, v);

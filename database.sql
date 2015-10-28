@@ -125,6 +125,7 @@ CREATE TABLE `visitors` (
   `time` datetime NOT NULL,
   `country_code` varchar(4) DEFAULT NULL,
   `new_visitor` bit(1) NOT NULL DEFAULT b'0',
+  `ip_hash` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -8,6 +8,9 @@ import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.Ip2nationDao;
 import it.hubzilla.hubchart.persistence.VisitorsDao;
 
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Hex;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
@@ -29,7 +33,7 @@ public class VisitorBusiness {
 	
 	public static void parse(HttpServletRequest request, HttpServletResponse response) {
 		//Country code
-		String ip = request.getRemoteAddr();
+		String ip = getRemoteAddr(request);
 		if (ip == null) return; /* exit silently */
 		String countryCode = null;
 		try {
@@ -39,6 +43,9 @@ public class VisitorBusiness {
 		}
 		if (countryCode == null) return; /* exit silently */
 		
+		//IP hash
+		String ipHash = getMd5ShortenedHash(ip);
+		
 		//New visitor
 		boolean newVisitor = false;
 		String value = getCookie(request, "hubchart");
@@ -47,7 +54,7 @@ public class VisitorBusiness {
 			setCookie(response, "hubchart", "true");
 		}
 
-		addVisitor(countryCode, newVisitor);
+		addVisitor(countryCode, ipHash, newVisitor);
 	}
 	
 	private static String ipToCountryCode(String ip) throws OrmException{
@@ -78,11 +85,11 @@ public class VisitorBusiness {
 		return result;
 	}
 	
-	public static void addVisitor(String countryCode, boolean newVisitor) {
+	public static void addVisitor(String countryCode, String ipHash, boolean newVisitor) {
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
-			new VisitorsDao().addVisitor(ses, countryCode, newVisitor);
+			new VisitorsDao().addVisitor(ses, countryCode, ipHash, newVisitor);
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
@@ -126,5 +133,49 @@ public class VisitorBusiness {
 			}
 		}
 		return value;
+	}
+	
+	private static String getRemoteAddr(HttpServletRequest request) {  
+        String addr = request.getRemoteAddr();
+        if (addr != null) {
+        	if (addr.equals("127.0.0.1")) {
+        		addr = request.getHeader("X-Forwarded-For");
+        	}
+        } else {
+        	addr = request.getHeader("X-Forwarded-For");
+        }
+        if (addr == null || addr.length() == 0 || "unknown".equalsIgnoreCase(addr)) {  
+            addr = request.getHeader("HTTP_X_FORWARDED_FOR");  
+        }
+        if (addr == null || addr.length() == 0 || "unknown".equalsIgnoreCase(addr)) {  
+            addr = request.getHeader("WL-Proxy-Client-IP");  
+        }
+        if (addr == null || addr.length() == 0 || "unknown".equalsIgnoreCase(addr)) {  
+            addr = request.getHeader("Proxy-Client-IP");  
+        }
+        if (addr == null || addr.length() == 0 || "unknown".equalsIgnoreCase(addr)) {  
+            addr = request.getHeader("HTTP_CLIENT_IP");  
+        }  
+        if (addr == null || addr.length() == 0 || "unknown".equalsIgnoreCase(addr)) {  
+            addr = request.getRemoteAddr();  
+        }  
+        return addr;  
+    }
+	
+	private static String getMd5ShortenedHash(String string) {
+		String result = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.reset();
+			md.update(string.getBytes(Charset.forName("UTF8")));
+			byte[] resultByte = md.digest();
+			result = new String(Hex.encodeHex(resultByte));
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error(e.getMessage(), e);
+		}
+		if (result != null) {
+			if (result.length() > 8) result = result.substring(0, 8);
+		}
+		return result;
 	}
 }

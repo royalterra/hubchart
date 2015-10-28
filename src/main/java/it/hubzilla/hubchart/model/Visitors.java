@@ -35,6 +35,8 @@ public class Visitors extends BaseEntity {
 	private Date time;
 	@Column(name = "country_code", length = 16)
 	private String countryCode;
+	@Column(name = "ip_hash", length = 32)
+	private String ipHash;
 	@Basic(optional = false)
 	@Column(name = "new_visitor", nullable=false)
 	private boolean newVisitor;
@@ -78,6 +80,14 @@ public class Visitors extends BaseEntity {
 
 	public void setNewVisitor(boolean newVisitor) {
 		this.newVisitor = newVisitor;
+	}
+
+	public String getIpHash() {
+		return ipHash;
+	}
+
+	public void setIpHash(String ipHash) {
+		this.ipHash = ipHash;
 	}
 
 	@Override
