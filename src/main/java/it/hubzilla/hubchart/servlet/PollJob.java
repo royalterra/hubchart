@@ -39,6 +39,7 @@ public class PollJob implements Job {
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
+		String exceptionMsg = null;
 		try {			
 			//Poll queue
 			Date pollTime = new Date();
@@ -62,11 +63,14 @@ public class PollJob implements Job {
 			PollBusiness.pollHubList(ses, pollQueue, pollTime);
 			trn.commit();
 		} catch (OrmException e) {
+			exceptionMsg = e.getClass().getSimpleName()+" "+e.getMessage();
 			trn.rollback();
 			LOG.error(e.getMessage(), e);
 			throw new JobExecutionException(e.getMessage(), e);
 		} finally {
 			ses.close();
+			if (exceptionMsg != null) LogBusiness.addLog(AppConstants.LOG_ERROR, "poll",
+					"<b>"+exceptionMsg+"</b>");
 		}
 		
 		LogBusiness.addLog(AppConstants.LOG_INFO, "poll", "<b>ENDED JOB</b>");

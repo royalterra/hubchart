@@ -43,6 +43,7 @@ public class EnqueueJob implements Job {
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
+		String exceptionMsg = null;
 		try {
 			LogsDao logsDao = new LogsDao();
 			HubsDao hubsDao = new HubsDao();
@@ -69,10 +70,13 @@ public class EnqueueJob implements Job {
 			
 			trn.commit();
 		} catch (OrmException e) {
+			exceptionMsg = e.getClass().getSimpleName()+" "+e.getMessage();
 			trn.rollback();
 			throw new JobExecutionException(e.getMessage(), e);
 		} finally {
 			ses.close();
+			if (exceptionMsg != null) LogBusiness.addLog(AppConstants.LOG_ERROR, "poll",
+					"<b>"+exceptionMsg+"</b>");
 		}
 				
 		LogBusiness.addLog(AppConstants.LOG_INFO, "enqueue", "<b>ENDED JOB</b>");

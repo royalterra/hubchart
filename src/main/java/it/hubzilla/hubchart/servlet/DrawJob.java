@@ -37,6 +37,7 @@ public class DrawJob implements Job {
 		//Job body
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
+		String exceptionMsg = null;
 		try {
 			HubsDao hubsDao = new HubsDao();
 			
@@ -53,11 +54,13 @@ public class DrawJob implements Job {
 			
 			trn.commit();
 		} catch (OrmException e) {
+			exceptionMsg = e.getClass().getSimpleName()+" "+e.getMessage();
 			trn.rollback();
-			LOG.error(e.getMessage(), e);
 			throw new JobExecutionException(e.getMessage(), e);
 		} finally {
 			ses.close();
+			if (exceptionMsg != null) LogBusiness.addLog(AppConstants.LOG_ERROR, "poll",
+					"<b>"+exceptionMsg+"</b>");
 		}
 		
 		// Generate RSS feed

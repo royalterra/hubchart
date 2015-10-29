@@ -1,5 +1,6 @@
 package it.hubzilla.hubchart.persistence;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Logs;
 
@@ -10,9 +11,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.type.DateType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogsDao {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LogsDao.class);
+	
 	public List<Logs> findLogs(Session ses) throws OrmException {
 		List<Logs> result = null;
 		try {
@@ -36,6 +41,14 @@ public class LogsDao {
 		log.setMessage(message);
 		log.setTime(new Date());
 		GenericDao.saveGeneric(ses, log);
+		if (level == null) {
+			LOG.debug(service+": "+message);
+		} else {
+			if (level.equals(AppConstants.LOG_DEBUG)) LOG.debug(service+": "+message);
+			if (level.equals(AppConstants.LOG_INFO)) LOG.info(service+": "+message);
+			if (level.equals(AppConstants.LOG_WARN)) LOG.warn(service+": "+message);
+			if (level.equals(AppConstants.LOG_ERROR)) LOG.error(service+": "+message);
+		}
 	}
 	
 	public void deleteLogs(Session ses, Date fromDate) throws OrmException {

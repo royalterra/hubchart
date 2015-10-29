@@ -55,8 +55,8 @@ public class DiscoverJob implements Job {
 				hubToCheckList = knownHubList;
 			}
 		} catch (OrmException e) {
-			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover", e.getMessage());
-			LOG.error(e.getMessage(), e);
+			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover",
+					e.getClass().getSimpleName()+" "+e.getMessage());
 			throw new JobExecutionException(e);
 		}
 		
@@ -78,7 +78,8 @@ public class DiscoverJob implements Job {
 			} while ((hubToCheckList.size() > 0) && (cycleNum <= 3));
 			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Iterations finished");
 		} catch (OrmException e) {
-			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover", e.getMessage());
+			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover",
+					e.getClass().getSimpleName()+" "+e.getMessage());
 			throw new JobExecutionException(e);
 		}
 		

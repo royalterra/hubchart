@@ -24,6 +24,7 @@ public class AppConstants {
 	public static final String LOG_INFO="INFO";
 	public static final String LOG_ERROR="ERROR";
 	public static final String LOG_DEBUG="DEBUG";
+	public static final String LOG_WARN="WARN";
 	
 	// IMAGES
 	public static final String FLAG_ICONS_PATH = "images/flags_16/";
