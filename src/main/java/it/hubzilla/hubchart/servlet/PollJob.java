@@ -51,17 +51,14 @@ public class PollJob implements Job {
 				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "FULL POLL");
 				pollQueue = hubsDao.findPollQueue(ses, Integer.MAX_VALUE);
 			} else {
-				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "Hourly poll");
 				Long liveHubsNumber = hubsDao.countLiveHubs(ses, true);
 				//Number of hubs to poll = live hubs count / 20
 				Integer maxQueueSize = new Double(liveHubsNumber/20L).intValue();
-				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "max polls: "+maxQueueSize);
 				pollQueue = hubsDao.findPollQueue(ses, maxQueueSize);
 			}
 			
 			//Poll the queue to create persisted stats
 			//Hub info is updated accordingly in this method
-			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "Queue size: "+pollQueue.size());
 			PollBusiness.pollHubList(ses, pollQueue, pollTime);
 			trn.commit();
 		} catch (OrmException e) {
