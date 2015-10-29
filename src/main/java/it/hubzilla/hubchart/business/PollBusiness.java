@@ -20,9 +20,6 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -141,7 +138,7 @@ public class PollBusiness {
 			});
 			clientBuilder.setSslcontext(sslBuilder.build());
 			httpclient = clientBuilder.build();
-		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+		} catch (Exception e) {
 			// NORMAL HTTP CLIENT:
 			httpclient = HttpClients.createDefault();
 		}
