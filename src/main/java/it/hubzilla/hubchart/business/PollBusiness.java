@@ -20,6 +20,11 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +42,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.hibernate.Session;
@@ -120,8 +128,24 @@ public class PollBusiness {
 	
 	/* POLL USING HTTP CLIENT */
 	public static String getJsonResponseFromUrl(String url) throws UrlException {
-		// HTTP CLIENT
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient = null;
+		try {
+			// TRUST-ALL CERTIFICATES HTTP CLIENT:
+			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+			SSLContextBuilder sslBuilder = new SSLContextBuilder();
+			//ONLY SELF SIGNED: sslBuilder.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustSelfSignedStrategy());
+			sslBuilder.loadTrustMaterial(null, new TrustStrategy() {
+				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+					return true;
+				}
+			});
+			clientBuilder.setSslcontext(sslBuilder.build());
+			httpclient = clientBuilder.build();
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			// NORMAL HTTP CLIENT:
+			httpclient = HttpClients.createDefault();
+		}
+		
 		HttpPost httpget = new HttpPost(url);
 		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 			public String handleResponse(final HttpResponse response)
