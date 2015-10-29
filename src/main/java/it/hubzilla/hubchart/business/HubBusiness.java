@@ -40,7 +40,7 @@ public class HubBusiness {
 		try {
 			Date pollTime = new Date();
 			//Check uniqueness
-			Hubs hub = hubsDao.findByFqdn(ses, baseUrl);
+			Hubs hub = hubsDao.findByStrippedFqdn(ses, baseUrl);
 			if (hub != null) throw new BusinessException(baseUrl+" is a known hub and cannot be added");
 			
 			//Doesn't exist, a new one is created
@@ -78,7 +78,7 @@ public class HubBusiness {
 		try {
 			Date pollTime = new Date();
 			//Exists
-			Hubs hub = hubsDao.findByFqdn(ses, baseUrl);
+			Hubs hub = hubsDao.findByStrippedFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
 			retrieveStats(ses, hub, pollTime);
 			
@@ -238,6 +238,12 @@ public class HubBusiness {
 			ses.close();
 		}
 		return result;
+	}
+	
+	
+	public static String stripLeadingWww(String fqdn) {
+		String fqdnNoWww = fqdn.replaceAll("^www\\.", "");
+		return fqdnNoWww;
 	}
 	
 	public static String cleanBaseUrl(String baseUrl) {

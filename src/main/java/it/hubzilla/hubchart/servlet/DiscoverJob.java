@@ -45,7 +45,10 @@ public class DiscoverJob implements Job {
 		try {
 			hubToCheckList = HubBusiness.findDirectories();
 			List<Hubs> knownHubList = HubBusiness.findAllHubs(false, false);//include expired and hidden hubs
-			for (Hubs hub:knownHubList) knownHubMap.put(hub.getFqdn(), hub);
+			for (Hubs hub:knownHubList) {
+				String fqdnNoWww = HubBusiness.stripLeadingWww(hub.getFqdn());
+				knownHubMap.put(fqdnNoWww, hub);
+			}
 			if (hubToCheckList == null) hubToCheckList = new ArrayList<Hubs>();
 			if (hubToCheckList.size() == 0) {
 				//If no directory is known, then all hubs are polled
@@ -116,10 +119,10 @@ public class DiscoverJob implements Job {
 						try {
 							String url = jo2.getString("url");
 							url = HubBusiness.cleanBaseUrl(url);
-							String baseUrlNoWww = url.replaceAll("://www.", "://");
-							String fqdn = new URL(baseUrlNoWww).getHost();
+							String fqdn = new URL(url).getHost();
+							String fqdnNoWww = HubBusiness.stripLeadingWww(fqdn);
 							//add only those not in the Map
-							Hubs foundHub = knownHubMap.get(fqdn);
+							Hubs foundHub = knownHubMap.get(fqdnNoWww);
 							if (foundHub == null) {
 								//Not in known map
 								if (!newUrlList.contains(url)) {

@@ -2,6 +2,7 @@ package it.hubzilla.hubchart.persistence;
 
 import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.business.HubBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 
 import java.math.BigInteger;
@@ -21,17 +22,17 @@ import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 
 public class HubsDao {
+
 	
-	public Hubs findByFqdn(Session ses, String baseUrl) throws OrmException, MalformedURLException {
+	public Hubs findByStrippedFqdn(Session ses, String baseUrl) throws OrmException, MalformedURLException {
 		Hubs result = null;
 		URL url = new URL(baseUrl);
 		String fqdn = url.getHost();
-		String baseUrlNoWww = baseUrl.replaceAll("://www.", "://");
-		URL urlNoWww = new URL(baseUrlNoWww);
-		String fqdnNoWww = urlNoWww.getHost();
+		String fqdnNoWww = HubBusiness.stripLeadingWww(fqdn);
 		try {
 			Query q = ses.createQuery("from Hubs h where "+
-					"(h.fqdn like :s1 or h.fqdn like :s2) ");
+					"(h.fqdn like :s1 or h.fqdn like :s2) "+
+					"order by h.fqdn");
 			q.setParameter("s1", fqdn, StringType.INSTANCE);
 			q.setParameter("s2", fqdnNoWww, StringType.INSTANCE);
 			q.setMaxResults(1);
