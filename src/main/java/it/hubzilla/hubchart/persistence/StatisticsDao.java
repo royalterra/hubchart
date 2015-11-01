@@ -87,7 +87,8 @@ public class StatisticsDao {
 			List<Hubs> list = q.list();
 			for (Hubs hub:list) {
 				Statistics stat = findLastStatsByHub(ses, hub.getId());
-				result.add(stat);
+				if (stat !=null)
+						result.add(stat);
 			}
 		} catch (HibernateException e) {
 			throw new OrmException(e.getMessage(), e);
