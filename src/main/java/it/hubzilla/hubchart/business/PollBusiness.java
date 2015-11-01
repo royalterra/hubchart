@@ -62,7 +62,6 @@ public class PollBusiness {
 		for (Hubs hub:hubList) {
 			try {
 				Statistics stat = retrieveTransientStats(ses, hub, pollTime);//Not responding -> exception
-				
 				//Save the stats
 				if (stat != null) {
 					Integer idStats = (Integer) GenericDao.saveGeneric(ses, stat);
@@ -71,10 +70,12 @@ public class PollBusiness {
 					hub.setLastSuccessfulPollTime(pollTime);
 					logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> <b>OK</b>");
 				} else {
-					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> Exception: statistics are empty");
+					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> Exception: statistics are empty ");
 				}
 			} catch (UrlException e) {
-				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> "+e.getMessage());
+				String dead = "";
+				if (hub.getIdLastHubStats() != null) dead = ("<i>(last seen "+AppConstants.FORMAT_DATETIME.format(hub.getLastSuccessfulPollTime())+")</i>");
+				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> "+e.getMessage()+" "+dead);
 			}
 			
 			//Always update the hub info after poll (successful or not)

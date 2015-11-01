@@ -95,7 +95,7 @@ public class DiscoverJob implements Job {
 			try {
 				String directory = "";
 				if (knownHub.getDirectoryMode() != null) {
-					directory = "("+AppConstants.DIRECTORY_DESCRIPTIONS.get(knownHub.getDirectoryMode())+")";
+					directory = "<b>"+AppConstants.DIRECTORY_DESCRIPTIONS.get(knownHub.getDirectoryMode())+"</b>";
 				}
 				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+
 						" Retrieving hubs from <i>"+knownHub.getFqdn()+"</i> "+directory);

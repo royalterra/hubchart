@@ -47,6 +47,7 @@ public class AppConstants {
 	
 	// FORMATS
 	public static final String STRING_SEPARATOR = ";";
+	public static final String PATTERN_DATETIME = "dd/MM/yyyy HH:mm";
 	public static final String PATTERN_TIMESTAMP = "dd/MM/yyyy HH:mm:ss z";//"dd/MM/yyyy HH:mm";
 	public static final String PATTERN_DAY = "dd/MM/yyyy";
 	public static final String PATTERN_DAY_SQL = "yyyy-MM-dd";
@@ -60,6 +61,7 @@ public class AppConstants {
 	public static final SimpleDateFormat FORMAT_DAY = new SimpleDateFormat(AppConstants.PATTERN_DAY);
 	public static final SimpleDateFormat FORMAT_DAY_SQL = new SimpleDateFormat(AppConstants.PATTERN_DAY_SQL);
 	public static final SimpleDateFormat FORMAT_YEAR = new SimpleDateFormat("yyyy");
+	public static final SimpleDateFormat FORMAT_DATETIME = new SimpleDateFormat(AppConstants.PATTERN_TIMESTAMP);
 	public static final SimpleDateFormat FORMAT_TIMESTAMP = new SimpleDateFormat(AppConstants.PATTERN_TIMESTAMP);
 	public static final DecimalFormat FORMAT_CURRENCY = new DecimalFormat(AppConstants.PATTERN_CURRENCY);
 	public static final DecimalFormat FORMAT_INTEGER = new DecimalFormat("#0");
