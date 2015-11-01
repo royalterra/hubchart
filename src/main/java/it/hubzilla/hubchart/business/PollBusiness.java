@@ -74,7 +74,7 @@ public class PollBusiness {
 				}
 			} catch (UrlException e) {
 				String dead = "";
-				if (hub.getIdLastHubStats() != null) dead = ("<i>(last seen "+AppConstants.FORMAT_DATETIME.format(hub.getLastSuccessfulPollTime())+")</i>");
+				if (hub.getLastSuccessfulPollTime().after(AppConstants.DATE_FAR_PAST)) dead = ("<b>last seen "+AppConstants.FORMAT_DATETIME.format(hub.getLastSuccessfulPollTime())+"</b>");
 				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> "+e.getMessage()+" "+dead);
 			}
 			
