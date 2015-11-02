@@ -14,9 +14,10 @@ import it.hubzilla.hubchart.persistence.HubsDao;
 import it.hubzilla.hubchart.persistence.ImageCacheDao;
 import it.hubzilla.hubchart.persistence.LogsDao;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -43,15 +44,15 @@ public class DrawJob implements Job {
 			HubsDao hubsDao = new HubsDao();
 			
 			//Find live hubs
-			List<Hubs> hubList = new ArrayList<Hubs>();
+			Set<Hubs> hubSet = new HashSet<Hubs>();
 			List<Hubs> liveHubsList = hubsDao.findLiveHubs(ses, false);
 			List<Hubs> liveNewList = hubsDao.findNewHubs(ses, false);
-			hubList.addAll(liveHubsList);
-			hubList.addAll(liveNewList);
+			hubSet.addAll(liveHubsList);
+			hubSet.addAll(liveNewList);
 			
 			//Aggregate and save
 			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "draw", "Calculating statistics");
-			Statistics global = createGlobalStats(ses, hubList);
+			Statistics global = createGlobalStats(ses, hubSet);
 			GenericDao.saveGeneric(ses, global);
 			//Clear cache
 			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "draw", "Clearing image cache");
@@ -88,7 +89,7 @@ public class DrawJob implements Job {
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	
-	private Statistics createGlobalStats(Session ses, List<Hubs> activeHubs) 
+	private Statistics createGlobalStats(Session ses, Set<Hubs> activeHubs) 
 			throws OrmException {
 		Statistics global = new Statistics();
 		global.setTotalChannels(0);

@@ -10,8 +10,9 @@ import it.hubzilla.hubchart.persistence.HubsDao;
 import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -48,7 +49,7 @@ public class EnqueueJob implements Job {
 			LogsDao logsDao = new LogsDao();
 			HubsDao hubsDao = new HubsDao();
 		
-			List<Hubs> hubsToPoll = new ArrayList<Hubs>();
+			Set<Hubs> hubsToPoll = new HashSet<Hubs>();
 			//Find live hubs to poll
 			List<Hubs> liveHubsToPoll = hubsDao.findLiveHubs(ses, false);
 			logsDao.addLog(ses, AppConstants.LOG_INFO, "enqueue", "Live hubs to poll: "+liveHubsToPoll.size());
