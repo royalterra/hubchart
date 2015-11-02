@@ -65,8 +65,7 @@ public class Hubs extends BaseEntity {
 	@Basic(optional = false)
 	@Column(name = "hidden", nullable = false)
 	private boolean hidden;
-	@Basic(optional = false)
-	@Column(name = "last_successful_poll_time", nullable = false)
+	@Column(name = "last_successful_poll_time")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastSuccessfulPollTime;
 	@Basic(optional = false)

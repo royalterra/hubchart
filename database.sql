@@ -82,7 +82,7 @@ CREATE TABLE `hubs` (
   `network_type` varchar(32) NOT NULL,
   `registration_policy` varchar(4) DEFAULT NULL,
   `version` varchar(32) DEFAULT NULL,
-  `last_successful_poll_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_successful_poll_time` timestamp DEFAULT NULL,
   `id_last_hub_stats` int(11) NOT NULL,
   `country_name` varchar(256) DEFAULT NULL,
   `creation_time` datetime DEFAULT NULL,

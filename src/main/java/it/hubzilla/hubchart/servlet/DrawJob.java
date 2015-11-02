@@ -14,6 +14,7 @@ import it.hubzilla.hubchart.persistence.HubsDao;
 import it.hubzilla.hubchart.persistence.ImageCacheDao;
 import it.hubzilla.hubchart.persistence.LogsDao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,11 +43,15 @@ public class DrawJob implements Job {
 			HubsDao hubsDao = new HubsDao();
 			
 			//Find live hubs
-			List<Hubs> liveHubsList = hubsDao.findLiveHubs(ses, false, false);
+			List<Hubs> hubList = new ArrayList<Hubs>();
+			List<Hubs> liveHubsList = hubsDao.findLiveHubs(ses, false);
+			List<Hubs> liveNewList = hubsDao.findNewHubs(ses, false);
+			hubList.addAll(liveHubsList);
+			hubList.addAll(liveNewList);
 			
 			//Aggregate and save
 			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "draw", "Calculating statistics");
-			Statistics global = createGlobalStats(ses, liveHubsList);
+			Statistics global = createGlobalStats(ses, hubList);
 			GenericDao.saveGeneric(ses, global);
 			//Clear cache
 			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "draw", "Clearing image cache");

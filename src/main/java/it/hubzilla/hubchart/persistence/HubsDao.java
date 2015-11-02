@@ -61,7 +61,7 @@ public class HubsDao {
 			if (filterExpired) hql += "h.lastSuccessfulPollTime > :dt1 ";
 			if (filterExpired && filterHidden) hql += "and ";
 			if (filterHidden) hql += "h.hidden = :b1 ";
-			hql += "order by h.lastSuccessfulPollTime asc";
+			hql += "order by h.lastSuccessfulPollTime desc, h.creationTime desc";
 			Query q = ses.createQuery(hql);
 			if (filterExpired) q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			if (filterHidden) q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
@@ -74,23 +74,18 @@ public class HubsDao {
 		return result;
 	}
 	
-	public List<Hubs> findLiveHubs(Session ses, boolean includeNew, boolean excludeEnqueued) throws OrmException {
+	public List<Hubs> findLiveHubs(Session ses, boolean excludeEnqueued) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
 		List<Hubs> result = null;		
 		try {
-			String hql = "from Hubs h where  ";
+			String hql = "from Hubs h where ";
 			if (excludeEnqueued) hql += "h.pollQueue is null and ";
-			if (includeNew) {
-				hql += "(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) ";
-			} else {
-				hql += "h.lastSuccessfulPollTime > :dt1 ";
-			}
+			hql += "h.lastSuccessfulPollTime > :dt1 ";
 			hql += "order by h.lastSuccessfulPollTime asc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			if (includeNew) q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();
 			result = list;
@@ -100,21 +95,60 @@ public class HubsDao {
 		return result;
 	}
 	
-	public Long countLiveHubs(Session ses, boolean includeNew) throws OrmException {
+	public List<Hubs> findNewHubs(Session ses, boolean excludeEnqueued) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
+		List<Hubs> result = null;		
+		try {
+			String hql = "from Hubs h where ";
+			if (excludeEnqueued) hql += "h.pollQueue is null and ";
+			hql += "h.creationTime > :dt1 ";
+			hql += "order by h.lastSuccessfulPollTime asc";
+			Query q = ses.createQuery(hql);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			@SuppressWarnings("unchecked")
+			List<Hubs> list = q.list();
+			result = list;
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return result;
+	}
+	
+	public Long countLiveHubs(Session ses) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
 		try {
 			String hql = "select count(id) from Hubs h where ";
-			if (includeNew) {
-				hql += "(h.lastSuccessfulPollTime > :dt1 or h.creationTime > :dt2) ";
-			} else {
-				hql += "h.lastSuccessfulPollTime > :dt1 ";
-			}
-			hql += "order by h.lastSuccessfulPollTime asc";
+			hql += "h.lastSuccessfulPollTime > :dt1 ";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			if (includeNew) q.setParameter("dt2", lastValidDate, TimestampType.INSTANCE);
+			@SuppressWarnings("unchecked")
+			List<Object> list = q.list();
+			if (list != null) {
+				if (list.size() > 0) {
+					if (list.get(0) instanceof Long) {
+						return (Long) list.get(0);
+					}
+				}
+			}
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	public Long countNewHubs(Session ses) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
+		try {
+			String hql = "select count(id) from Hubs h where ";
+			hql += "h.creationTime > :dt1 ";
+			Query q = ses.createQuery(hql);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Object> list = q.list();
 			if (list != null) {
@@ -137,8 +171,7 @@ public class HubsDao {
 		try {
 			String hql = "select count(id) from Hubs h where "+
 					"h.hidden = :b2 and "+
-					"h.lastSuccessfulPollTime > :dt1 "+
-					"order by h.lastSuccessfulPollTime asc";
+					"h.lastSuccessfulPollTime > :dt1 ";
 			Query q = ses.createQuery(hql);
 			q.setParameter("b2", Boolean.TRUE, BooleanType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -164,8 +197,7 @@ public class HubsDao {
 	//	try {
 	//		String hql = "select count(id) from Hubs h where "+
 	//				"h.hidden = :b2 and "+
-	//				"h.lastSuccessfulPollTime > :dt1 "+
-	//				"order by h.lastSuccessfulPollTime asc";
+	//				"h.lastSuccessfulPollTime > :dt1 ";
 	//		Query q = ses.createQuery(hql);
 	//		q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
 	//		q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -221,8 +253,7 @@ public class HubsDao {
 			String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.countryCode is not null "+
-					"group by h.countryCode, h.countryName "+
-					"order by liveHubs desc";
+					"group by h.countryCode, h.countryName ";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
@@ -269,8 +300,7 @@ public class HubsDao {
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.versionTag is not null and "+
 					"h.versionTag != :s1 "+
-					"group by h.versionTag "+
-					"order by liveHubs desc";
+					"group by h.versionTag ";
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", "", StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -293,8 +323,7 @@ public class HubsDao {
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.networkType is not null and "+
 					"h.networkType != :s1 "+
-					"group by h.networkType "+
-					"order by liveHubs desc";
+					"group by h.networkType ";
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", AppConstants.NETWORK_TYPE_UNKNOWN, StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -330,7 +359,7 @@ public class HubsDao {
 		try {
 			String hql = "from Hubs h where "+
 					"(h.directoryMode = :s1 or h.directoryMode = :s2 ) "+
-					"order by h.lastSuccessfulPollTime asc";
+					"order by h.lastSuccessfulPollTime desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", AppConstants.DIRECTORY_MODE_PRIMARY, StringType.INSTANCE);
 			q.setParameter("s2", AppConstants.DIRECTORY_MODE_SECONDARY, StringType.INSTANCE);

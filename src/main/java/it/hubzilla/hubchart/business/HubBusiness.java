@@ -48,7 +48,7 @@ public class HubBusiness {
 			hub.setBaseUrl(baseUrl);
 			hub.setFqdn(new URL(baseUrl).getHost());
 			hub.setNetworkType(AppConstants.NETWORK_TYPE_UNKNOWN);
-			hub.setLastSuccessfulPollTime(AppConstants.DATE_FAR_PAST);
+			hub.setLastSuccessfulPollTime(null);
 			hub.setCreationTime(pollTime);
 			hub.setIdLastHubStats(0);
 			hub.setHidden(false);

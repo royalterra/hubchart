@@ -52,9 +52,11 @@ public class PollJob implements Job {
 				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "FULL POLL");
 				pollQueue = hubsDao.findPollQueue(ses, Integer.MAX_VALUE);
 			} else {
-				Long liveHubsNumber = hubsDao.countLiveHubs(ses, true);
+				Long liveHubsCount = hubsDao.countLiveHubs(ses);
+				Long newHubsCount = hubsDao.countNewHubs(ses);
+				Long hubsCount = liveHubsCount+newHubsCount;
 				//Number of hubs to poll = live hubs count / 20
-				Integer maxQueueSize = new Double(liveHubsNumber/20L).intValue();
+				Integer maxQueueSize = new Double(hubsCount/20L).intValue();
 				pollQueue = hubsDao.findPollQueue(ses, maxQueueSize);
 			}
 			
