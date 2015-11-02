@@ -61,6 +61,7 @@ public class EnqueueJob implements Job {
 			hubsToPoll.addAll(liveHubsToPoll);
 			hubsToPoll.addAll(newHubsToPoll);
 			hubsToPoll.addAll(deadHubsToPoll);
+			logsDao.addLog(ses, AppConstants.LOG_INFO, "enqueue", "Total hubs to poll: "+hubsToPoll.size());
 			
 			//Find last queue number
 			BigInteger number = hubsDao.findLastPollQueueNumber(ses);
