@@ -31,9 +31,17 @@ request.setAttribute("accessKey", accessKey);
 	<div class="container">
 		&nbsp;<br />
 		<div class="row">
-			<div class="col-sm-7">
+			<div class="col-sm-12">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
 				<h4>Administration panel</h4>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-12">
+				<a href="index.jsp"><img src="images/hubchart1-16.png" align="middle" /></a>hubchart&nbsp;
+				<a href="admin.jsp"><img src="images/hubchart1-16.png" align="middle" /></a>admin&nbsp;
+				<a href="report.jsp"><img src="images/hubchart1-16.png" align="middle" /></a>report&nbsp;
 			</div>
 		</div>
 		
