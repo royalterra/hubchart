@@ -116,6 +116,31 @@ public class HubsDao {
 		return result;
 	}
 	
+	public List<Hubs> findRecentlyExpiredHub(Session ses, int offset, int pageSize) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
+		List<Hubs> result = new ArrayList<Hubs>();
+		try {
+			String hql = "from Hubs h where "
+					+ "h.lastSuccessfulPollTime is not null and "
+					+ "h.lastSuccessfulPollTime <= :dt1 and "
+					+ "h.hidden = :b1 "
+					+ "order by h.lastSuccessfulPollTime desc";
+			Query q = ses.createQuery(hql);
+			q.setFirstResult(offset);
+			q.setMaxResults(pageSize);
+			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
+			@SuppressWarnings("unchecked")
+			List<Hubs> list = q.list();
+			if (list !=null) result = list;
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return result;
+	}
+	
 	public Long countLiveHubs(Session ses) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);

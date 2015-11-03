@@ -1,14 +1,11 @@
 package it.hubzilla.hubchart.persistence;
 
-import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.model.Statistics;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -85,35 +82,6 @@ public class StatisticsDao {
 			Query q = ses.createQuery(hql);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
-			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
-			@SuppressWarnings("unchecked")
-			List<Hubs> list = q.list();
-			for (Hubs hub:list) {
-				Statistics stat = findLastStatsByHub(ses, hub.getId());
-				if (stat !=null)
-						result.add(stat);
-			}
-		} catch (HibernateException e) {
-			throw new OrmException(e.getMessage(), e);
-		}
-		return result;
-	}
-	
-	public List<Statistics> findByRecentlyExpiredHub(Session ses, int offset, int pageSize) throws OrmException {
-		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
-		Date lastValidDate = cal.getTime();
-		List<Statistics> result = new ArrayList<Statistics>();
-		try {
-			String hql = "from Hubs h where "
-					+ "h.lastSuccessfulPollTime is not null and "
-					+ "h.lastSuccessfulPollTime <= :dt1 and "
-					+ "h.hidden = :b1 "
-					+ "order by h.lastSuccessfulPollTime desc";
-			Query q = ses.createQuery(hql);
-			q.setFirstResult(offset);
-			q.setMaxResults(pageSize);
-			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();

@@ -1,11 +1,11 @@
+<%@page import="it.hubzilla.hubchart.model.Hubs"%>
 <%@page import="it.hubzilla.hubchart.business.HubBusiness"%>
-<%@page import="it.hubzilla.hubchart.beans.StatisticBean"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
-List<StatisticBean> recentlyExpiredList = HubBusiness.findRecentlyExpiredHubs(0, 20);
+List<Hubs> recentlyExpiredList = HubBusiness.findRecentlyExpiredHubs(0, 20);
 request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 %>
 <html>
@@ -72,29 +72,29 @@ request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 					</thead>
 				
 					<tbody>
-						<c:forEach items="${requestScope.recentlyExpiredList}" var="stat" varStatus="status">
+						<c:forEach items="${requestScope.recentlyExpiredList}" var="hub" varStatus="status">
 						<tr>
 							<td>
-								<span title="${stat.hub.name}">
-									<b><c:out value="${stat.hub.fqdn}" /></b>
+								<span title="${hub.name}">
+									<b><c:out value="${hub.fqdn}" /></b>
 								</span>
 							</td>
 							<td>
-								<c:out value="${stat.pollTime}" />
+								<c:out value="${hub.lastSuccessfulPollTime}" />
 							</td>
 							<td>
-								<span title="${stat.hub.version}" style="font-size: 0.75em;">
-									<c:out value="${stat.hub.versionDescription}" escapeXml="false" />
+								<span title="${hub.version}" style="font-size: 0.75em;">
+									<c:out value="${hub.versionDescription}" escapeXml="false" />
 								</span>
 							</td>
 							<td>
-								<c:if test="${not empty stat.hub.language}">
-									<img src="${stat.languageFlag}" />&nbsp;<b><c:out value="${stat.hub.language.language}" /></b>
+								<c:if test="${not empty hub.language}">
+									<b><c:out value="${hub.language.language}" /></b>
 								</c:if>
 							</td>
 							<td>
-								<c:if test="${not empty stat.hub.countryCode}">
-									<c:out value="${stat.hub.countryCode}" />
+								<c:if test="${not empty hub.countryCode}">
+									<c:out value="${hub.countryCode}" />
 								</c:if>
 							</td>
 				
