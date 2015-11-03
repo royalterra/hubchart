@@ -48,12 +48,12 @@ request.setAttribute("accessKey", accessKey);
 			&nbsp;<br/>
 			<div class="row">
 				<form action="forcejob" method="post">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<img src="images/home-32.png" align="middle" />
 						Launch hub network <b>discovery</b>
 						<input type="hidden" name="name" value="discover"></input>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-6">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
