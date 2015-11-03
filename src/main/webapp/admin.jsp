@@ -29,7 +29,6 @@ request.setAttribute("accessKey", accessKey);
 <body>
 
 	<div class="container">
-		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
@@ -39,10 +38,7 @@ request.setAttribute("accessKey", accessKey);
 		
 		<div class="row">
 			<div class="col-sm-12">
-				<a href="index.jsp"><img src="images/hz-16.png" align="middle" />hubchart</a>&nbsp;
-				<a href="secondary.jsp"><img src="images/hz-16.png" align="middle" />secondary</a>&nbsp;
-				<a href="admin.jsp"><img src="images/hz-16.png" align="middle" />admin</a>&nbsp;
-				<a href="report.jsp"><img src="images/hz-16.png" align="middle" />report</a>&nbsp;
+				<%@ include file="jspf/adminMenu.jspf" %>
 			</div>
 		</div>
 		
@@ -67,12 +63,12 @@ request.setAttribute("accessKey", accessKey);
 			
 			<div class="row">
 				<form action="forcejob" method="post">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<img src="images/home-32.png" align="middle" />
 						<b>Enqueue</b> hubs to be polled
 						<input type="hidden" name="name" value="enqueue"></input>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-6">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -82,12 +78,12 @@ request.setAttribute("accessKey", accessKey);
 			
 			<div class="row">
 				<form action="forcejob" method="post">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<img src="images/home-32.png" align="middle" />
 						Launch <b>polling</b> of <i>all</i> enqueued hubs
 						<input type="hidden" name="name" value="fullPoll"></input>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-6">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -97,12 +93,12 @@ request.setAttribute("accessKey", accessKey);
 			
 			<div class="row">
 				<form action="forcejob" method="post">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<img src="images/home-32.png" align="middle" />
 						<b>Draw</b> graphics and feed with latest stats
 						<input type="hidden" name="name" value="draw"></input>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-6">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>

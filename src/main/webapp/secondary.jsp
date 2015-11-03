@@ -31,7 +31,6 @@ request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 <body>
 
 	<div class="container">
-		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
@@ -41,10 +40,7 @@ request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 		
 		<div class="row">
 			<div class="col-sm-12">
-				<a href="index.jsp"><img src="images/hz-16.png" align="middle" />hubchart</a>&nbsp;
-				<a href="secondary.jsp"><img src="images/hz-16.png" align="middle" />secondary</a>&nbsp;
-				<a href="admin.jsp"><img src="images/hz-16.png" align="middle" />admin</a>&nbsp;
-				<a href="report.jsp"><img src="images/hz-16.png" align="middle" />report</a>&nbsp;
+				<%@ include file="jspf/adminMenu.jspf" %>
 			</div>
 		</div>
 
