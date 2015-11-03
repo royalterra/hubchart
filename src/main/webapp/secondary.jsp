@@ -1,19 +1,19 @@
+<%@page import="it.hubzilla.hubchart.business.HubBusiness"%>
+<%@page import="it.hubzilla.hubchart.beans.StatisticBean"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="it.hubzilla.hubchart.business.LogBusiness"%>
-<%@ page import="it.hubzilla.hubchart.model.Logs"%>
-<%@ page import="java.util.List"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
-List<Logs> logList = LogBusiness.findLogs();
-request.setAttribute("logList", logList);
+List<StatisticBean> recentlyExpiredList = HubBusiness.findRecentlyExpiredHubs(0, 20);
+request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 %>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Hubchart - Report panel</title>
+	<title>Hubchart - Hubzilla grid statistics</title>
 	
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -31,11 +31,11 @@ request.setAttribute("logList", logList);
 <body>
 
 	<div class="container">
-	
+		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
-				<h4>Report panel</h4>
+				<h4>Secondary statistics</h4>
 			</div>
 		</div>
 		
@@ -47,23 +47,77 @@ request.setAttribute("logList", logList);
 				<a href="report.jsp"><img src="images/hz-16.png" align="middle" />report</a>&nbsp;
 			</div>
 		</div>
-		
-		<c:forEach items="${requestScope.logList}" var="log" varStatus="status">
-			<i><c:out value="${log.formattedTime}" /></i>
-			<!--<b><c:if test="${not empty log.level}">
-				<c:out value="${log.level}" />
-			</c:if></b>-->
-			<b><c:if test="${not empty log.service}">
-				<c:out value="${log.service}" />
-			</c:if></b>
-			<c:out value="${log.message}" escapeXml="false"/><br/>
-		</c:forEach>
-		
-	</div><!-- /container -->
 
+		&nbsp;<br />
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>latest expired hubs</h3>
+				
+				
+				<table class="table table-condensed" style="border-collapse: collapse">
+					<thead>
+						<tr>
+							<th>
+								Hub
+							</th>
+							<th>
+								Last seen
+							</th>
+							<th>
+								Version
+							</th>
+							<th>
+								Default language
+							</th>
+							<th>
+								Geo
+							</th>
+						</tr>
+					</thead>
+				
+					<tbody>
+						<c:forEach items="${requestScope.recentlyExpiredList}" var="stat" varStatus="status">
+						<tr>
+							<td>
+								<span title="${stat.hub.name}">
+									<b><c:out value="${stat.hub.fqdn}" /></b>
+								</span>
+							</td>
+							<td>
+								<c:out value="${stat.pollTime}" />
+							</td>
+							<td>
+								<span title="${stat.hub.version}" style="font-size: 0.75em;">
+									<c:out value="${stat.hub.versionDescription}" escapeXml="false" />
+								</span>
+							</td>
+							<td>
+								<c:if test="${not empty stat.hub.language}">
+									<img src="${stat.languageFlag}" />&nbsp;<b><c:out value="${stat.hub.language.language}" /></b>
+								</c:if>
+							</td>
+							<td>
+								<c:if test="${not empty stat.hub.countryCode}">
+									<c:out value="${stat.hub.countryCode}" />
+								</c:if>
+							</td>
+				
+						</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				
+				
+			</div>
+		</div>
+		
+	</div>
+	<!-- /container -->
+	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="jquery/1.11.1/jquery.min.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
+

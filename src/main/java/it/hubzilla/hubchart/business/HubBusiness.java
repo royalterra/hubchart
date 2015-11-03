@@ -213,6 +213,30 @@ public class HubBusiness {
 		return result;
 	}
 	
+	public static List<StatisticBean> findRecentlyExpiredHubs(int offset, int pageSize) throws OrmException {
+		List<StatisticBean> result = new ArrayList<StatisticBean>();
+		Session ses = HibernateSessionFactory.getSession();
+		try {
+			List<Statistics> statList = statisticsDao.findByRecentlyExpiredHub(ses, offset, pageSize);
+			for (Statistics stat:statList) {
+				StatisticBean bean = new StatisticBean();
+				PropertyUtils.copyProperties(bean, stat);
+				result.add(bean);
+			}
+		} catch (OrmException e) {
+			throw new OrmException(e.getMessage(), e);
+		} catch (NoSuchMethodException e) {
+			throw new OrmException(e.getMessage(), e);
+		} catch (IllegalAccessException e) {
+			throw new OrmException(e.getMessage(), e);
+		} catch (InvocationTargetException e) {
+			throw new OrmException(e.getMessage(), e);
+		} finally {
+			ses.close();
+		}
+		return result;
+	}
+	
 	public static Integer countHiddenHubs() throws OrmException {
 		Integer result = 0;
 		Session ses = HibernateSessionFactory.getSession();

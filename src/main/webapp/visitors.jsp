@@ -42,6 +42,7 @@ request.setAttribute("visitorList", visitorList);
 		<div class="row">
 			<div class="col-sm-12">
 				<a href="index.jsp"><img src="images/hz-16.png" align="middle" />hubchart</a>&nbsp;
+				<a href="secondary.jsp"><img src="images/hz-16.png" align="middle" />secondary</a>&nbsp;
 				<a href="admin.jsp"><img src="images/hz-16.png" align="middle" />admin</a>&nbsp;
 				<a href="report.jsp"><img src="images/hz-16.png" align="middle" />report</a>&nbsp;
 			</div>
