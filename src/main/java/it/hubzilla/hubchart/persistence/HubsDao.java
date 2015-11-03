@@ -253,7 +253,8 @@ public class HubsDao {
 			String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.countryCode is not null "+
-					"group by h.countryCode, h.countryName ";
+					"group by h.countryCode, h.countryName "+
+					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(offset);
@@ -300,7 +301,8 @@ public class HubsDao {
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.versionTag is not null and "+
 					"h.versionTag != :s1 "+
-					"group by h.versionTag ";
+					"group by h.versionTag "+
+					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", "", StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
@@ -323,7 +325,8 @@ public class HubsDao {
 					"h.lastSuccessfulPollTime > :dt1 and "+
 					"h.networkType is not null and "+
 					"h.networkType != :s1 "+
-					"group by h.networkType ";
+					"group by h.networkType "+
+					"order by liveHubs desc";
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", AppConstants.NETWORK_TYPE_UNKNOWN, StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
