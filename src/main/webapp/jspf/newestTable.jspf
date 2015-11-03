@@ -14,10 +14,10 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 	<thead>
 		<tr>
 			<th>
-				Added
+				Hub
 			</th>
 			<th>
-				Hub
+				Added
 			</th>
 			<th>
 				Version
@@ -41,12 +41,12 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 		<c:forEach items="${requestScope.newestHubsStatList}" var="stat" varStatus="status">
 		<tr>
 			<td>
-				<c:out value="${stat.birthDate}" />
-			</td>
-			<td>
 				<span title="${stat.hub.name}">
 					<b><c:out value="${stat.hub.fqdn}" /></b>
 				</span>
+			</td>
+			<td>
+				<c:out value="${stat.birthDate}" />
 			</td>
 			<td>
 				<span title="${stat.hub.version}" style="font-size: 0.75em;">
