@@ -4,10 +4,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<%
-List<Hubs> recentlyExpiredList = HubBusiness.findRecentlyExpiredHubs(0, 20);
-request.setAttribute("recentlyExpiredList", recentlyExpiredList);
-%>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -34,76 +30,35 @@ request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 		<div class="row">
 			<div class="col-sm-12">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
-				<h4>Secondary statistics</h4>
+				<h4>More statistics</h4>
 			</div>
 		</div>
 		
+		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
-				<%@ include file="jspf/adminMenu.jspf" %>
+				<h3>newest hubs</h3>
+				<%@ include file="jspf/newestTable.jspf" %>
 			</div>
 		</div>
-
+		
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>latest expired hubs</h3>
-				
-				
-				<table class="table table-condensed" style="border-collapse: collapse">
-					<thead>
-						<tr>
-							<th>
-								Hub
-							</th>
-							<th>
-								Last seen
-							</th>
-							<th>
-								Version
-							</th>
-							<th>
-								Default language
-							</th>
-							<th>
-								Geo
-							</th>
-						</tr>
-					</thead>
-				
-					<tbody>
-						<c:forEach items="${requestScope.recentlyExpiredList}" var="hub" varStatus="status">
-						<tr>
-							<td>
-								<span title="${hub.name}">
-									<b><c:out value="${hub.fqdn}" /></b>
-								</span>
-							</td>
-							<td>
-								<c:out value="${hub.lastSuccessfulPollTime}" />
-							</td>
-							<td>
-								<span title="${hub.version}" style="font-size: 0.75em;">
-									<c:out value="${hub.versionDescription}" escapeXml="false" />
-								</span>
-							</td>
-							<td>
-								<c:if test="${not empty hub.language}">
-									<b><c:out value="${hub.language.language}" /></b>
-								</c:if>
-							</td>
-							<td>
-								<c:if test="${not empty hub.countryCode}">
-									<c:out value="${hub.countryCode}" />
-								</c:if>
-							</td>
-				
-						</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				
-				
+				<%@ include file="jspf/lastExpiredTable.jspf" %>
+			</div>
+		</div>
+		
+		&nbsp;<br />
+		<div class="row">
+			<div class="panel panel-default">
+				<div class="col-sm-6">
+					<%@ include file="jspf/registerBox.jspf"%>
+				</div>
+				<div class="col-sm-6">
+					<%@ include file="jspf/hideHubBox.jspf"%>
+				</div>
 			</div>
 		</div>
 		

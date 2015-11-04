@@ -105,12 +105,11 @@ request.setAttribute("firstGs", firstGs);
 				<%@ include file="jspf/geoIpTable.jspf" %>
 			</div>
 		</div>
-				
+		
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
-				<h3>newest hubs</h3>
-				<%@ include file="jspf/newestTable.jspf" %>
+				<a href="more.jsp"><img src="images/hz-16.png" align="middle" />&nbsp;More statistics</a>
 			</div>
 		</div>
 		

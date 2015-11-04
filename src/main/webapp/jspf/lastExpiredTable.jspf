@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.hubzilla.hubchart.model.Hubs"%>
+<%@ page import="it.hubzilla.hubchart.beans.*"%>
+<%@ page import="it.hubzilla.hubchart.business.*"%>
+<%@ page import="it.hubzilla.hubchart.*"%>
+<%@ page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%
+List<Hubs> recentlyExpiredList = HubBusiness.findRecentlyExpiredHubs(0, 10);
+request.setAttribute("recentlyExpiredList", recentlyExpiredList);
+%>
+<table class="table table-condensed" style="border-collapse: collapse">
+	<thead>
+		<tr>
+			<th>
+				Hub
+			</th>
+			<th>
+				Last seen
+			</th>
+			<th>
+				Version
+			</th>
+			<th>
+				Default language
+			</th>
+			<th>
+				Geo
+			</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<c:forEach items="${requestScope.recentlyExpiredList}" var="hub" varStatus="status">
+		<tr>
+			<td>
+				<span title="${hub.name}">
+					<b><c:out value="${hub.fqdn}" /></b>
+				</span>
+			</td>
+			<td>
+				<c:out value="${hub.lastSuccessfulPollTime}" />
+			</td>
+			<td>
+				<span title="${hub.version}" style="font-size: 0.75em;">
+					<c:out value="${hub.versionDescription}" escapeXml="false" />
+				</span>
+			</td>
+			<td>
+				<c:if test="${not empty hub.language}">
+					<b><c:out value="${hub.language.language}" /></b>
+				</c:if>
+			</td>
+			<td>
+				<c:if test="${not empty hub.countryCode}">
+					<c:out value="${hub.countryCode}" />
+				</c:if>
+			</td>
+
+		</tr>
+		</c:forEach>
+	</tbody>
+</table>
