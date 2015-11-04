@@ -247,7 +247,7 @@ request.setAttribute("pageCount", pageCount.intValue());
 							<tbody>
 								<c:if test='${not empty stat.hub.adminChannel}'>
 									<tr>
-										<td>Admin</td>
+										<td>Administrator</td>
 										<td><a href='${stat.hub.adminChannel}'>${stat.hub.adminChannel}</a>
 										</td>
 									</tr>
