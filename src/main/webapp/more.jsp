@@ -30,7 +30,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
-				<h4>More statistics</h4>
+				<h4>More data</h4>
 			</div>
 		</div>
 		

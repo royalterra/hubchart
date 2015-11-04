@@ -109,7 +109,7 @@ request.setAttribute("firstGs", firstGs);
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
-				<a href="more.jsp"><img src="images/hz-16.png" align="middle" />&nbsp;More statistics</a>
+				<a href="more.jsp"><img src="images/hz-16.png" align="middle" />&nbsp;More data</a>
 			</div>
 		</div>
 		
