@@ -28,10 +28,10 @@
 				<td>Total posts</td>
 				<td class="text-right"><b><c:out value="${requestScope.gs.totalPosts}" /></b></td>
 			</tr-->
-			<tr>
+			<!--tr>
 				<td>Channels/hub</td>
 				<td class="text-right"><b><c:out value="${requestScope.gs.averageHubChannels}" /></b></td>
-			</tr>
+			</tr-->
 			<tr>
 				<td>Network types</td>
 				<td class="text-right"><%=PresentationBusiness.printNetworkTypeStats() %></td>
