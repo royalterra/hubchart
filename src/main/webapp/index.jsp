@@ -37,6 +37,10 @@ StatisticBean gs = PollBusiness.findLatestGlobalStats();
 request.setAttribute("gs", gs);
 StatisticBean firstGs = PollBusiness.findFirstGlobalStats();
 request.setAttribute("firstGs", firstGs);
+//Tables
+CanvasJSBuilder builder = new CanvasJSBuilder();
+builder.addChart("gridHubsChart",gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
+builder.addChart("gridChannelsChart",gs.getId(), AppConstants.CHART_TYPE_TOTAL_CHANNELS);
 %>
 <html>
 <head>
@@ -44,46 +48,40 @@ request.setAttribute("firstGs", firstGs);
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Hubchart - Hubzilla grid statistics</title>
+	<link href="images/hubchart1-16.png" rel="shortcut icon" type="image/png" />
+	<link href="feed" rel="alternate" type="application/rss+xml" title="Hubzilla Statistics feed" />
 	
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
 	<link href="css/custom.css" rel="stylesheet" />
-	<link href="images/hubchart1-16.png" rel="shortcut icon" type="image/png" />
-	<link href="feed" rel="alternate" type="application/rss+xml" title="Hubzilla Statistics feed" />
-	
+
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+	
+	<!-- Chart scripts -->
+	<%=builder.chartLoader()%>
 </head>
 <body>
 
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-7">
+			<div class="col-sm-6">
 				<h1><img src="images/hubchart1-32.png" align="middle" /> hubchart <img src="images/beta.png" align="bottom" /></h1>
 				<a href="http://hubzilla.org"><b>hubzilla - community server</b></a> grid statistics<br />
 				&nbsp;<br />
 				<h3>grid status</h3>
 				<%@ include file="jspf/totalBox.jspf" %>
 			</div>
-			<div class="col-sm-5">
-				<div class="text-center"><b>Total active channels</b><br/>
-					<%=AppConstants.FORMAT_DAY.format(firstGs.getPollTime()) %> - today</div>
-				<div class="text-center">
-					<img src="imagecache?statId=${requestScope.gs.id}&type=<%=AppConstants.CHART_TYPE_TOTAL_CHANNELS %>" />
-				</div>
-				&nbsp;<br />
-				<div class="text-center"><b>Total active hubs</b><br/>
-					<%=AppConstants.FORMAT_DAY.format(firstGs.getPollTime()) %> - today</div>
-				<div class="text-center">
-					<img src="imagecache?statId=${requestScope.gs.id}&type=<%=AppConstants.CHART_TYPE_TOTAL_HUBS %>" />
-				</div>
+			<div class="col-sm-6">
+				<div id="gridHubsChart" style="height: 210px; width: 100%;"></div>
+				<div id="gridChannelsChart" style="height: 210px; width: 100%;"></div>
 			</div>
 		</div>
-
+		
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
@@ -144,9 +142,11 @@ request.setAttribute("firstGs", firstGs);
 	<!-- /container -->
 	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="jquery/1.11.1/jquery.min.js"></script>
+	<script src="jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- CanvasJS -->
+	<script src="js/jquery.canvasjs.min.js" type="text/javascript"></script>
 </body>
 </html>
 

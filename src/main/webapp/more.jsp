@@ -73,9 +73,11 @@
 	<!-- /container -->
 	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="jquery/1.11.1/jquery.min.js"></script>
+	<script src="jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- CanvasJS -->
+	<script src="js/jquery.canvasjs.min.js" type="text/javascript"></script>
 </body>
 </html>
 
