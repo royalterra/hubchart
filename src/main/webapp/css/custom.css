@@ -29,3 +29,13 @@ h2, h3, h4, h5 {
 	font-family: 'Ruda', sans-serif;
 	font-weight: bold;
 }
+
+.doughnut-legend {
+    list-style: none; 
+}
+.doughnut-legend li span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}

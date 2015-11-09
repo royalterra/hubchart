@@ -34,10 +34,10 @@
 				<td>Network types</td>
 				<td class="text-right"><%=PresentationBusiness.printNetworkTypeStats()%></td>
 			</tr>
-			<tr>
+			<!--tr>
 				<td>Versions</td>
 				<td class="text-right"><%=PresentationBusiness.printVersionTagStats() %></td>
-			</tr>
+			</tr-->
 			<tr>
 				<td>Last update</td>
 				<td class="text-right">${requestScope.gs.lastUpdateString}</td>

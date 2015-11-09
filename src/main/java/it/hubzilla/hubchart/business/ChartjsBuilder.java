@@ -27,8 +27,8 @@ public class ChartjsBuilder {
 	public static final DecimalFormat DF = new DecimalFormat("0");
 	private static List<Chart> chartList = new ArrayList<ChartjsBuilder.Chart>();
 	
-	public void addChart(String divElementId, String divLegendId, Integer statId, String chartType) {
-		Chart chart = new Chart(divElementId, divLegendId, statId, chartType);
+	public void addChart(String elementId, String divLegendId, Integer statId, String chartType) {
+		Chart chart = new Chart(elementId, divLegendId, statId, chartType);
 		chartList.add(chart);
 	}
 	
@@ -37,9 +37,9 @@ public class ChartjsBuilder {
 			"window.onload = function () {";
 		for (Chart chart:chartList) {
 			if (chart.chartType.equals(AppConstants.CHART_TYPE_VERSIONS)) {
-				out += buildVersionPieChartsScript(chart.getDivElementId(), chart.getDivLegendId());
+				out += buildVersionPieChartsScript(chart.getElementId(), chart.getDivLegendId());
 			} else {
-				out += buildAllLineChartsScript(chart.getDivElementId(), chart.getStatId(), chart.getChartType());
+				out += buildAllLineChartsScript(chart.getElementId(), chart.getStatId(), chart.getChartType());
 			}
 		}
 	    out += "}"+// /onload function
@@ -47,7 +47,7 @@ public class ChartjsBuilder {
 		return out;
 	}
 	
-	private String buildAllLineChartsScript(String divElementId, Integer statId, String chartType) throws OrmException {
+	private String buildAllLineChartsScript(String elementId, Integer statId, String chartType) throws OrmException {
 		String out = "Error rendering chart";
 		String title = AppConstants.CHART_TYPE_DESCRIPTIONS.get(chartType);
 		ChartData cd = new ChartData(false, title);
@@ -95,7 +95,7 @@ public class ChartjsBuilder {
 					}
 				}
 			}
-			out = buildLineChartScript(divElementId, title,
+			out = buildLineChartScript(elementId, title,
 					COLOUR_FILL, COLOUR_STROKE, COLOUR_STROKE, COLOUR_STROKE, cd);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -105,7 +105,7 @@ public class ChartjsBuilder {
 		return out;
 	}
 	
-	private String buildLineChartScript(String divElementId, String title,
+	private String buildLineChartScript(String elementId, String title,
 			String fillColor, String strokeColor, String pointColor, String pointHighlightStroke,
 			ChartData dataList) {
 		String options = 
@@ -136,9 +136,9 @@ public class ChartjsBuilder {
 			values += DF.format(point.getY());
 		}
 		String out =
-			"var "+divElementId+"Options = {"+options+"};"+
-			"var "+divElementId+"Ctx = document.getElementById('"+divElementId+"').getContext('2d');"+
-			"var "+divElementId+"Data = {"+
+			"var "+elementId+"Options = {"+options+"};"+
+			"var "+elementId+"Ctx = document.getElementById('"+elementId+"').getContext('2d');"+
+			"var "+elementId+"Data = {"+
 			    "labels: ["+labels+"],"+
 			    "datasets: ["+
 			        "{"+
@@ -153,11 +153,11 @@ public class ChartjsBuilder {
 			        "}"+
 			    "]"+
 			"};"+
-			"var "+divElementId+"Chart = new Chart("+divElementId+"Ctx).Line("+divElementId+"Data, "+divElementId+"Options);\r\n";
+			"var "+elementId+"Chart = new Chart("+elementId+"Ctx).Line("+elementId+"Data, "+elementId+"Options);\r\n";
 		return out;
 	}
 	
-	private String buildVersionPieChartsScript(String divElementId, String divLegendId) throws OrmException {
+	private String buildVersionPieChartsScript(String elementId, String divLegendId) throws OrmException {
 		String out = "Error rendering chart";
 		Long totalHubs = 0L;
 		Session ses = HibernateSessionFactory.getSession();
@@ -198,14 +198,16 @@ public class ChartjsBuilder {
 						new Double(i), new Double(vbeanList.size()))+"\","+
 				/*"highlight: \""+ColourBusiness.getColourShade(CHART_LINE_COLOUR, CHART_HIGHLIGHT_COLOUR,
 						vBean.getLiveHubs().doubleValue() ,totalHubs.doubleValue())+"\","+*/
-				"label: \""+AppConstants.NETWORK_DESCRIPTIONS.get(vBean.getNetworkType())+" "+vBean.getVersionTag()+"\""+
+				"label: \""+AppConstants.NETWORK_DESCRIPTIONS.get(vBean.getNetworkType())+" "+
+						vBean.getVersionTag()+" "+
+						vBean.getPercentage()+"\""+
 				"}";
 		}
-		out = "var "+divElementId+"Data = ["+data+"];"+
-				"var "+divElementId+"Options = {"+options+"};"+
-				"var "+divElementId+"Ctx = document.getElementById('"+divElementId+"').getContext('2d');"+
-				"var "+divElementId+"Doughnut = new Chart("+divElementId+"Ctx).Doughnut("+divElementId+"Data, "+divElementId+"Options);"+
-				"document.getElementById('"+divLegendId+"').innerHTML = "+divElementId+"Doughnut.generateLegend();\r\n";
+		out = "var "+elementId+"Data = ["+data+"];"+
+				"var "+elementId+"Options = {"+options+"};"+
+				"var "+elementId+"Ctx = document.getElementById('"+elementId+"').getContext('2d');"+
+				"var "+elementId+"Doughnut = new Chart("+elementId+"Ctx).Doughnut("+elementId+"Data, "+elementId+"Options);"+
+				"document.getElementById('"+divLegendId+"').innerHTML = "+elementId+"Doughnut.generateLegend();\r\n";
 		return out;
 	}
 	
@@ -214,19 +216,19 @@ public class ChartjsBuilder {
 	
 	
 	public static class Chart {
-		private String divElementId;
+		private String elementId;
 		private String divLegendId;
 		private Integer statId;
 		private String chartType;
 		
-		public Chart(String divElementId, String divLegendId, Integer statId, String chartType) {
-			this.divElementId=divElementId;
+		public Chart(String elementId, String divLegendId, Integer statId, String chartType) {
+			this.elementId=elementId;
 			this.divLegendId=divLegendId;
 			this.statId=statId;
 			this.chartType=chartType;
 		}
-		public String getDivElementId() {
-			return divElementId;
+		public String getElementId() {
+			return elementId;
 		}
 		public String getDivLegendId() {
 			return divLegendId;

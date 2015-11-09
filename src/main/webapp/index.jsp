@@ -84,20 +84,26 @@
 				<h3>grid status</h3>
 				<%@ include file="jspf/totalBox.jspf"%>
 			</div>
-			<div class="col-sm-3">
-				<canvas id="versionChart" style="height: 210px; width: 100%;"></canvas>
-			</div>
-			<div class="col-sm-3">
-				<canvas id="versionLegend" style="height: 210px; width: 100%;"></canvas>
+			<div class="col-sm-6">
+				&nbsp;
+				<h4>deployed versions</h4>
+				<div class="col-sm-6">
+					<canvas id="versionChart" style="height: 210px; width: 100%;"></canvas>
+				</div>
+				<div class="col-sm-6">
+					<div id="versionLegend"></div>
+				</div>
 			</div>
 		</div>
 
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-6">
+				<h4>active hubs</h4>
 				<canvas id="gridHubsChart" style="height: 210px; width: 100%;"></canvas>
 			</div>
 			<div class="col-sm-6">
+				<h4>active channels</h4>
 				<canvas id="gridChannelsChart" style="height: 210px; width: 100%;"></canvas>
 			</div>
 		</div>
