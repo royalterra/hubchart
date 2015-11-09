@@ -316,7 +316,7 @@ public class HubsDao {
 		return result;
 	}
 	
-	public List<Object[]> countLiveVersionTags(Session ses) throws OrmException {
+	public List<Object[]> countLiveVersionTags(Session ses, Integer maxResults) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
 		Date lastValidDate = cal.getTime();
@@ -331,6 +331,7 @@ public class HubsDao {
 			Query q = ses.createQuery(hql);
 			q.setParameter("s1", "", StringType.INSTANCE);
 			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+			if (maxResults != null) q.setMaxResults(maxResults);
 			@SuppressWarnings("unchecked")
 			List<Object[]> list = q.list();
 			result = list;

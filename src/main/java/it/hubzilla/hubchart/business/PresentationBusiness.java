@@ -23,7 +23,7 @@ public class PresentationBusiness {
 		String result ="--";
 		StatisticBean gs = PollBusiness.findLatestGlobalStats();
 		if (gs != null) {
-			List<VersionTagStatBean> stats = findVersionTagStatBeans(gs.getActiveHubs());
+			List<VersionTagStatBean> stats = findVersionTagStatBeans(gs.getActiveHubs(), MAX_VERSIONS_SHOWN);
 			if (stats != null) {
 				if (stats.size() > 0) {
 					result = "";
@@ -39,11 +39,11 @@ public class PresentationBusiness {
 		return result;
 	}
 	
-	public static List<VersionTagStatBean> findVersionTagStatBeans(Integer totalHubs) throws OrmException {
+	public static List<VersionTagStatBean> findVersionTagStatBeans(Integer totalHubs, Integer maxResults) throws OrmException {
 		List<VersionTagStatBean> result = new ArrayList<VersionTagStatBean>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Object[]> list = hubsDao.countLiveVersionTags(ses);
+			List<Object[]> list = hubsDao.countLiveVersionTags(ses, maxResults);
 			for (Object[] obj:list) {
 				try {
 					VersionTagStatBean vts = new VersionTagStatBean(totalHubs);
