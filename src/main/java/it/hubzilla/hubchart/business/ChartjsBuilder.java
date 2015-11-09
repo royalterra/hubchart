@@ -17,9 +17,8 @@ import org.hibernate.Session;
 public class ChartjsBuilder {
 
 	public static final String CHART_LINE_COLOUR = "#43488A";
-	public static final String COLOUR_FILL = "rgba(151,187,205,0.2)";
-	public static final String COLOUR_STROKE = "rgba(151,187,205,1)";
-	public static final String COLOUR_POINT = "rgba(151,187,205,1)";
+	public static final String COLOUR_FILL = "rgba(67,72,138,0.2)";
+	public static final String COLOUR_STROKE = "rgba(67,72,138,1)";
 	public static final DecimalFormat DF = new DecimalFormat("0");
 	private static List<Chart> chartList = new ArrayList<ChartjsBuilder.Chart>();
 	
@@ -97,7 +96,7 @@ public class ChartjsBuilder {
 				}
 			}
 			out = buildSingleChartScript(divElementId, title,
-					COLOUR_FILL, COLOUR_STROKE, COLOUR_POINT, cd);
+					COLOUR_FILL, COLOUR_STROKE, COLOUR_STROKE, COLOUR_STROKE, cd);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} finally {
@@ -107,7 +106,7 @@ public class ChartjsBuilder {
 	}
 	
 	private String buildSingleChartScript(String divElementId, String title,
-			String fillColor, String strokeColor, String pointColor,
+			String fillColor, String strokeColor, String pointColor, String pointHighlightStroke,
 			ChartData dataList) {
 		String options = 
 			    "scaleShowGridLines : false,"+
@@ -124,7 +123,7 @@ public class ChartjsBuilder {
 			    "datasetStroke : true,"+
 			    "datasetStrokeWidth : 2,"+
 			    "datasetFill : true,"+
-			    "tooltipTemplate: \""+title+" on <%if (label){%><%=label%>: <%}%><%= value %>\"";
+			    "tooltipTemplate: \""+title+" <%if (label){%><%=label%>: <%}%><%= value %>\"";
 		String labels = "";
 		String values = "";
 		for (int i = 0; i < dataList.getDataPoints().size(); i++) {
@@ -149,7 +148,7 @@ public class ChartjsBuilder {
 			            "pointColor: \""+pointColor+"\","+
 			            "pointStrokeColor: \"#fff\","+
 			            "pointHighlightFill: \"#fff\","+
-			            "pointHighlightStroke: \"rgba(151,187,205,1)\","+
+			            "pointHighlightStroke: \""+pointHighlightStroke+"\","+
 			            "data: ["+values+"]"+
 			        "}"+
 			    "]"+
