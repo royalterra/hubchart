@@ -41,9 +41,9 @@
 	request.setAttribute("firstGs", firstGs);
 	//Tables
 	ChartjsBuilder builder = new ChartjsBuilder();
-	//builder.addChart("versionChart", gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
-	builder.addChart("gridHubsChart", gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
-	builder.addChart("gridChannelsChart", gs.getId(), AppConstants.CHART_TYPE_TOTAL_CHANNELS);
+	builder.addChart("versionChart", "versionLegend", null, AppConstants.CHART_TYPE_VERSIONS);
+	builder.addChart("gridHubsChart", null, gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
+	builder.addChart("gridChannelsChart", null, gs.getId(), AppConstants.CHART_TYPE_TOTAL_CHANNELS);
 %>
 <html>
 <head>
@@ -84,8 +84,11 @@
 				<h3>grid status</h3>
 				<%@ include file="jspf/totalBox.jspf"%>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-3">
 				<canvas id="versionChart" style="height: 210px; width: 100%;"></canvas>
+			</div>
+			<div class="col-sm-3">
+				<canvas id="versionLegend" style="height: 210px; width: 100%;"></canvas>
 			</div>
 		</div>
 

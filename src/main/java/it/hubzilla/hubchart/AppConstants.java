@@ -173,14 +173,16 @@ public class AppConstants {
 		DIRECTORY_DESCRIPTIONS.put(DIRECTORY_MODE_STANDALONE, "Private standalone");
 	};
 	// LOOKUP: CHART_TYPE
+	public static final String CHART_TYPE_VERSIONS = "VRSN";//Active channels per hub
 	public static final String CHART_TYPE_HUB_CHANNELS = "HCHN";//Active channels per hub
 	public static final String CHART_TYPE_TOTAL_CHANNELS = "TCHN";//Total channels
 	public static final String CHART_TYPE_TOTAL_HUBS = "THUB"; //Total hubs
 	public static final Map<String, String> CHART_TYPE_DESCRIPTIONS = new HashMap<String, String>();
 	static {
-		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_HUB_CHANNELS, "Active channels");
-		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_TOTAL_CHANNELS, "Total active channels");
-		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_TOTAL_HUBS, "Total active hubs"); 
+		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_VERSIONS, "Deployed version");
+		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_HUB_CHANNELS, "Hub channels");
+		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_TOTAL_CHANNELS, "Grid channels");
+		CHART_TYPE_DESCRIPTIONS.put(CHART_TYPE_TOTAL_HUBS, "Grid hubs"); 
 	};
 
 }

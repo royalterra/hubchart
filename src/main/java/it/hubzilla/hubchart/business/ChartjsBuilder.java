@@ -2,9 +2,11 @@ package it.hubzilla.hubchart.business;
 
 import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.beans.VersionTagStatBean;
 import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
+import it.hubzilla.hubchart.persistence.HubsDao;
 import it.hubzilla.hubchart.persistence.StatisticsDao;
 
 import java.text.DecimalFormat;
@@ -16,14 +18,17 @@ import org.hibernate.Session;
 
 public class ChartjsBuilder {
 
-	public static final String CHART_LINE_COLOUR = "#43488A";
+	public static final String CHART_RED_COLOUR = "#c60032";
+	public static final String CHART_RED_HIGHLIGHT = "#fb7396";
+	public static final String CHART_HUBZ_COLOUR = "#43488A";
+	public static final String CHART_HUBZ_HIGHLIGHT = "#9da4fb";
 	public static final String COLOUR_FILL = "rgba(67,72,138,0.2)";
 	public static final String COLOUR_STROKE = "rgba(67,72,138,1)";
 	public static final DecimalFormat DF = new DecimalFormat("0");
 	private static List<Chart> chartList = new ArrayList<ChartjsBuilder.Chart>();
 	
-	public void addChart(String divElementId, Integer statId, String chartType) {
-		Chart chart = new Chart(divElementId, statId, chartType);
+	public void addChart(String divElementId, String divLegendId, Integer statId, String chartType) {
+		Chart chart = new Chart(divElementId, divLegendId, statId, chartType);
 		chartList.add(chart);
 	}
 	
@@ -31,25 +36,20 @@ public class ChartjsBuilder {
 		String out = "<script type=\"text/javascript\">"+
 			"window.onload = function () {";
 		for (Chart chart:chartList) {
-			out += buildChartScript(chart.getDivElementId(), chart.getStatId(), chart.getChartType());
+			if (chart.chartType.equals(AppConstants.CHART_TYPE_VERSIONS)) {
+				out += buildVersionPieChartsScript(chart.getDivElementId(), chart.getDivLegendId());
+			} else {
+				out += buildAllLineChartsScript(chart.getDivElementId(), chart.getStatId(), chart.getChartType());
+			}
 		}
 	    out += "}"+// /onload function
 	    "</script>";
 		return out;
 	}
 	
-	private String buildChartScript(String divElementId, Integer statId, String chartType) throws OrmException {
-		String out = "Error rendering table";
-		String title = "";
-		if (AppConstants.CHART_TYPE_HUB_CHANNELS.equals(chartType)) {
-			title = "Hub channels";
-		}
-		if (AppConstants.CHART_TYPE_TOTAL_CHANNELS.equals(chartType)) {
-			title = "Grid channels";
-		}
-		if (AppConstants.CHART_TYPE_TOTAL_HUBS.equals(chartType)) {
-			title = "Grid hubs";
-		}
+	private String buildAllLineChartsScript(String divElementId, Integer statId, String chartType) throws OrmException {
+		String out = "Error rendering chart";
+		String title = AppConstants.CHART_TYPE_DESCRIPTIONS.get(chartType);
 		ChartData cd = new ChartData(false, title);
 		Session ses = HibernateSessionFactory.getSession();
 		try {
@@ -95,7 +95,7 @@ public class ChartjsBuilder {
 					}
 				}
 			}
-			out = buildSingleChartScript(divElementId, title,
+			out = buildLineChartScript(divElementId, title,
 					COLOUR_FILL, COLOUR_STROKE, COLOUR_STROKE, COLOUR_STROKE, cd);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
@@ -105,7 +105,7 @@ public class ChartjsBuilder {
 		return out;
 	}
 	
-	private String buildSingleChartScript(String divElementId, String title,
+	private String buildLineChartScript(String divElementId, String title,
 			String fillColor, String strokeColor, String pointColor, String pointHighlightStroke,
 			ChartData dataList) {
 		String options = 
@@ -142,33 +142,94 @@ public class ChartjsBuilder {
 			    "labels: ["+labels+"],"+
 			    "datasets: ["+
 			        "{"+
-			            "label: \""+title+"\","+
-			            "fillColor: \""+fillColor+"\","+
-			            "strokeColor: \""+strokeColor+"\","+
-			            "pointColor: \""+pointColor+"\","+
-			            "pointStrokeColor: \"#fff\","+
-			            "pointHighlightFill: \"#fff\","+
-			            "pointHighlightStroke: \""+pointHighlightStroke+"\","+
+			            "label: \""+title+"\", "+
+			            "fillColor: \""+fillColor+"\", "+
+			            "strokeColor: \""+strokeColor+"\", "+
+			            "pointColor: \""+pointColor+"\", "+
+			            "pointStrokeColor: \"#fff\", "+
+			            "pointHighlightFill: \"#fff\", "+
+			            "pointHighlightStroke: \""+pointHighlightStroke+"\", "+
 			            "data: ["+values+"]"+
 			        "}"+
 			    "]"+
 			"};"+
-			"var "+divElementId+"Chart = new Chart("+divElementId+"Ctx).Line("+divElementId+"Data, "+divElementId+"Options);";
+			"var "+divElementId+"Chart = new Chart("+divElementId+"Ctx).Line("+divElementId+"Data, "+divElementId+"Options);\r\n";
 		return out;
 	}
 	
+	private String buildVersionPieChartsScript(String divElementId, String divLegendId) throws OrmException {
+		String out = "Error rendering chart";
+		Long totalHubs = 0L;
+		Session ses = HibernateSessionFactory.getSession();
+		try {
+			totalHubs= new HubsDao().countLiveHubs(ses);
+		} catch (OrmException e) {
+			throw new OrmException(e.getMessage(), e);
+		} finally {
+			ses.close();
+		}
+		List<VersionTagStatBean> vbeanList = PresentationBusiness
+				.findVersionTagStatBeans(totalHubs.intValue());
+		
+		String options = 
+			"segmentShowStroke : true, "+
+			"segmentStrokeColor : \"#fff\", "+
+			"segmentStrokeWidth : 2, "+
+			"percentageInnerCutout : 50, "+ // This is 0 for Pie charts
+			"animationSteps : 100, "+
+			"animationEasing : \"easeOutBounce\", "+
+			"animateRotate : true, "+
+			"animateScale : true, "+
+			"tooltipTemplate: \"<%if (label){%><%=label%>: <%}%><%= value %>\", "+
+			"legendTemplate : \"<ul class=\\\"<%=name.toLowerCase()%>-legend\\\"><% for (var i=0; i<segments.length; i++){%><li><span style=\\\"background-color:<%=segments[i].fillColor%>\\\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>\"";
+		String data = "";
+		for (int i = 0; i < vbeanList.size(); i++) {
+			VersionTagStatBean vBean = vbeanList.get(i);
+			String colour1 = CHART_HUBZ_HIGHLIGHT;
+			String colour2 = CHART_HUBZ_COLOUR;
+			if (vBean.getNetworkType().equals(AppConstants.NETWORK_TYPE_RED)) {
+				colour1 = CHART_RED_HIGHLIGHT;
+				colour2 = CHART_RED_COLOUR;
+			}
+			if (i > 0) data += ",";
+			data += "{"+
+				"value: "+vBean.getLiveHubs()+","+
+				"color: \""+ColourBusiness.getColourShade(colour1, colour2,
+						new Double(i), new Double(vbeanList.size()))+"\","+
+				/*"highlight: \""+ColourBusiness.getColourShade(CHART_LINE_COLOUR, CHART_HIGHLIGHT_COLOUR,
+						vBean.getLiveHubs().doubleValue() ,totalHubs.doubleValue())+"\","+*/
+				"label: \""+AppConstants.NETWORK_DESCRIPTIONS.get(vBean.getNetworkType())+" "+vBean.getVersionTag()+"\""+
+				"}";
+		}
+		out = "var "+divElementId+"Data = ["+data+"];"+
+				"var "+divElementId+"Options = {"+options+"};"+
+				"var "+divElementId+"Ctx = document.getElementById('"+divElementId+"').getContext('2d');"+
+				"var "+divElementId+"Doughnut = new Chart("+divElementId+"Ctx).Doughnut("+divElementId+"Data, "+divElementId+"Options);"+
+				"document.getElementById('"+divLegendId+"').innerHTML = "+divElementId+"Doughnut.generateLegend();\r\n";
+		return out;
+	}
+	
+	
+	/* INNER CLASSES */
+	
+	
 	public static class Chart {
 		private String divElementId;
+		private String divLegendId;
 		private Integer statId;
 		private String chartType;
 		
-		public Chart(String divElementId, Integer statId, String chartType) {
+		public Chart(String divElementId, String divLegendId, Integer statId, String chartType) {
 			this.divElementId=divElementId;
+			this.divLegendId=divLegendId;
 			this.statId=statId;
 			this.chartType=chartType;
 		}
 		public String getDivElementId() {
 			return divElementId;
+		}
+		public String getDivLegendId() {
+			return divLegendId;
 		}
 		public Integer getStatId() {
 			return statId;
