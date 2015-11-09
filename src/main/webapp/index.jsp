@@ -40,7 +40,8 @@
 	StatisticBean firstGs = PollBusiness.findFirstGlobalStats();
 	request.setAttribute("firstGs", firstGs);
 	//Tables
-	ChartjsBuilder builder = new ChartjsBuilder();
+	ChartjsBuilder builder = ChartjsBuilder.getInstance();
+	builder.clearCharts();
 	builder.addChart("versionChart", "versionLegend", null, AppConstants.CHART_TYPE_VERSIONS);
 	builder.addChart("gridHubsChart", null, gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
 	builder.addChart("gridChannelsChart", null, gs.getId(), AppConstants.CHART_TYPE_TOTAL_CHANNELS);
@@ -160,9 +161,7 @@
 				</div>
 			</div>
 		</div>
-
-
-
+		
 	</div>
 	<!-- /container -->
 

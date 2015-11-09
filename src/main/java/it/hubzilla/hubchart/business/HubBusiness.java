@@ -6,23 +6,19 @@ import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.UrlException;
 import it.hubzilla.hubchart.beans.CountryStatBean;
 import it.hubzilla.hubchart.beans.LanguageStatBean;
-import it.hubzilla.hubchart.beans.StatisticBean;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.model.Languages;
 import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
-import it.hubzilla.hubchart.persistence.StatisticsDao;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -30,7 +26,6 @@ public class HubBusiness {
 	
 	//private static final Logger LOG = LoggerFactory.getLogger(HubBusiness.class);
 	private static HubsDao hubsDao = new HubsDao();
-	private static StatisticsDao statisticsDao = new StatisticsDao();
 	
 	public static Integer addHub(String baseUrl) throws BusinessException, OrmException,
 			MalformedURLException {
@@ -40,7 +35,7 @@ public class HubBusiness {
 		try {
 			Date pollTime = new Date();
 			//Check uniqueness
-			Hubs hub = hubsDao.findByStrippedFqdn(ses, baseUrl);
+			Hubs hub = hubsDao.findByBaseUrlFqdn(ses, baseUrl);
 			if (hub != null) throw new BusinessException(baseUrl+" is a known hub and cannot be added");
 			
 			//Doesn't exist, a new one is created
@@ -78,7 +73,7 @@ public class HubBusiness {
 		try {
 			Date pollTime = new Date();
 			//Exists
-			Hubs hub = hubsDao.findByStrippedFqdn(ses, baseUrl);
+			Hubs hub = hubsDao.findByBaseUrlFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
 			retrieveStats(ses, hub, pollTime);
 			
@@ -111,58 +106,6 @@ public class HubBusiness {
 		GenericDao.updateGeneric(ses, hub.getId(), hub);
 	}
 
-	public static List<StatisticBean> findLatestStatisticBeans(
-			boolean filterExpired, boolean filterHidden,
-			int page, int pageSize, String orderBy
-			) throws OrmException {
-		List<StatisticBean> result = new ArrayList<StatisticBean>();
-		Session ses = HibernateSessionFactory.getSession();
-		try {
-			List<Statistics> sList = statisticsDao.findLatest(ses,
-					filterHidden, page, pageSize, orderBy);
-			for (Statistics s:sList) {
-				StatisticBean bean = new StatisticBean();
-				PropertyUtils.copyProperties(bean, s);
-				result.add(bean);
-			}
-		} catch (OrmException e) {
-			throw new OrmException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new OrmException(e.getMessage(), e);
-		} catch (InvocationTargetException e) {
-			throw new OrmException(e.getMessage(), e);
-		} catch (NoSuchMethodException e) {
-			throw new OrmException(e.getMessage(), e);
-		} finally {
-			ses.close();
-		}
-		return result;
-	}
-	
-	public static List<StatisticBean> findStatisticsForPresentation(
-			boolean filterExpired, boolean filterHidden,
-			String orderCode, boolean isAsc, int page, int pageSize)
-					throws OrmException{
-		String orderBy = AppConstants.ORDER_TYPES.get(orderCode);
-		if (orderBy != null) {
-			if (isAsc) {
-				orderBy += " asc";
-			} else {
-				orderBy += " desc";
-			}
-		}
-		return findLatestStatisticBeans(filterExpired, filterHidden,
-				page, pageSize, orderBy);
-	}
-	
-	public static Integer findStatisticsForPresentationCount(
-			boolean filterExpired, boolean filterEmptyStats, boolean filterHidden)
-					throws OrmException{
-		List<StatisticBean> sbList = findLatestStatisticBeans(filterExpired, filterHidden,
-				0, Integer.MAX_VALUE, null);
-		return sbList.size();
-	}
-	
 	public static Hubs findHubById(Integer id) throws OrmException {
 		Hubs result = null;
 		Session ses = HibernateSessionFactory.getSession();
@@ -188,31 +131,7 @@ public class HubBusiness {
 		}
 		return result;
 	}
-	
-	public static List<StatisticBean> findNewestHubStatistics(int offset, int pageSize) throws OrmException {
-		List<StatisticBean> result = new ArrayList<StatisticBean>();
-		Session ses = HibernateSessionFactory.getSession();
-		try {
-			List<Statistics> statList = statisticsDao.findByNewestHub(ses, offset, pageSize);
-			for (Statistics stat:statList) {
-				StatisticBean bean = new StatisticBean();
-				PropertyUtils.copyProperties(bean, stat);
-				result.add(bean);
-			}
-		} catch (OrmException e) {
-			throw new OrmException(e.getMessage(), e);
-		} catch (NoSuchMethodException e) {
-			throw new OrmException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new OrmException(e.getMessage(), e);
-		} catch (InvocationTargetException e) {
-			throw new OrmException(e.getMessage(), e);
-		} finally {
-			ses.close();
-		}
-		return result;
-	}
-	
+
 	public static List<Hubs> findRecentlyExpiredHubs(int offset, int pageSize) throws OrmException {
 		List<Hubs> result = new ArrayList<Hubs>();
 		Session ses = HibernateSessionFactory.getSession();

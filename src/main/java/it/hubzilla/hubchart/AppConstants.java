@@ -83,6 +83,7 @@ public class AppConstants {
 
 	// HUB PAGINATION
 	public static final int PAGING_HUBS = 20;
+	public static final String PARAM_HUB_FQDN = "hubFqdn";
 	public static final String PARAM_HUB_PAGE = "pag";
 	public static final String PARAM_HUB_ORDER = "order";
 	public static final String PARAM_HUB_ASC = "asc";

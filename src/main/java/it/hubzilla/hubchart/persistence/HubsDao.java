@@ -24,10 +24,14 @@ import org.hibernate.type.TimestampType;
 public class HubsDao {
 
 	
-	public Hubs findByStrippedFqdn(Session ses, String baseUrl) throws OrmException, MalformedURLException {
-		Hubs result = null;
+	public Hubs findByBaseUrlFqdn(Session ses, String baseUrl) throws OrmException, MalformedURLException {
 		URL url = new URL(baseUrl);
 		String fqdn = url.getHost();
+		return findByFqdn(ses, fqdn);
+	}
+	
+	public Hubs findByFqdn(Session ses, String fqdn) throws OrmException, MalformedURLException {
+		Hubs result = null;
 		String fqdnNoWww = HubBusiness.stripLeadingWww(fqdn);
 		try {
 			Query q = ses.createQuery("from Hubs h where "+

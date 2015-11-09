@@ -32,7 +32,7 @@ public class FeedBusiness {
 			global = PollBusiness.findLatestGlobalStats();
 			firstGs = PollBusiness.findFirstGlobalStats();
 			if (global != null && firstGs != null) {
-				List<StatisticBean> statList = HubBusiness.findStatisticsForPresentation(true, true,
+				List<StatisticBean> statList = StatisticBusiness.findStatisticsForPresentation(true, true,
 						AppConstants.ORDER_CHANNEL,
 						false, //order asc?
 						0,//start page
@@ -40,7 +40,7 @@ public class FeedBusiness {
 				overview = createOverview(global);
 				imageTags = createImageTags(firstGs, global);
 				hubChart = createHubChart(statList);
-				List<StatisticBean> newestHubList = HubBusiness.findNewestHubStatistics(0, 5);
+				List<StatisticBean> newestHubList = StatisticBusiness.findNewestHubStatistics(0, 5);
 				newestHubChart = createNewestHubChart(newestHubList);
 			}
 		} catch (OrmException e) {

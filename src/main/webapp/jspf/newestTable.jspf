@@ -7,7 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
-List<StatisticBean> newestHubsStatList = HubBusiness.findNewestHubStatistics(0, 10);
+List<StatisticBean> newestHubsStatList = StatisticBusiness.findNewestHubStatistics(0, 10);
 request.setAttribute("newestHubsStatList", newestHubsStatList);
 %>
 <table class="table table-condensed" style="border-collapse: collapse">

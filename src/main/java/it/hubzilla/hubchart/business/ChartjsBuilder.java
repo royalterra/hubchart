@@ -9,12 +9,26 @@ import java.util.List;
 
 public class ChartjsBuilder {
 
-
-	private static List<Chart> chartList = new ArrayList<ChartjsBuilder.Chart>();
+	private static ChartjsBuilder instance = null;
+	
+	private List<Chart> chartList;
+	
+	private ChartjsBuilder() {
+		chartList = new ArrayList<ChartjsBuilder.Chart>();
+	}
+	
+	public static ChartjsBuilder getInstance() {
+		if (instance == null) instance = new ChartjsBuilder();
+		return instance;
+	}
 	
 	public void addChart(String elementId, String divLegendId, Integer statId, String chartType) {
 		Chart chart = new Chart(elementId, divLegendId, statId, chartType);
 		chartList.add(chart);
+	}
+	
+	public void clearCharts() {
+		chartList.clear();
 	}
 	
 	public String chartLoader() throws OrmException {
