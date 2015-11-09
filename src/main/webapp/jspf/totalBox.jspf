@@ -16,13 +16,11 @@
 			</tr>
 			<tr>
 				<td>Active channels</td>
-				<td class="text-right"><b><c:out
-							value="${requestScope.gs.activeChannelsLast6Months}" /></b></td>
+				<td class="text-right"><b><c:out value="${requestScope.gs.activeChannelsLast6Months}" /></b></td>
 			</tr>
 			<tr>
 				<td>Total channels</td>
-				<td class="text-right"><b><c:out
-							value="${requestScope.gs.totalChannels}" /></b></td>
+				<td class="text-right"><b><c:out value="${requestScope.gs.totalChannels}" /></b></td>
 			</tr>
 			<!--tr>
 				<td>Total posts</td>
@@ -34,7 +32,7 @@
 			</tr-->
 			<tr>
 				<td>Network types</td>
-				<td class="text-right"><%=PresentationBusiness.printNetworkTypeStats() %></td>
+				<td class="text-right"><%=PresentationBusiness.printNetworkTypeStats()%></td>
 			</tr>
 			<tr>
 				<td>Versions</td>
