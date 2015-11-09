@@ -155,6 +155,7 @@
 						Country-IP mapping <a href="http://ip2nation.com/">ip2nation.com</a>.
 						Country flags <a
 						href="https://www.gosquared.com/resources/flag-icons/">gosquared.com</a>.
+						Charts <a href="http://www.chartjs.org/">Chart.js</a>.
 					</small>
 				</div>
 			</div>
