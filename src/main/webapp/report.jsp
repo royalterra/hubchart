@@ -17,7 +17,9 @@ request.setAttribute("logList", logList);
 	
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
+	<link href="css/font-awesome.min.css" rel="stylesheet" />
 	<link href="css/custom.css" rel="stylesheet" />
+	
 	<link href="images/hubchart1-16.png" rel="shortcut icon" type="image/png" />
 	<link href="feed" rel="alternate" type="application/rss+xml" title="Hubzilla Statistics feed" />
 	

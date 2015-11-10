@@ -23,23 +23,23 @@ request.setAttribute("pageCount", pageCount.intValue());
 				<c:choose>
 				<c:when test="${sessionScope.order == 'fqdn'}">
 					<a href="index.jsp?order=fqdn&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Hub</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
+					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
+					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
 				</c:when>
 				<c:otherwise>
 					<a href="index.jsp?order=fqdn&asc=true&pag=0">Hub</a>
 				</c:otherwise>
 				</c:choose>
 			</th>
-			<th>
+			<th class="text-center">
 				<c:choose>
-				<c:when test="${sessionScope.order == 'version'}">
-					<a href="index.jsp?order=version&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Version</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
+				<c:when test="${sessionScope.order == 'chan'}">
+					<a href="index.jsp?order=chan&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Channels</a>
+					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
+					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
 				</c:when>
 				<c:otherwise>
-					<a href="index.jsp?order=version&asc=false&pag=0">Version</a>
+					<a href="index.jsp?order=chan&asc=false&pag=0">Channels</a>
 				</c:otherwise>
 				</c:choose>
 			</th>
@@ -47,8 +47,8 @@ request.setAttribute("pageCount", pageCount.intValue());
 				<c:choose>
 				<c:when test="${sessionScope.order == 'regs'}">
 					<a href="index.jsp?order=regs&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Can I join?</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
+					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
+					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
 				</c:when>
 				<c:otherwise>
 					<a href="index.jsp?order=regs&asc=true&pag=0">Can I join?</a>
@@ -57,10 +57,22 @@ request.setAttribute("pageCount", pageCount.intValue());
 			</th>
 			<th>
 				<c:choose>
+				<c:when test="${sessionScope.order == 'version'}">
+					<a href="index.jsp?order=version&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Version</a>
+					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
+					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
+				</c:when>
+				<c:otherwise>
+					<a href="index.jsp?order=version&asc=false&pag=0">Version</a>
+				</c:otherwise>
+				</c:choose>
+			</th>
+			<th>
+				<c:choose>
 				<c:when test="${sessionScope.order == 'lang'}">
 					<a href="index.jsp?order=lang&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Default language</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
+					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
+					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
 				</c:when>
 				<c:otherwise>
 					<a href="index.jsp?order=lang&asc=true&pag=0">Default language</a>
@@ -71,23 +83,11 @@ request.setAttribute("pageCount", pageCount.intValue());
 				<c:choose>
 				<c:when test="${sessionScope.order == 'geo'}">
 					<a href="index.jsp?order=geo&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Geo</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
+					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
+					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
 				</c:when>
 				<c:otherwise>
 					<a href="index.jsp?order=geo&asc=true&pag=0">Geo</a>
-				</c:otherwise>
-				</c:choose>
-			</th>
-			<th class="text-right">
-				<c:choose>
-				<c:when test="${sessionScope.order == 'chan'}">
-					<a href="index.jsp?order=chan&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Active channels</a>
-					<c:if test="${sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-down"></span></c:if>
-					<c:if test="${!sessionScope.asc}"><span class="small glyphicon glyphicon-circle-arrow-up"></span></c:if>
-				</c:when>
-				<c:otherwise>
-					<a href="index.jsp?order=chan&asc=false&pag=0">Active channels</a>
 				</c:otherwise>
 				</c:choose>
 			</th>
@@ -98,15 +98,16 @@ request.setAttribute("pageCount", pageCount.intValue());
 		<c:forEach items="${requestScope.statList}" var="stat" varStatus="status">
 		<tr>
 			<td>
+				<a href="hub.jsp?hubFqdn=${stat.hub.fqdn}">
+					<i class="fa fa-area-chart"></i>
+					<!--<img src="images/hubchart1-16.png" />-->
+				</a>
 				<span title="${stat.hub.name}">
-					<a href="hub.jsp?hubFqdn=${stat.hub.fqdn}"><span class="glyphicon glyphicon-eye-open"></span></a>
 					<b><c:out value="${stat.hub.fqdn}" /></b>
 				</span>
 			</td>
-			<td>
-				<span title="${stat.hub.version}" style="font-size: 0.75em;">
-					<c:out value="${stat.hub.versionDescription}" escapeXml="false" />
-				</span>
+			<td class="text-center">
+				<b><c:out value="${stat.activeChannelsLast6Months}" /></b>
 			</td>
 			<td>
 				<c:if test="${not empty stat.hub.registrationPolicy}">
@@ -121,6 +122,11 @@ request.setAttribute("pageCount", pageCount.intValue());
 				</c:if>
 			</td>
 			<td>
+				<span title="${stat.hub.version}" style="font-size: 0.75em;">
+					<c:out value="${stat.hub.versionDescription}" escapeXml="false" />
+				</span>
+			</td>
+			<td>
 				<c:if test="${not empty stat.hub.language}">
 					<img src="${stat.languageFlag}" />&nbsp;<b><c:out value="${stat.hub.language.language}" /></b>
 				</c:if>
@@ -130,8 +136,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 					<c:out value="${stat.hub.countryCode}" />
 				</c:if>
 			</td>
-
-			<td class="text-right"><c:out value="${stat.activeChannelsLast6Months}" /></td>
 		</tr>
 		</c:forEach>
 	</tbody>

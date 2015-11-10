@@ -75,7 +75,6 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 					<c:out value="${stat.hub.countryCode}" />
 				</c:if>
 			</td>
-
 			<!--td class="text-right"><c:out value="${stat.activeChannelsLast6Months}" /></td-->
 		</tr>
 		</c:forEach>
