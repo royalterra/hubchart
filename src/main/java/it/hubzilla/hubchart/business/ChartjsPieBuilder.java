@@ -62,7 +62,7 @@ public class ChartjsPieBuilder {
 				/*"highlight: \""+ColourBusiness.getColourShade(CHART_LINE_COLOUR, CHART_HIGHLIGHT_COLOUR,
 						vBean.getLiveHubs().doubleValue() ,totalHubs.doubleValue())+"\","+*/
 				"label: \""+AppConstants.NETWORK_DESCRIPTIONS.get(vBean.getNetworkType())+" "+
-						vBean.getVersionTag()+" "+
+						vBean.getVersionTag()+" - "+
 						vBean.getPercentage()+"\""+
 				"}";
 		}

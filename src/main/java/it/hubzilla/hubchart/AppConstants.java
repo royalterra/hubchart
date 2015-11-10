@@ -133,8 +133,8 @@ public class AppConstants {
 	};
 	public static final Map<String, String> NETWORK_DESCRIPTIONS = new HashMap<String, String>();
 	static {
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RED, "RedMatrix");
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_HUBZILLA, "Hubzilla");
+		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RED, "redmatrix");
+		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_HUBZILLA, "hubzilla");
 	};
 	// LOOKUP: REGISTRATION
 	public static final String REGISTRATION_OPEN = "OPEN";
