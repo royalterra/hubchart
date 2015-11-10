@@ -53,7 +53,6 @@
 		<!--mapping package="it.hubzilla.hubchart.model"/-->
 		<mapping class="it.hubzilla.hubchart.model.FeedEntries"/>
 		<mapping class="it.hubzilla.hubchart.model.Hubs"/>
-		<mapping class="it.hubzilla.hubchart.model.ImageCache"/>
 		<mapping class="it.hubzilla.hubchart.model.Ip2nation"/>
 		<mapping class="it.hubzilla.hubchart.model.Ip2nationCountries"/>
 		<mapping class="it.hubzilla.hubchart.model.Languages"/>

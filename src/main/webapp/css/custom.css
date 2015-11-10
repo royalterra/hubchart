@@ -30,6 +30,18 @@ h2, h3, h4, h5 {
 	font-weight: bold;
 }
 
+a, .pagination > li > a {
+	color: #43488a;
+}
+a:hover, a:focus {
+	color: #666cb7;
+}
+.pagination > .active > span {
+	color: #FFF;
+	background-color: #43488a;
+	border-color: #43488a;
+}
+
 .doughnut-legend {
     list-style: none; 
 }

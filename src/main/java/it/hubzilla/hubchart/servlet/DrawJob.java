@@ -11,7 +11,6 @@ import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
-import it.hubzilla.hubchart.persistence.ImageCacheDao;
 import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.util.Date;
@@ -48,10 +47,7 @@ public class DrawJob implements Job {
 			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "draw", "Calculating statistics");
 			Statistics global = createGlobalStats(ses, liveHubsList);
 			GenericDao.saveGeneric(ses, global);
-			//Clear cache
-			new LogsDao().addLog(ses, AppConstants.LOG_INFO, "draw", "Clearing image cache");
-			new ImageCacheDao().clearCache(ses);
-			
+
 			trn.commit();
 		} catch (OrmException e) {
 			exceptionMsg = e.getClass().getSimpleName()+" "+e.getMessage();
