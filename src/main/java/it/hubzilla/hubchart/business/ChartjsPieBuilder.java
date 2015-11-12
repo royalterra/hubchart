@@ -40,7 +40,7 @@ public class ChartjsPieBuilder {
 			"segmentStrokeWidth : 2, "+
 			"percentageInnerCutout : 50, "+ // This is 0 for Pie charts
 			"animationSteps : 100, "+
-			"animationEasing : \"easeOutBounce\", "+
+			"animationEasing : \"linear\", "+ // was easeOutBounce
 			"animateRotate : true, "+
 			"animateScale : true, "+
 			"tooltipTemplate: \"<%if (label){%><%=label%>: <%}%><%= value %>\", "+
