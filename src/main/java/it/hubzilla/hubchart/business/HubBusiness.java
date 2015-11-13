@@ -75,6 +75,7 @@ public class HubBusiness {
 			//Exists
 			Hubs hub = hubsDao.findByBaseUrlFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
+			id=hub.getId();
 			retrieveStats(ses, hub, pollTime);
 			
 			trn.commit();
