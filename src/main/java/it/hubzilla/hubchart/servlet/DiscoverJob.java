@@ -146,17 +146,16 @@ public class DiscoverJob implements Job {
 		int count = 0;
 		for(String url:urlList) {
 			count++;
-			Integer hubId = null;
+			Hubs hub = null;
 			String message = "";
 			try {
-				hubId = HubBusiness.addHub(url);
+				hub = HubBusiness.addHub(url);
 			} catch (BusinessException e) {
 				message = e.getMessage();
 			} catch (MalformedURLException e) {
 				message = e.getMessage();
 			}
-			if (hubId != null) {
-				Hubs hub = HubBusiness.findHubById(hubId);
+			if (hub != null) {
 				newHubList.add(hub);
 				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" saved <b>"+hub.getFqdn()+"</b>");
 			} else {

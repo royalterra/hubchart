@@ -91,7 +91,7 @@ public class InstallServlet extends HttpServlet {
 			throw new ServletException(e.getMessage(), e);
 		}
 		//Set the seed
-		Integer hubId = null;
+		Hubs hub = null;
 		if (emptyHubList) {
 			//Look for hub baseUrl
 			String pollUrl = null;
@@ -109,7 +109,7 @@ public class InstallServlet extends HttpServlet {
 				if (baseUrl != null) {
 					try {
 						//Revive or add hub
-						hubId = HubBusiness.addHub(baseUrl);
+						hub = HubBusiness.addHub(baseUrl);
 						message += "Your hub have been correctly registered.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 						success = true;
@@ -144,25 +144,20 @@ public class InstallServlet extends HttpServlet {
 				"&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");
-			if (hubId != null) {
-				try {
-					out.println("<p>");
-					Hubs hub = HubBusiness.findHubById(hubId);
-					out.println("Name: "+hub.getName()+"<br />");
-					out.println("Base URL: "+hub.getBaseUrl()+"<br />");
-					out.println("Network: <img src='"+
-							AppConstants.NETWORK_ICONS.get(hub.getNetworkType())+
-							"' border='0'/> "+
-							AppConstants.NETWORK_DESCRIPTIONS.get(hub.getNetworkType())+"<br />");
-					out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
-							hub.getCountryName()+"<br />");
-					out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
-							.get(hub.getRegistrationPolicy())+"<br />");
-					out.println("Version: "+hub.getVersion()+"<br />");
-					out.println("</p>");
-				} catch (OrmException e) {
-					out.println("<p style='color:#c60032;'>ERROR: "+e.getMessage()+"</p>");
-				}
+			if (hub != null) {
+				out.println("<p>");
+				out.println("Name: "+hub.getName()+"<br />");
+				out.println("Base URL: "+hub.getBaseUrl()+"<br />");
+				out.println("Network: <img src='"+
+						AppConstants.NETWORK_ICONS.get(hub.getNetworkType())+
+						"' border='0'/> "+
+						AppConstants.NETWORK_DESCRIPTIONS.get(hub.getNetworkType())+"<br />");
+				out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
+						hub.getCountryName()+"<br />");
+				out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
+						.get(hub.getRegistrationPolicy())+"<br />");
+				out.println("Version: "+hub.getVersion()+"<br />");
+				out.println("</p>");
 			}
 		} else {
 			out.println("<p style='color:#c60032;'>ERROR: "+message+"</p>");

@@ -5,7 +5,10 @@ import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.LookupUtil;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.StatisticBusiness;
 import it.hubzilla.hubchart.model.Hubs;
+import it.hubzilla.hubchart.model.Statistics;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -68,24 +71,33 @@ public class RegisterServlet extends HttpServlet {
 				}
 			}
 			
-			LOG.debug("baseUrl = "+baseUrl);
-			LOG.debug("response from pollUrl = "+pollUrl);
-			
+			LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "baseUrl = "+baseUrl);
+			LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "response from pollUrl = "+pollUrl);
+
 			if (baseUrl != null) {
 				try {
 					//Revive or add hub
+					Hubs hub;
 					try {
 						//First: check if it can be revived
-						hubId = HubBusiness.attemptToReviveHub(baseUrl);
-						message = "Your hub is marked as live.<br />"
+						hub = HubBusiness.attemptToReviveHub(baseUrl);
+						if (hub != null) LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "baseUrl = "+baseUrl);
+						message = hub.getFqdn()+" has been marked as live.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 					} catch (Exception e) {
 						//Second: If it cannot be revived then it must be added
-						hubId = HubBusiness.addHub(baseUrl);
-						message = "Your hub have been correctly registered.<br />"
+						hub = HubBusiness.addHub(baseUrl);
+						message = hub.getFqdn()+" has been correctly registered.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 					}
-					LOG.debug(message);
+					Statistics stats = StatisticBusiness.findLastStatisticBeanByFqdn(hub.getFqdn());
+					if (stats == null) {
+						message += " NO STATISTICS have been saved.";
+					} else {
+						message += " Stats data: time "+ AppConstants.FORMAT_DATETIME.format(stats.getPollTime())+
+								" channels (6 months) "+stats.getActiveChannelsLast6Months();
+					}
+					hubId = hub.getId();
 					success = true;
 				} catch (BusinessException e) {
 					message = e.getMessage();
@@ -103,7 +115,8 @@ public class RegisterServlet extends HttpServlet {
 			message = e.getMessage();
 			LOG.debug(e.getMessage(), e);
 		}
-
+		LogBusiness.addLog(AppConstants.LOG_INFO, "register", message);
+		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +

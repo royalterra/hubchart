@@ -27,9 +27,9 @@ public class HubBusiness {
 	//private static final Logger LOG = LoggerFactory.getLogger(HubBusiness.class);
 	private static HubsDao hubsDao = new HubsDao();
 	
-	public static Integer addHub(String baseUrl) throws BusinessException, OrmException,
+	public static Hubs addHub(String baseUrl) throws BusinessException, OrmException,
 			MalformedURLException {
-		Integer id = null;
+		Hubs result = null;
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
@@ -47,11 +47,12 @@ public class HubBusiness {
 			hub.setCreationTime(pollTime);
 			hub.setIdLastHubStats(0);
 			hub.setHidden(false);
-			id = (Integer) GenericDao.saveGeneric(ses, hub);
+			Integer id = (Integer) GenericDao.saveGeneric(ses, hub);
 			
 			//First poll
 			retrieveStats(ses, hub, pollTime);
-			
+			result = GenericDao.findById(ses, Hubs.class, id);
+					
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
@@ -62,12 +63,12 @@ public class HubBusiness {
 		} finally {
 			ses.close();
 		}
-		return id;
+		return result;
 	}
 	
-	public static Integer attemptToReviveHub(String baseUrl) throws BusinessException, OrmException,
+	public static Hubs attemptToReviveHub(String baseUrl) throws BusinessException, OrmException,
 			MalformedURLException {
-		Integer id = null;
+		Hubs result = null;
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
 		try {
@@ -75,9 +76,8 @@ public class HubBusiness {
 			//Exists
 			Hubs hub = hubsDao.findByBaseUrlFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
-			id=hub.getId();
 			retrieveStats(ses, hub, pollTime);
-			
+			result = hub;
 			trn.commit();
 		} catch (OrmException e) {
 			trn.rollback();
@@ -88,7 +88,7 @@ public class HubBusiness {
 		} finally {
 			ses.close();
 		}
-		return id;
+		return result;
 	}
 	
 	private static void retrieveStats(Session ses, Hubs hub, Date pollTime) throws OrmException {
