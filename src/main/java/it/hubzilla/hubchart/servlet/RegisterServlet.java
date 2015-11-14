@@ -70,9 +70,7 @@ public class RegisterServlet extends HttpServlet {
 					baseUrl = baseUrlParam;
 				}
 			}
-			
-			LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "baseUrl = "+baseUrl);
-			LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "response from pollUrl = "+pollUrl);
+			LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "pollUrl = "+pollUrl);
 
 			if (baseUrl != null) {
 				try {

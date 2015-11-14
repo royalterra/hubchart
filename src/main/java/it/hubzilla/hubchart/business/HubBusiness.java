@@ -12,6 +12,7 @@ import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
+import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -98,13 +99,23 @@ public class HubBusiness {
 		stats.setPollTime(pollTime);
 		try {
 			stats = PollBusiness.retrieveTransientStats(ses, hub, pollTime);
+			if (stats != null) {
+				new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "stats: "+hub.getFqdn()+
+						" id="+stats.getId()+" channels="+stats.getActiveChannelsLast6Months()+
+						" pollTime="+AppConstants.FORMAT_DATETIME.format(stats.getPollTime()));//TODO
+			} else {
+				new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "stats are null");//TODO
+			}
 			Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
 			hub.setIdLastHubStats(idStats);
 			hub.setLastSuccessfulPollTime(pollTime);
+			new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "hub: "+hub.getFqdn()+
+					" pollTime="+AppConstants.FORMAT_DATETIME.format(hub.getLastSuccessfulPollTime()));//TODO
 		} catch (UrlException e) {
 			//Exceptions are discarded
 		}
 		GenericDao.updateGeneric(ses, hub.getId(), hub);
+		new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "hub: "+hub.getFqdn()+" updated");//TODO
 	}
 
 	public static Hubs findHubById(Integer id) throws OrmException {
