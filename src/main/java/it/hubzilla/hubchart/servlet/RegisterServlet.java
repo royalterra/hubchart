@@ -85,6 +85,7 @@ public class RegisterServlet extends HttpServlet {
 						message = hub.getFqdn()+" has been marked as live.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 					} catch (Exception e) {
+						LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", e.getMessage());
 						//Second: If it cannot be revived then it must be added
 						hub = HubBusiness.addHub(baseUrl);
 						message = hub.getFqdn()+" has been correctly registered.<br />"

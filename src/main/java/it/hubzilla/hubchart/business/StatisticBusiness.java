@@ -28,7 +28,7 @@ public class StatisticBusiness {
 			Hubs hub = new HubsDao().findByFqdn(ses, fqdn);
 			Statistics stat = statisticsDao.findLastStatsByHub(ses, hub.getId());
 			result = new StatisticBean();
-			PropertyUtils.copyProperties(result, stat);
+			if (stat != null) PropertyUtils.copyProperties(result, stat);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} catch (MalformedURLException e) {
