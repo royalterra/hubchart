@@ -51,7 +51,12 @@ public class HubBusiness {
 			Integer id = (Integer) GenericDao.saveGeneric(ses, hub);
 			
 			//First poll
-			retrieveStats(ses, hub, pollTime);
+			try {
+				retrieveStats(ses, hub, pollTime);
+			} catch (UrlException e) {
+				//Exceptions are only logged
+				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "hub", hub.getFqdn()+": "+e.getMessage());
+			}
 			result = GenericDao.findById(ses, Hubs.class, id);
 					
 			trn.commit();
@@ -77,7 +82,12 @@ public class HubBusiness {
 			//Exists
 			Hubs hub = hubsDao.findByBaseUrlFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
-			retrieveStats(ses, hub, pollTime);
+			try {
+				retrieveStats(ses, hub, pollTime);
+			} catch (UrlException e) {
+				//Exceptions are only logged
+				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "hub", hub.getFqdn()+": "+e.getMessage());
+			}
 			result = hub;
 			trn.commit();
 		} catch (OrmException e) {
@@ -92,30 +102,16 @@ public class HubBusiness {
 		return result;
 	}
 	
-	private static void retrieveStats(Session ses, Hubs hub, Date pollTime) throws OrmException {
+	private static void retrieveStats(Session ses, Hubs hub, Date pollTime) throws OrmException, UrlException {
 		//First poll
 		Statistics stats = new Statistics();
 		stats.setHub(hub);
 		stats.setPollTime(pollTime);
-		try {
-			stats = PollBusiness.retrieveTransientStats(ses, hub, pollTime);
-			if (stats != null) {
-				new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "stats: "+hub.getFqdn()+
-						" id="+stats.getId()+" channels="+stats.getActiveChannelsLast6Months()+
-						" pollTime="+AppConstants.FORMAT_DATETIME.format(stats.getPollTime()));//TODO
-			} else {
-				new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "stats are null");//TODO
-			}
-			Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
-			hub.setIdLastHubStats(idStats);
-			hub.setLastSuccessfulPollTime(pollTime);
-			new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "hub: "+hub.getFqdn()+
-					" pollTime="+AppConstants.FORMAT_DATETIME.format(hub.getLastSuccessfulPollTime()));//TODO
-		} catch (UrlException e) {
-			//Exceptions are discarded
-		}
+		stats = PollBusiness.retrieveTransientStats(ses, hub, pollTime);
+		Integer idStats = (Integer) GenericDao.saveGeneric(ses, stats);
+		hub.setIdLastHubStats(idStats);
+		hub.setLastSuccessfulPollTime(pollTime);
 		GenericDao.updateGeneric(ses, hub.getId(), hub);
-		new LogsDao().addLog(ses, AppConstants.LOG_DEBUG, "stats", "hub: "+hub.getFqdn()+" updated");//TODO
 	}
 
 	public static Hubs findHubById(Integer id) throws OrmException {
