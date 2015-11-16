@@ -77,17 +77,18 @@ public class RegisterServlet extends HttpServlet {
 					//Revive or add hub
 					Hubs hub;
 					try {
-						//First: check if it can be revived
+						//Check if the hub has to be revived
 						hub = HubBusiness.attemptToReviveHub(baseUrl);
 						if (hub != null) LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", "baseUrl = "+baseUrl);
-						message = hub.getFqdn()+" has been marked as live.<br />"
-								+ "It will be included in global statistics within 24 hours.";
-					} catch (Exception e) {
+						message = hub.getFqdn()+" has been marked as live.<br />"+
+								"It will be included in global statistics within 24 hours.";
+					} catch (BusinessException e) {
+						//The hub is not known, it must be added
 						LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", e.getMessage());
-						//Second: If it cannot be revived then it must be added
+						//Second: If hub is not known then it must be added
 						hub = HubBusiness.addHub(baseUrl);
-						message = hub.getFqdn()+" has been correctly registered.<br />"
-								+ "It will be included in global statistics within 24 hours.";
+						message = hub.getFqdn()+" has been correctly registered.<br />"+
+								"It will be included in global statistics within 24 hours.";
 					}
 					Statistics stats = StatisticBusiness.findLastStatisticBeanByFqdn(hub.getFqdn());
 					if (stats == null) {
@@ -98,10 +99,12 @@ public class RegisterServlet extends HttpServlet {
 					}
 					hubId = hub.getId();
 					success = true;
-				} catch (BusinessException e) {
-					message = e.getMessage();
-				} catch (OrmException e) {
-					message = e.getMessage();
+					
+				} catch (Exception e) {
+					//UrlException, BusinessException and OrmException => exit with error message
+					LogBusiness.addLog(AppConstants.LOG_DEBUG, "register", e.getMessage());
+					message = baseUrl+" could not be added.<br />"+
+							"Cause: "+e.getMessage();
 					LOG.error(message, e);
 				}
 			} else {

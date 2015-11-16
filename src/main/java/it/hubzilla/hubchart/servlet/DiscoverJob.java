@@ -1,7 +1,6 @@
 package it.hubzilla.hubchart.servlet;
 
 import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.UrlException;
 import it.hubzilla.hubchart.business.HubBusiness;
@@ -10,7 +9,6 @@ import it.hubzilla.hubchart.business.PollBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -150,10 +148,10 @@ public class DiscoverJob implements Job {
 			String message = "";
 			try {
 				hub = HubBusiness.addHub(url);
-			} catch (BusinessException e) {
-				message = e.getMessage();
-			} catch (MalformedURLException e) {
-				message = e.getMessage();
+			} catch (Exception e) {
+				//UrlException, BusinessException and OrmException => exit with error message
+				message = url+" could not be added. "+e.getMessage();
+				LOG.error(message, e);
 			}
 			if (hub != null) {
 				newHubList.add(hub);

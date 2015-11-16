@@ -1,10 +1,10 @@
 package it.hubzilla.hubchart.servlet;
 
 import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.BusinessException;
 import it.hubzilla.hubchart.LookupUtil;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
 import it.hubzilla.hubchart.business.SettingsBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 
@@ -113,10 +113,11 @@ public class InstallServlet extends HttpServlet {
 						message += "Your hub have been correctly registered.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 						success = true;
-					} catch (BusinessException e) {
-						message = e.getMessage();
-					} catch (OrmException e) {
-						message = e.getMessage();
+					} catch (Exception e) {
+						//UrlException, BusinessException and OrmException => exit with error message
+						LogBusiness.addLog(AppConstants.LOG_DEBUG, "install", e.getMessage());
+						message = baseUrl+" could not be added.<br />"+
+								"Cause: "+e.getMessage();
 						LOG.error(message, e);
 					}
 				} else {

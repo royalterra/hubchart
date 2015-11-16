@@ -12,7 +12,6 @@ import it.hubzilla.hubchart.model.Statistics;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
-import it.hubzilla.hubchart.persistence.LogsDao;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,7 +28,7 @@ public class HubBusiness {
 	private static HubsDao hubsDao = new HubsDao();
 	
 	public static Hubs addHub(String baseUrl) throws BusinessException, OrmException,
-			MalformedURLException {
+			UrlException {
 		Hubs result = null;
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
@@ -51,12 +50,7 @@ public class HubBusiness {
 			Integer id = (Integer) GenericDao.saveGeneric(ses, hub);
 			
 			//First poll
-			try {
-				retrieveStats(ses, hub, pollTime);
-			} catch (UrlException e) {
-				//Exceptions are only logged
-				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "hub", hub.getFqdn()+": "+e.getMessage());
-			}
+			retrieveStats(ses, hub, pollTime);
 			result = GenericDao.findById(ses, Hubs.class, id);
 					
 			trn.commit();
@@ -66,6 +60,9 @@ public class HubBusiness {
 		} catch (BusinessException e) {
 			trn.rollback();
 			throw new BusinessException(e.getMessage(), e);
+		} catch (MalformedURLException e) {
+			trn.rollback();
+			throw new UrlException(e.getMessage(), e);
 		} finally {
 			ses.close();
 		}
@@ -73,7 +70,7 @@ public class HubBusiness {
 	}
 	
 	public static Hubs attemptToReviveHub(String baseUrl) throws BusinessException, OrmException,
-			MalformedURLException {
+			UrlException {
 		Hubs result = null;
 		Session ses = HibernateSessionFactory.getSession();
 		Transaction trn = ses.beginTransaction();
@@ -82,12 +79,7 @@ public class HubBusiness {
 			//Exists
 			Hubs hub = hubsDao.findByBaseUrlFqdn(ses, baseUrl);
 			if (hub == null) throw new BusinessException(baseUrl+" is not a known hub");
-			try {
-				retrieveStats(ses, hub, pollTime);
-			} catch (UrlException e) {
-				//Exceptions are only logged
-				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "hub", hub.getFqdn()+": "+e.getMessage());
-			}
+			retrieveStats(ses, hub, pollTime);
 			result = hub;
 			trn.commit();
 		} catch (OrmException e) {
@@ -96,6 +88,9 @@ public class HubBusiness {
 		} catch (BusinessException e) {
 			trn.rollback();
 			throw new BusinessException(e.getMessage(), e);
+		} catch (MalformedURLException e) {
+			trn.rollback();
+			throw new UrlException(e.getMessage(), e);
 		} finally {
 			ses.close();
 		}
