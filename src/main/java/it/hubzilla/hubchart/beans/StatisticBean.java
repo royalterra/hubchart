@@ -16,7 +16,9 @@ public class StatisticBean extends Statistics {
 	}
 	
 	public String getNetworkTypeIcon() {
-		return AppConstants.NETWORK_ICONS.get(this.getHub().getNetworkType());
+		String icon = AppConstants.NETWORK_ICONS.get(this.getHub().getNetworkType());
+		if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
+		return icon;
 	}
 	
 	public String getNetworkTypeDescr() {
