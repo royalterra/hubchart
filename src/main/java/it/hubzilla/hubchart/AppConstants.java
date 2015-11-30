@@ -110,12 +110,10 @@ public class AppConstants {
 	public static final String PARAM_GEO_PAGE = "geoPag";
 	
 	// LOOKUP: NETWORK TYPE
-	public static final String NETWORK_TYPE_UNKNOWN = "----";
-	public static final String NETWORK_TYPE_HUBZILLA = "HUBZ";
-	public static final String NETWORK_TYPE_RED = "RED#";
-	public static final String NETWORK_TYPE_FRIENDICA = "FRND";
-	public static final String NETWORK_TYPE_DIASPORA = "DSPR";
-	public static final String NETWORK_TYPE_RUSTY_RAZORBLADE = "RSRB";
+	public static final String NETWORK_TYPE_UNKNOWN = "--";
+	public static final String NETWORK_TYPE_HUBZILLA = "hubzilla";
+	public static final String NETWORK_TYPE_RED = "redmatrix";
+	public static final String NETWORK_TYPE_RUSTY_RAZORBLADE = "rusty razorblade";
 	public static final Map<String, String> NETWORK_TYPES = new HashMap<String, String>();
 	static {//key must be lowercase
 		NETWORK_TYPES.put("hubzilla", NETWORK_TYPE_HUBZILLA);
