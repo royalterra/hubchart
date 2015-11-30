@@ -39,7 +39,7 @@ public class NetworkTypeStatBean {
 	
 	public Double getPercentageValue() {
 		if (totalHubs != null) {
-			Double percentage = Math.floor((double)liveHubs/(double)totalHubs)*100;
+			Double percentage = Math.floor(((double)liveHubs/(double)totalHubs)*100);
 			return percentage;
 		}
 		return null;
