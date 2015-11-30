@@ -92,7 +92,9 @@ public class Hubs extends BaseEntity {
 
 	public String getVersionDescription() {
 		//Icon
-		String result = "<img src='"+AppConstants.NETWORK_ICONS.get(this.networkType)+"' "+
+		String icon = AppConstants.NETWORK_ICONS.get(this.networkType);
+		if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
+		String result = "<img src='"+icon+"' "+
 				"border='0' title='"+this.networkType+"' />";
 		//Adds VersionTag if possible
 		if (this.versionTag != null) {

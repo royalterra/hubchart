@@ -135,12 +135,6 @@ public class AppConstants {
 		NETWORK_ICONS.put(NETWORK_TYPE_RED,NETWORK_ICON_RED);
 		NETWORK_ICONS.put(NETWORK_TYPE_RUSTY_RAZORBLADE,NETWORK_ICON_RUSTY_RAZORBLADE);
 	};
-	public static final Map<String, String> NETWORK_DESCRIPTIONS = new HashMap<String, String>();
-	static {
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RED, "redmatrix");
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_HUBZILLA, "hubzilla");
-		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RUSTY_RAZORBLADE, "rusty razorblade");
-	};
 	// LOOKUP: REGISTRATION
 	public static final String REGISTRATION_OPEN = "OPEN";
 	public static final String REGISTRATION_APPROVE = "APPR";

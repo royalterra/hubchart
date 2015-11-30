@@ -298,10 +298,17 @@ public class PollBusiness {
 		// Network type
 		try {
 			String platform = jo.getString("platform");
-			if (platform != null) platform = platform.toLowerCase();
+			if (platform != null) {
+				if (platform.length() <32) {
+					hub.setNetworkType(platform);
+				} else {
+					hub.setNetworkType(platform.substring(0, 31));
+				}
+				platform = platform.toLowerCase();
+			}
+			//Attempt network type name normalization
 			String networkType = AppConstants.NETWORK_TYPES.get(platform);
-			if (networkType == null) networkType = AppConstants.NETWORK_TYPE_UNKNOWN;
-			hub.setNetworkType(networkType);
+			if (networkType != null) hub.setNetworkType(networkType);
 		} catch (Exception e) { }
 		// Version
 		try {

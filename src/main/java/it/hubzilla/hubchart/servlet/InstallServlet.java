@@ -149,10 +149,9 @@ public class InstallServlet extends HttpServlet {
 				out.println("<p>");
 				out.println("Name: "+hub.getName()+"<br />");
 				out.println("Base URL: "+hub.getBaseUrl()+"<br />");
-				out.println("Network: <img src='"+
-						AppConstants.NETWORK_ICONS.get(hub.getNetworkType())+
-						"' border='0'/> "+
-						AppConstants.NETWORK_DESCRIPTIONS.get(hub.getNetworkType())+"<br />");
+				String icon = AppConstants.NETWORK_ICONS.get(hub.getNetworkType());
+				if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
+				out.println("Network: <img src='"+icon+"' border='0'/> "+hub.getNetworkType()+"<br />");
 				out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
 						hub.getCountryName()+"<br />");
 				out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS

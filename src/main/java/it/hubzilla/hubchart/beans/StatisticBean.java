@@ -20,7 +20,7 @@ public class StatisticBean extends Statistics {
 	}
 	
 	public String getNetworkTypeDescr() {
-		return AppConstants.NETWORK_DESCRIPTIONS.get(this.getHub().getNetworkType());
+		return this.getHub().getNetworkType();
 	}
 	
 	public String getRegistrationPolicyDescr() {
