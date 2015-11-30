@@ -74,7 +74,7 @@ public class PresentationBusiness {
 					for (int i=0; i<max; i++) {
 						String networkTypeIcon = AppConstants.NETWORK_ICONS.get(stats.get(i).getNetworkTypeName());
 						if (networkTypeIcon == null) networkTypeIcon = AppConstants.NETWORK_ICON_UNKNOWN;
-						if (stats.get(i).getPercentageValue() > 1) {
+						if (stats.get(i).getPercentageValue().doubleValue() > 1D) {
 							result += "&nbsp;<img src='"+networkTypeIcon+
 									"' title='"+stats.get(i).getNetworkTypeName()+
 									"'/> "+stats.get(i).getPercentageString()+" ";
