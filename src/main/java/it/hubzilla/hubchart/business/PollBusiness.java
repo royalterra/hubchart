@@ -297,7 +297,9 @@ public class PollBusiness {
 		}
 		// Network type
 		try {
-			String networkType = AppConstants.NETWORK_TYPES.get(jo.getString("platform"));
+			String platform = jo.getString("platform");
+			if (platform != null) platform = platform.toLowerCase();
+			String networkType = AppConstants.NETWORK_TYPES.get(platform);
 			if (networkType == null) networkType = AppConstants.NETWORK_TYPE_UNKNOWN;
 			hub.setNetworkType(networkType);
 		} catch (Exception e) { }

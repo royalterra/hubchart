@@ -115,26 +115,31 @@ public class AppConstants {
 	public static final String NETWORK_TYPE_RED = "RED#";
 	public static final String NETWORK_TYPE_FRIENDICA = "FRND";
 	public static final String NETWORK_TYPE_DIASPORA = "DSPR";
+	public static final String NETWORK_TYPE_RUSTY_RAZORBLADE = "RSRB";
 	public static final Map<String, String> NETWORK_TYPES = new HashMap<String, String>();
 	static {//key must be lowercase
 		NETWORK_TYPES.put("hubzilla", NETWORK_TYPE_HUBZILLA);
 		NETWORK_TYPES.put("redmatrix", NETWORK_TYPE_RED);
 		NETWORK_TYPES.put("red matrix", NETWORK_TYPE_RED);
-		NETWORK_TYPES.put("Red Matrix", NETWORK_TYPE_RED);
+		NETWORK_TYPES.put("rusty razorblade", NETWORK_TYPE_RUSTY_RAZORBLADE);
+		NETWORK_TYPES.put("rustyrazorblade", NETWORK_TYPE_RUSTY_RAZORBLADE);
 	};
 	public static final String NETWORK_ICON_UNKNOWN = "images/unknown-16.png";
 	public static final String NETWORK_ICON_HUBZILLA = "images/home-16.png";
 	public static final String NETWORK_ICON_RED = "images/rm-16.png";
+	public static final String NETWORK_ICON_RUSTY_RAZORBLADE = "images/razorblade-16.png";
 	public static final Map<String, String> NETWORK_ICONS = new HashMap<String, String>();
 	static {
 		NETWORK_ICONS.put(NETWORK_TYPE_UNKNOWN, NETWORK_ICON_UNKNOWN);
 		NETWORK_ICONS.put(NETWORK_TYPE_HUBZILLA,NETWORK_ICON_HUBZILLA);
 		NETWORK_ICONS.put(NETWORK_TYPE_RED,NETWORK_ICON_RED);
+		NETWORK_ICONS.put(NETWORK_TYPE_RUSTY_RAZORBLADE,NETWORK_ICON_RUSTY_RAZORBLADE);
 	};
 	public static final Map<String, String> NETWORK_DESCRIPTIONS = new HashMap<String, String>();
 	static {
 		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RED, "redmatrix");
 		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_HUBZILLA, "hubzilla");
+		NETWORK_DESCRIPTIONS.put(NETWORK_TYPE_RUSTY_RAZORBLADE, "rusty razorblade");
 	};
 	// LOOKUP: REGISTRATION
 	public static final String REGISTRATION_OPEN = "OPEN";
