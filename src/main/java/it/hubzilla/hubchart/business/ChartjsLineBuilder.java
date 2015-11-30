@@ -103,12 +103,14 @@ public class ChartjsLineBuilder {
 		String values = "";
 		for (int i = 0; i < dataList.getDataPoints().size(); i++) {
 			ChartPoint point = dataList.getDataPoints().get(i);
-			if (i > 0) {
-				labels += ",";
-				values += ",";
+			if (point.getY() != null) {
+				if (i > 0) {
+					labels += ",";
+					values += ",";
+				}
+				labels += "\""+point.getLabel()+"\" ";
+				values += DF.format(point.getY());
 			}
-			labels += "\""+point.getLabel()+"\" ";
-			values += DF.format(point.getY());
 		}
 		String out =
 			"var "+elementId+"Options = {"+options+"};"+
