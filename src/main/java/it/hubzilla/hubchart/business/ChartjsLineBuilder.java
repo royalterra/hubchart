@@ -92,7 +92,7 @@ public class ChartjsLineBuilder {
 				"var options = {"+
 					"curveType: 'function',\r\n"+
 					"chartArea: {"+
-						"top: 10, left: 40,"+
+						"top: 10, left: 50,"+
 						"width: '100%', height: '100%'"+
 					"},\r\n"+
 					"animation: {"+
