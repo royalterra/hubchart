@@ -14,7 +14,7 @@
 	//Tables
 	ChartjsBuilder builder = ChartjsBuilder.getInstance();
 	builder.clearCharts();
-	builder.addChart("hubChart", null, stat.getId(), AppConstants.CHART_TYPE_HUB_CHANNELS);
+	builder.addChart("hubChart", stat.getId(), AppConstants.CHART_TYPE_HUB_CHANNELS);
 %>
 <html>
 <head>
@@ -43,7 +43,6 @@
 	<![endif]-->
 
 <!-- Chart scripts -->
-<script src="js/Chart.min.js" type="text/javascript"></script>
 <%=builder.chartLoader()%>
 </head>
 <body>
@@ -155,7 +154,7 @@
 		<div class="col-sm-7">
 			<c:if test='${not empty stat.activeChannelsLast6Months}'>
 				<h4>active channels history</h4>
-				<canvas id="hubChart" style="height: 300px; width: 100%;"></canvas>
+				<div id="hubChart" style="height: 300px; width: 100%;"></div>
 			</c:if>
 			<table class="table table-condensed small"
 				style="width: 100%; border-collapse: collapse">

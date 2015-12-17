@@ -16,14 +16,13 @@ import org.hibernate.Session;
 
 public class ChartjsLineBuilder {
 	
-	public static final String COLOUR_FILL = "rgba(67,72,138,0.2)";
-	public static final String COLOUR_STROKE = "rgba(67,72,138,1)";
+	public static final String COLOUR_STROKE = "#43488A";
 	public static final DecimalFormat DF = new DecimalFormat("0");
 	
-	protected static String buildAllChartsScript(String elementId, Integer statId, String chartType) throws OrmException {
+	protected static String buildAllChartsScript(String elementId, Integer statId, String chartType,
+			String labelDesc, String valueDesc) throws OrmException {
 		String out = "Error rendering chart";
-		String title = AppConstants.CHART_TYPE_DESCRIPTIONS.get(chartType);
-		ChartData cd = new ChartData(false, title);
+		ChartData cd = new ChartData(false, "Chart");
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			//Find the correct stat list by chartType
@@ -68,10 +67,7 @@ public class ChartjsLineBuilder {
 					}
 				}
 			}
-			out = buildLineChartScript(elementId, title,
-					COLOUR_FILL, COLOUR_STROKE,
-					COLOUR_STROKE, COLOUR_STROKE,
-					cd);
+			out = buildLineChartScript(elementId, cd, labelDesc, valueDesc);
 		} catch (OrmException e) {
 			throw new OrmException(e.getMessage(), e);
 		} finally {
@@ -80,57 +76,38 @@ public class ChartjsLineBuilder {
 		return out;
 	}
 	
-	private static String buildLineChartScript(String elementId, String title,
-			String fillColor, String strokeColor, String pointColor, String pointHighlightStroke,
-			ChartData dataList) {
-		String options = 
-			    "scaleShowGridLines : false,"+
-			    "scaleGridLineColor : \"rgba(0,0,0,.05)\","+
-			    "scaleGridLineWidth : 1,"+
-			    "scaleShowHorizontalLines: false,"+
-			    "scaleShowVerticalLines: false,"+
-			    "bezierCurve : true,"+
-			    "bezierCurveTension : 0.4,"+
-			    "pointDot : true,"+
-			    "pointDotRadius : 4,"+
-			    "pointDotStrokeWidth : 1,"+
-			    "pointHitDetectionRadius : 20,"+
-			    "datasetStroke : true,"+
-			    "datasetStrokeWidth : 2,"+
-			    "datasetFill : true,"+
-			    "tooltipTemplate: \""+title+" <%if (label){%><%=label%>: <%}%><%= value %>\"";
-		String labels = "";
-		String values = "";
+	private static String buildLineChartScript(String elementId,
+			ChartData dataList, String labelDesc, String valueDesc) {
+		String out = "<script type=\"text/javascript\">\r\n"+
+			//"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});"+
+			"google.setOnLoadCallback(drawChart);\r\n"+
+			"function drawChart() {\r\n"+
+				"var data = google.visualization.arrayToDataTable([\r\n"+
+					"['"+labelDesc+"','"+valueDesc+"']";
 		for (int i = 0; i < dataList.getDataPoints().size(); i++) {
 			ChartPoint point = dataList.getDataPoints().get(i);
-			if (point.getY() != null) {
-				if (i > 0) {
-					labels += ",";
-					values += ",";
-				}
-				labels += "\""+point.getLabel()+"\" ";
-				values += DF.format(point.getY());
-			}
+			out += ", ['"+point.getLabel()+"',"+DF.format(point.getY())+"]";
 		}
-		String out =
-			"var "+elementId+"Options = {"+options+"};"+
-			"var "+elementId+"Ctx = document.getElementById('"+elementId+"').getContext('2d');"+
-			"var "+elementId+"Data = {"+
-			    "labels: ["+labels+"],"+
-			    "datasets: ["+
-			        "{"+
-			            "label: \""+title+"\", "+
-			            "fillColor: \""+fillColor+"\", "+
-			            "strokeColor: \""+strokeColor+"\", "+
-			            "pointColor: \""+pointColor+"\", "+
-			            "pointStrokeColor: \"#fff\", "+
-			            "pointHighlightFill: \"#fff\", "+
-			            "pointHighlightStroke: \""+pointHighlightStroke+"\", "+
-			            "data: ["+values+"]"+
-			        "}"+
-			    "]"+
-			"};"+
-			"var "+elementId+"Chart = new Chart("+elementId+"Ctx).Line("+elementId+"Data, "+elementId+"Options);\r\n";
+		out +=	"]);\r\n"+
+				"var options = {"+
+					"curveType: 'function',\r\n"+
+					"chartArea: {"+
+						"top: 10, left: 40,"+
+						"width: '100%', height: '100%'"+
+					"},\r\n"+
+					"animation: {"+
+						"duration: 2000, "+
+						"startup: 'true', "+
+						"easing: 'out' "+
+					"},\r\n"+
+					"series: {\r\n"+
+						"0: { color: '"+COLOUR_STROKE+"' }"+
+					"}\r\n"+
+				"};\r\n"+
+				"var chart = new google.visualization.LineChart(document.getElementById('"+elementId+"'));\r\n"+
+				"chart.draw(data, options);\r\n"+
+			"}\r\n"+
+		"</script>\r\n";	
 		return out;
 	}
 	

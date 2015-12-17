@@ -42,9 +42,9 @@
 	//Tables
 	ChartjsBuilder builder = ChartjsBuilder.getInstance();
 	builder.clearCharts();
-	builder.addChart("versionChart", "versionLegend", null, AppConstants.CHART_TYPE_VERSIONS);
-	builder.addChart("gridHubsChart", null, gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
-	builder.addChart("gridChannelsChart", null, gs.getId(), AppConstants.CHART_TYPE_TOTAL_CHANNELS);
+	builder.addChart("versionChart", null, AppConstants.CHART_TYPE_VERSIONS);
+	builder.addChart("gridHubsChart", gs.getId(), AppConstants.CHART_TYPE_TOTAL_HUBS);
+	builder.addChart("gridChannelsChart", gs.getId(), AppConstants.CHART_TYPE_TOTAL_CHANNELS);
 %>
 <html>
 <head>
@@ -70,7 +70,6 @@
 	<![endif]-->
 
 <!-- Chart scripts -->
-<script src="js/Chart.min.js" type="text/javascript"></script>
 <%=builder.chartLoader()%>
 </head>
 <body>
@@ -89,11 +88,8 @@
 			<div class="col-sm-6">
 				&nbsp;
 				<h4>deployed versions</h4>
-				<div class="col-sm-6">
-					<canvas id="versionChart" style="height: 210px; width: 100%;"></canvas>
-				</div>
-				<div class="col-sm-6">
-					<div id="versionLegend"></div>
+				<div class="col-sm-12">
+					<div id="versionChart" style="height: 210px; width: 100%;"></div>
 				</div>
 			</div>
 		</div>
@@ -102,11 +98,11 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<h4>active hubs</h4>
-				<canvas id="gridHubsChart" style="height: 210px; width: 100%;"></canvas>
+				<div id="gridHubsChart" style="height: 210px; width: 100%;"></div>
 			</div>
 			<div class="col-sm-6">
 				<h4>active channels</h4>
-				<canvas id="gridChannelsChart" style="height: 210px; width: 100%;"></canvas>
+				<div id="gridChannelsChart" style="height: 210px; width: 100%;"></div>
 			</div>
 		</div>
 		

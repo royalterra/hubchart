@@ -20,7 +20,8 @@ public class ChartjsPieBuilder {
 	public static final String CHART_HUBZ_COLOUR = "#43488A";
 	public static final String CHART_HUBZ_HIGHLIGHT = "#9da4fb";
 	
-	protected static String buildChartScript(String elementId, String divLegendId) throws OrmException {
+	protected static String buildChartScript(String elementId,
+			String labelDesc, String valueDesc) throws OrmException {
 		String out = "Error rendering chart";
 		Long totalHubs = 0L;
 		Session ses = HibernateSessionFactory.getSession();
@@ -34,18 +35,35 @@ public class ChartjsPieBuilder {
 		List<VersionTagStatBean> vbeanList = PresentationBusiness
 				.findVersionTagStatBeans(totalHubs.intValue(), MAX_VERSIONS_SHOWN);
 		
-		String options = 
-			"segmentShowStroke : true, "+
-			"segmentStrokeColor : \"#fff\", "+
-			"segmentStrokeWidth : 2, "+
-			"percentageInnerCutout : 50, "+ // This is 0 for Pie charts
-			"animationSteps : 40, "+
-			"animationEasing : \"linear\", "+ // was easeOutBounce
-			"animateRotate : false, "+
-			"animateScale : true, "+
-			"tooltipTemplate: \"<%if (label){%><%=label%>: <%}%><%= value %>\", "+
-			"legendTemplate : \"<ul class=\\\"<%=name.toLowerCase()%>-legend\\\"><% for (var i=0; i<segments.length; i++){%><li><span style=\\\"background-color:<%=segments[i].fillColor%>\\\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>\"";
-		String data = "";
+		out = "<script type=\"text/javascript\">\r\n"+
+			//"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});\r\n"+
+			"google.setOnLoadCallback(drawChart);\r\n"+
+			"function drawChart() {\r\n"+
+				"var data = google.visualization.arrayToDataTable([\r\n"+
+					"['"+labelDesc+"','"+valueDesc+"']";
+		for (int i = 0; i < vbeanList.size(); i++) {
+			VersionTagStatBean vBean = vbeanList.get(i);
+			String label = vBean.getNetworkType()+" "+
+					vBean.getVersionTag()+" - "+vBean.getPercentage();
+			out += ", ['"+label+"',"+vBean.getLiveHubs()+"]";
+		}
+		out += "]);\r\n"+
+				"var options = {"+
+					"pieHole: 0.45, "+
+					"chartArea: {"+
+						"top: 10, left: 10,"+
+						"width: '100%', height: '100%'"+
+					"},\r\n"+
+					"legend: {"+
+						"position: 'right', "+
+						"maxLines: "+MAX_VERSIONS_SHOWN+", "+
+					"},\r\n"+
+					"animation: {"+
+						"duration: 2000, "+
+						"startup: 'true', "+
+						"easing: 'out' "+
+					"},\r\n"+
+					"slices: {\r\n";
 		for (int i = 0; i < vbeanList.size(); i++) {
 			VersionTagStatBean vBean = vbeanList.get(i);
 			String colour1 = CHART_HUBZ_HIGHLIGHT;
@@ -54,23 +72,16 @@ public class ChartjsPieBuilder {
 				colour1 = CHART_RED_HIGHLIGHT;
 				colour2 = CHART_RED_COLOUR;
 			}
-			if (i > 0) data += ",";
-			data += "{"+
-				"value: "+vBean.getLiveHubs()+","+
-				"color: \""+ColourBusiness.getColourShade(colour1, colour2,
-						new Double(i), new Double(vbeanList.size()))+"\","+
-				/*"highlight: \""+ColourBusiness.getColourShade(CHART_LINE_COLOUR, CHART_HIGHLIGHT_COLOUR,
-						vBean.getLiveHubs().doubleValue() ,totalHubs.doubleValue())+"\","+*/
-				"label: \""+vBean.getNetworkType()+" "+
-						vBean.getVersionTag()+" - "+
-						vBean.getPercentage()+"\""+
-				"}";
+			if (i > 0) out += ", ";
+			out += i+": { color: '"+ColourBusiness.getColourShade(colour1, colour2,
+					new Double(i), new Double(vbeanList.size()))+"'}\r\n";
 		}
-		out = "var "+elementId+"Data = ["+data+"];"+
-				"var "+elementId+"Options = {"+options+"};"+
-				"var "+elementId+"Ctx = document.getElementById('"+elementId+"').getContext('2d');"+
-				"var "+elementId+"Doughnut = new Chart("+elementId+"Ctx).Doughnut("+elementId+"Data, "+elementId+"Options);"+
-				"document.getElementById('"+divLegendId+"').innerHTML = "+elementId+"Doughnut.generateLegend();\r\n";
+		out +=		"}\r\n"+//slices
+				"};\r\n"+//options
+				"var chart = new google.visualization.PieChart(document.getElementById('"+elementId+"'));\r\n"+
+				"chart.draw(data, options);\r\n"+
+			"}\r\n"+//function
+			"</script>\r\n";
 		return out;
 	}
 	

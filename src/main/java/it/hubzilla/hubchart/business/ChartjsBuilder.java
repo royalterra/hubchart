@@ -22,8 +22,8 @@ public class ChartjsBuilder {
 		return instance;
 	}
 	
-	public void addChart(String elementId, String divLegendId, Integer statId, String chartType) {
-		Chart chart = new Chart(elementId, divLegendId, statId, chartType);
+	public void addChart(String elementId, Integer statId, String chartType) {
+		Chart chart = new Chart(elementId, statId, chartType);
 		chartList.add(chart);
 	}
 	
@@ -32,17 +32,21 @@ public class ChartjsBuilder {
 	}
 	
 	public String chartLoader() throws OrmException {
-		String out = "<script type=\"text/javascript\">"+
-			"window.onload = function () {";
+		String out = //"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>"+
+			"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi?autoload={"+
+				"'modules':[{"+
+					"'name':'visualization',"+
+					"'version':'1',"+
+					"'packages':['corechart']"+
+				"}]"+
+			"}\"></script>";
 		for (Chart chart:chartList) {
 			if (chart.chartType.equals(AppConstants.CHART_TYPE_VERSIONS)) {
-				out += ChartjsPieBuilder.buildChartScript(chart.getElementId(), chart.getDivLegendId());
+				out += ChartjsPieBuilder.buildChartScript(chart.getElementId(), "Version", "Count");
 			} else {
-				out += ChartjsLineBuilder.buildAllChartsScript(chart.getElementId(), chart.getStatId(), chart.getChartType());
+				out += ChartjsLineBuilder.buildAllChartsScript(chart.getElementId(), chart.getStatId(), chart.getChartType(), "Date", "Count");
 			}
 		}
-	    out += "}"+// /onload function
-	    "</script>";
 		return out;
 	}
 	
@@ -52,21 +56,16 @@ public class ChartjsBuilder {
 	
 	public static class Chart {
 		private String elementId;
-		private String divLegendId;
 		private Integer statId;
 		private String chartType;
 		
-		public Chart(String elementId, String divLegendId, Integer statId, String chartType) {
+		public Chart(String elementId, Integer statId, String chartType) {
 			this.elementId=elementId;
-			this.divLegendId=divLegendId;
 			this.statId=statId;
 			this.chartType=chartType;
 		}
 		public String getElementId() {
 			return elementId;
-		}
-		public String getDivLegendId() {
-			return divLegendId;
 		}
 		public Integer getStatId() {
 			return statId;
