@@ -50,6 +50,10 @@ public class ChartjsPieBuilder {
 		out += "]);\r\n"+
 				"var options = {"+
 					"pieHole: 0.45, "+
+					"pieSliceText: 'none',\r\n"+
+					"tooltip: {"+
+						"text: 'value' "+
+					"},\r\n"+
 					"chartArea: {"+
 						"top: 10, left: 10,"+
 						"width: '100%', height: '100%'"+
