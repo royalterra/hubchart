@@ -194,7 +194,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<script>
-   				document.write('<a href="' + document.referrer + '"><img src="images/hz-16.png" align="middle" />&nbsp;Back to main page</a>');
+   				document.write('<a href="index.jsp"><img src="images/hz-16.png" align="middle" />&nbsp;Back to main page</a>');
 			</script>
 		</div>
 	</div>
