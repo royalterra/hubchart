@@ -56,6 +56,9 @@ public class Hubs extends BaseEntity {
 	private String networkType;
 	@Column(name = "registration_policy", length = 4)
 	private String registrationPolicy;
+	@Basic(optional = false)
+	@Column(name = "invitation_only", nullable = false)
+	private boolean invitationOnly;
 	@Column(name = "directory_mode", length = 4)
 	private String directoryMode;
 	@Column(name = "version", length = 32)
@@ -210,6 +213,14 @@ public class Hubs extends BaseEntity {
 
 	public void setRegistrationPolicy(String registrationPolicy) {
 		this.registrationPolicy = registrationPolicy;
+	}
+
+	public boolean getInvitationOnly() {
+		return invitationOnly;
+	}
+
+	public void setInvitationOnly(boolean invitationOnly) {
+		this.invitationOnly = invitationOnly;
 	}
 
 	public String getVersion() {

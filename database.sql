@@ -81,6 +81,7 @@ CREATE TABLE `hubs` (
   `country_code` varchar(4) DEFAULT NULL,
   `network_type` varchar(32) NOT NULL,
   `registration_policy` varchar(4) DEFAULT NULL,
+  `invitation_only` bit(1) NOT NULL DEFAULT b'0',
   `version` varchar(32) DEFAULT NULL,
   `last_successful_poll_time` timestamp DEFAULT NULL,
   `id_last_hub_stats` int(11) NOT NULL,

@@ -323,6 +323,22 @@ public class PollBusiness {
 			String registrationPolicy = LookupUtil.encodeRegistrationPolicy(jo.getString("register_policy"));
 			hub.setRegistrationPolicy(registrationPolicy);
 		} catch (Exception e) { }
+		// Is invitation only?
+		boolean invite = false;
+		try {
+			Integer inviteInt = jo.getInt("invitation_only");
+			if (inviteInt != null) {
+				if (inviteInt > 0) invite = true;
+			}
+		} catch (Exception e1) {
+			try {
+				String inviteString = jo.getString("invitation_only").toString();
+				if (inviteString != null) {
+					if (inviteString.equals("1")) invite = true;
+				}
+			} catch (Exception e2) {/* Any exception is discarded */}
+		}
+		stats.getHub().setInvitationOnly(invite);
 		// Directory mode
 		try {
 			String directoryMode = LookupUtil.encodeDirectoryMode(jo.getString("directory_mode"));
@@ -413,7 +429,6 @@ public class PollBusiness {
 			if (hiddenInt != null) {
 				if (hiddenInt > 0) hidden = true;
 			}
-			
 		} catch (Exception e1) {
 			try {
 				String hiddenString = jo.getString("hide_in_statistics").toString();
