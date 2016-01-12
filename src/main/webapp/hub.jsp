@@ -115,7 +115,7 @@
 					</tr>
 					<c:if test="${not empty stat.hub.registrationPolicy}">
 						<tr>
-							<td>Registrations</td>
+							<td>Registration</td>
 							<td>
 								<b>${stat.registrationPolicyDescr}</b>
 							</td>
