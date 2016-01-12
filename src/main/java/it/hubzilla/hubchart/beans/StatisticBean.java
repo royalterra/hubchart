@@ -26,7 +26,12 @@ public class StatisticBean extends Statistics {
 	}
 	
 	public String getRegistrationPolicyDescr() {
-		return AppConstants.REGISTRATION_DESCRIPTIONS.get(this.getHub().getRegistrationPolicy());
+		String rpd = AppConstants.REGISTRATION_DESCRIPTIONS.get(this.getHub().getRegistrationPolicy());
+		if (this.getHub().getRegistrationPolicy().equals(AppConstants.REGISTRATION_OPEN) &&
+				this.getHub().getInvitationOnly()) {
+			return "Invite";
+		}
+		return rpd;
 	}
 	
 	public String getDirectoryDescr() {
