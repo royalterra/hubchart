@@ -61,9 +61,9 @@ public class Hubs extends BaseEntity {
 	private boolean invitationOnly;
 	@Column(name = "directory_mode", length = 4)
 	private String directoryMode;
-	@Column(name = "version", length = 32)
+	@Column(name = "version", length = 64)
 	private String version;
-	@Column(name = "version_tag", length = 32)
+	@Column(name = "version_tag", length = 64)
 	private String versionTag;
 	@Basic(optional = false)
 	@Column(name = "hidden", nullable = false)

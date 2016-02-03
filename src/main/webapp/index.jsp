@@ -78,7 +78,7 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<h1>
-					<img src="images/hubchart1-32.png" align="middle" /> hubchart <img src="images/beta.png" align="bottom" />
+					<img src="images/hubchart1-32.png" align="middle" /> hubchart <!--img src="images/beta.png" align="bottom" /-->
 				</h1>
 				<a href="http://hubzilla.org"><b>hubzilla - community server</b></a>
 				grid statistics<br /> &nbsp;<br />
