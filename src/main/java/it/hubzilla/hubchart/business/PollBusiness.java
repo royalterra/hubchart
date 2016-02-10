@@ -312,11 +312,19 @@ public class PollBusiness {
 		} catch (Exception e) { }
 		// Version
 		try {
-			hub.setVersion(jo.getString("version"));
+			String version = jo.getString("version");
+			if (version != null) {
+				if (version.length() >= AppConstants.VERSION_SIZE) version = version.substring(0, AppConstants.VERSION_SIZE);
+				hub.setVersion(version);
+			}
 		} catch (Exception e) { }
 		// Version tag
 		try {
-			hub.setVersionTag(jo.getString("version_tag"));
+			String versionTag = jo.getString("version_tag");
+			if (versionTag != null) {
+				if (versionTag.length() >= AppConstants.VERSION_SIZE) versionTag = versionTag.substring(0, AppConstants.VERSION_SIZE);
+				hub.setVersion(versionTag);
+			}
 		} catch (Exception e) { }
 		// Registration policy
 		try {

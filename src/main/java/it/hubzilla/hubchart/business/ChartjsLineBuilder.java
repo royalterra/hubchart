@@ -86,7 +86,12 @@ public class ChartjsLineBuilder {
 					"['"+labelDesc+"','"+valueDesc+"']";
 		for (int i = 0; i < dataList.getDataPoints().size(); i++) {
 			ChartPoint point = dataList.getDataPoints().get(i);
-			out += ", ['"+point.getLabel()+"',"+DF.format(point.getY())+"]";
+			try {
+				out += ", ['"+point.getLabel()+"',"+DF.format(point.getY())+"]";
+			} catch (IllegalArgumentException e) {/*Cannot format Y as a number*/
+				System.out.println(e.getMessage()+": '"+point.getY()+"'");
+				e.printStackTrace();
+			}
 		}
 		out +=	"]);\r\n"+
 				"var options = {"+

@@ -47,6 +47,7 @@ public class AppConstants {
 	public static final int FEED_DAYS_BEFORE_DELETION = 10;
 	
 	// FORMATS
+	public static final int VERSION_SIZE = 63;
 	public static final String STRING_SEPARATOR = ";";
 	public static final String PATTERN_DATETIME = "dd/MM/yyyy HH:mm";
 	public static final String PATTERN_TIMESTAMP = "dd/MM/yyyy HH:mm:ss z";//"dd/MM/yyyy HH:mm";
