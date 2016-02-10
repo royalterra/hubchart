@@ -89,8 +89,7 @@ public class ChartjsLineBuilder {
 			try {
 				out += ", ['"+point.getLabel()+"',"+DF.format(point.getY())+"]";
 			} catch (IllegalArgumentException e) {/*Cannot format Y as a number*/
-				System.out.println(e.getMessage()+": '"+point.getY()+"'");
-				e.printStackTrace();
+				System.out.println(e.getMessage()+": label="+point.getLabel()+" Y="+point.getY());
 			}
 		}
 		out +=	"]);\r\n"+

@@ -68,6 +68,7 @@ public class PollJob implements Job {
 			exceptionMsg = e.getClass().getSimpleName()+" "+e.getMessage();
 			trn.rollback();
 			LOG.error(e.getMessage(), e);
+			e.printStackTrace();
 			throw new JobExecutionException(e.getMessage(), e);
 		} finally {
 			ses.close();
