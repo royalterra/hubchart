@@ -47,7 +47,7 @@
 			<description>Enqueue hubs to poll</description>
 			<job-class>it.hubzilla.hubchart.servlet.EnqueueJob</job-class>
 			<job-data-map>
-				<entry><key>afterDeathCheckDays</key><value>14;21;30;60;90;120;180;360;540;720</value></entry>
+				<entry><key>afterDeathCheckDays</key><value>6;7;8;9;10;11;12;13;14;21;30;60;90;120;180;360;540;720</value></entry>
 			</job-data-map>
 		</job>
 		<trigger>
