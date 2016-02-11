@@ -1,18 +1,5 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.BusinessException;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.business.FeedBusiness;
-import it.hubzilla.hubchart.business.LogBusiness;
-import it.hubzilla.hubchart.business.VisitorBusiness;
-import it.hubzilla.hubchart.model.Hubs;
-import it.hubzilla.hubchart.model.Statistics;
-import it.hubzilla.hubchart.persistence.GenericDao;
-import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubsDao;
-import it.hubzilla.hubchart.persistence.LogsDao;
-
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +10,18 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.BusinessException;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.business.FeedBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.model.Hubs;
+import it.hubzilla.hubchart.model.Statistics;
+import it.hubzilla.hubchart.persistence.GenericDao;
+import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
+import it.hubzilla.hubchart.persistence.HubsDao;
+import it.hubzilla.hubchart.persistence.LogsDao;
 
 public class DrawJob implements Job {
 	
@@ -73,7 +72,6 @@ public class DrawJob implements Job {
 		//Additionally delete old logging and stuff on the server
 		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "Removing old log entries");
 		LogBusiness.deleteOldLogs();
-		VisitorBusiness.deleteOldVisitors();
 		
 		LogBusiness.addLog(AppConstants.LOG_INFO, "draw", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");

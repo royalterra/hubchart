@@ -47,10 +47,10 @@ public class Hubs extends BaseEntity {
 	private String name;
 	@Column(name = "ip_address", length = 64)
 	private String ipAddress;
-	@Column(name = "country_code", length = 4)
-	private String countryCode;
-	@Column(name = "country_name", length = 256)
-	private String countryName;
+	//@Column(name = "country_code", length = 4)
+	//private String countryCode;
+	//@Column(name = "country_name", length = 256)
+	//private String countryName;
 	@Basic(optional = false)
 	@Column(name = "network_type", nullable = false, length = 32)
 	private String networkType;
@@ -182,22 +182,22 @@ public class Hubs extends BaseEntity {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
-
-	public String getCountryCode() {
-		return countryCode;
-	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
-	}
-
-	public String getCountryName() {
-		return countryName;
-	}
-
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
+	//
+	//public String getCountryCode() {
+	//	return countryCode;
+	//}
+	//
+	//public void setCountryCode(String countryCode) {
+	//	this.countryCode = countryCode;
+	//}
+	//
+	//public String getCountryName() {
+	//	return countryName;
+	//}
+	//
+	//public void setCountryName(String countryName) {
+	//	this.countryName = countryName;
+	//}
 
 	public String getNetworkType() {
 		return networkType;

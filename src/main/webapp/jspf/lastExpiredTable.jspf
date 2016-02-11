@@ -25,9 +25,6 @@ request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 			<th>
 				Default language
 			</th>
-			<th>
-				Geo
-			</th>
 		</tr>
 	</thead>
 
@@ -50,11 +47,6 @@ request.setAttribute("recentlyExpiredList", recentlyExpiredList);
 			<td>
 				<c:if test="${not empty hub.language}">
 					<b><c:out value="${hub.language.language}" /></b>
-				</c:if>
-			</td>
-			<td>
-				<c:if test="${not empty hub.countryCode}">
-					<c:out value="${hub.countryCode}" />
 				</c:if>
 			</td>
 

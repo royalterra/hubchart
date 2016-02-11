@@ -42,9 +42,9 @@ public class StatisticBean extends Statistics {
 		return LookupUtil.decodeLanguageToFlag(this.getHub().getLanguage());
 	}
 	
-	public String getCountryFlag() {
-		return LookupUtil.decodeCountryToFlag(this.getHub().getCountryCode());
-	}
+	//public String getCountryFlag() {
+	//	return LookupUtil.decodeCountryToFlag(this.getHub().getCountryCode());
+	//}
 	
 	public String getAverageHubChannels() {
 		Double average = null;

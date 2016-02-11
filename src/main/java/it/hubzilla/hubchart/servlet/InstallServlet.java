@@ -1,13 +1,5 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.LookupUtil;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.business.HubBusiness;
-import it.hubzilla.hubchart.business.LogBusiness;
-import it.hubzilla.hubchart.business.SettingsBusiness;
-import it.hubzilla.hubchart.model.Hubs;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -25,6 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.SettingsBusiness;
+import it.hubzilla.hubchart.model.Hubs;
 
 @WebServlet("/install")
 public class InstallServlet extends HttpServlet {
@@ -152,8 +151,8 @@ public class InstallServlet extends HttpServlet {
 				String icon = AppConstants.NETWORK_ICONS.get(hub.getNetworkType());
 				if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
 				out.println("Network: <img src='"+icon+"' border='0'/> "+hub.getNetworkType()+"<br />");
-				out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
-						hub.getCountryName()+"<br />");
+				//out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
+				//		hub.getCountryName()+"<br />");
 				out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
 						.get(hub.getRegistrationPolicy())+"<br />");
 				out.println("Version: "+hub.getVersion()+"<br />");

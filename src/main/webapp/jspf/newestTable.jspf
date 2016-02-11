@@ -28,9 +28,6 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 			<th>
 				Default language
 			</th>
-			<th>
-				Geo
-			</th>
 			<!--th class="text-right">
 				Active channels
 			</th-->
@@ -68,11 +65,6 @@ request.setAttribute("newestHubsStatList", newestHubsStatList);
 			<td>
 				<c:if test="${not empty stat.hub.language}">
 					<img src="${stat.languageFlag}" />&nbsp;<b><c:out value="${stat.hub.language.language}" /></b>
-				</c:if>
-			</td>
-			<td>
-				<c:if test="${not empty stat.hub.countryCode}">
-					<c:out value="${stat.hub.countryCode}" />
 				</c:if>
 			</td>
 			<!--td class="text-right"><c:out value="${stat.activeChannelsLast6Months}" /></td-->

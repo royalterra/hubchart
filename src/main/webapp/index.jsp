@@ -33,7 +33,8 @@
 	}
 	session.setAttribute("geoPag", geoPag);
 
-	VisitorBusiness.parse(request, response);
+	//VisitorBusiness.parse(request, response);
+	
 	//Request Scope
 	StatisticBean gs = PollBusiness.findLatestGlobalStats();
 	request.setAttribute("gs", gs);
@@ -115,19 +116,6 @@
 
 		&nbsp;<br />
 		<div class="row">
-			<div class="col-sm-6">
-				<h3>languages</h3>
-				<%@ include file="jspf/languageTable.jspf"%>
-			</div>
-			<div class="col-sm-1">&nbsp;</div>
-			<div class="col-sm-5">
-				<h3>location</h3>
-				<%@ include file="jspf/geoIpTable.jspf"%>
-			</div>
-		</div>
-
-		&nbsp;<br />
-		<div class="row">
 			<div class="col-sm-12">
 				<a href="more.jsp"><img src="images/hz-16.png" align="middle" />&nbsp;More data</a>
 			</div>
@@ -150,7 +138,6 @@
 
 				<div class="panel-body">
 					<strong>Credits</strong> <small> <!--Application hosting <a href="https://www.openshift.com">www.openshift.com</a>.-->
-						Country-IP mapping <a href="http://ip2nation.com/">ip2nation.com</a>.
 						Country flags <a
 						href="https://www.gosquared.com/resources/flag-icons/">gosquared.com</a>.
 					</small>

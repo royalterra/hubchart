@@ -79,18 +79,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 				</c:otherwise>
 				</c:choose>
 			</th>
-			<th>
-				<c:choose>
-				<c:when test="${sessionScope.order == 'geo'}">
-					<a href="index.jsp?order=geo&asc=${!sessionScope.asc}&pag=${sessionScope.pag}">Geo</a>
-					<c:if test="${sessionScope.asc}"><i class="fa fa-arrow-circle-down"></i></c:if>
-					<c:if test="${!sessionScope.asc}"><i class="fa fa-arrow-circle-up"></i></c:if>
-				</c:when>
-				<c:otherwise>
-					<a href="index.jsp?order=geo&asc=true&pag=0">Geo</a>
-				</c:otherwise>
-				</c:choose>
-			</th>
 		</tr>
 	</thead>
 
@@ -129,11 +117,6 @@ request.setAttribute("pageCount", pageCount.intValue());
 			<td>
 				<c:if test="${not empty stat.hub.language}">
 					<img src="${stat.languageFlag}" />&nbsp;<b><c:out value="${stat.hub.language.language}" /></b>
-				</c:if>
-			</td>
-			<td>
-				<c:if test="${not empty stat.hub.countryCode}">
-					<c:out value="${stat.hub.countryCode}" />
 				</c:if>
 			</td>
 		</tr>

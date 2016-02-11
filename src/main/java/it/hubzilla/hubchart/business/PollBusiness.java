@@ -1,20 +1,5 @@
 package it.hubzilla.hubchart.business;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.LookupUtil;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.UrlException;
-import it.hubzilla.hubchart.beans.StatisticBean;
-import it.hubzilla.hubchart.model.Hubs;
-import it.hubzilla.hubchart.model.Ip2nationCountries;
-import it.hubzilla.hubchart.model.Languages;
-import it.hubzilla.hubchart.model.Statistics;
-import it.hubzilla.hubchart.persistence.GenericDao;
-import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.Ip2nationDao;
-import it.hubzilla.hubchart.persistence.LogsDao;
-import it.hubzilla.hubchart.persistence.StatisticsDao;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -47,11 +32,22 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.hibernate.Session;
 
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.LookupUtil;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.UrlException;
+import it.hubzilla.hubchart.beans.StatisticBean;
+import it.hubzilla.hubchart.model.Hubs;
+import it.hubzilla.hubchart.model.Languages;
+import it.hubzilla.hubchart.model.Statistics;
+import it.hubzilla.hubchart.persistence.GenericDao;
+import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
+import it.hubzilla.hubchart.persistence.LogsDao;
+import it.hubzilla.hubchart.persistence.StatisticsDao;
+
 public class PollBusiness {
 
 	//private static final Logger LOG = LoggerFactory.getLogger(PollBusiness.class);
-
-	private static Ip2nationDao nationDao = new Ip2nationDao();
 
 	/** Return persisted statistics list for the provided hubList */
 	public static List<Statistics> pollHubList(Session ses, List<Hubs> hubList, Date pollTime)
@@ -286,15 +282,6 @@ public class PollBusiness {
 			ip = address.getHostAddress();
 			hub.setIpAddress(ip);
 		} catch (Exception e) { }
-		// Country
-		if (ip != null) {
-			Ip2nationCountries country = null;
-			country = nationDao.findNationCodeByIp(ses, ipToLong(ip));
-			if (country != null) {
-				hub.setCountryCode(country.getCode());
-				hub.setCountryName(country.getCountry());
-			}
-		}
 		// Network type
 		try {
 			String platform = jo.getString("platform");

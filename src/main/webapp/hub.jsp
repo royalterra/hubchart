@@ -142,12 +142,6 @@
 							</td>
 						</tr>
 					</c:if>
-					<tr>
-						<td>Server location</td>
-						<td>
-							<img src="${stat.countryFlag}" />&nbsp;<b><c:out value="${stat.hub.countryName}" /></b>
-						</td>
-					</tr>
 				</tbody>
 			</table>
 		</div>

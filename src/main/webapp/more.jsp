@@ -39,6 +39,14 @@
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
+				<h3>languages</h3>
+				<%@ include file="jspf/languageTable.jspf"%>
+			</div>
+		</div>
+		
+		&nbsp;<br />
+		<div class="row">
+			<div class="col-sm-12">
 				<h3>newest hubs</h3>
 				<%@ include file="jspf/newestTable.jspf" %>
 			</div>
