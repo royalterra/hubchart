@@ -18,7 +18,7 @@ public class AppConstants {
 	public static final String TESTING_PROPERTY_FILE = "/testing.properties";
 	public static final String SETTINGS_ACCESS_KEY = "accessKey";
 	public static final long POLL_CYCLES = 15;
-	
+	public static final long POLL_TIMEOUT = 12000;
 	// LOG
 	public static final int LOG_EXPIRATION_DAYS = 4;
 	public static final int VISITOR_EXPIRATION_DAYS = 15;
