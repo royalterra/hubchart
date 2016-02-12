@@ -254,7 +254,7 @@ public class PollBusiness {
 			String versionTag = jo.getString("version_tag");
 			if (versionTag != null) {
 				if (versionTag.length() >= AppConstants.VERSION_SIZE) versionTag = versionTag.substring(0, AppConstants.VERSION_SIZE);
-				hub.setVersion(versionTag);
+				hub.setVersionTag(versionTag);
 			}
 		} catch (Exception e) { }
 		// Registration policy
