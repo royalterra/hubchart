@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -26,7 +25,7 @@ import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.UrlException;
 import it.hubzilla.hubchart.business.HubBusiness;
 import it.hubzilla.hubchart.business.LogBusiness;
-import it.hubzilla.hubchart.business.ThreadedPoller;
+import it.hubzilla.hubchart.business.Poller;
 import it.hubzilla.hubchart.model.Hubs;
 
 public class DiscoverJob implements Job {
@@ -99,13 +98,7 @@ public class DiscoverJob implements Job {
 				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+
 						" Retrieving hubs from <i>"+knownHub.getFqdn()+"</i> "+directory);
 				String jsonUrl = knownHub.getBaseUrl()+SERVER_LIST_SUFFIX;
-				//String responseBody = PollBusiness.getJsonResponseFromUrl(jsonUrl);
-				ThreadedPoller tp = new ThreadedPoller();
-				tp.launchPollingThread(jsonUrl);
-				while(!tp.isFinished()) {
-					Thread.sleep(500);
-				}
-				String responseBody = tp.getResult();
+				String responseBody = Poller.getJsonResponseFromUrl(jsonUrl);
 				if (responseBody == null) {
 					throw new UrlException("ThreadedPoller returned null result: "+knownHub.getBaseUrl());
 				}
@@ -144,8 +137,8 @@ public class DiscoverJob implements Job {
 					}
 				}
 			} catch (UrlException e) {/* ignore wrong URLs */}
-			catch (InterruptedException e) {/* ignore wrong URLs */}
-			catch (ExecutionException e) {/* ignore wrong URLs */}
+			//catch (InterruptedException e) {/* ignore wrong URLs */}
+			//catch (ExecutionException e) {/* ignore wrong URLs */}
 			count++;
 		}
 		return newUrlList;

@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -79,13 +78,7 @@ public class PollBusiness {
 		String hubPollUrl = hub.getBaseUrl() + AppConstants.JSON_SITEINFO;
 		String hubJsonResp = null;
 		try{
-			//hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
-			ThreadedPoller tp = new ThreadedPoller();
-			tp.launchPollingThread(hubPollUrl);
-			while(!tp.isFinished()) {
-				Thread.sleep(500);
-			}
-			hubJsonResp = tp.getResult();
+			hubJsonResp = Poller.getJsonResponseFromUrl(hubPollUrl);
 			if (hubJsonResp != null) {
 				stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
 			} else {
@@ -93,10 +86,6 @@ public class PollBusiness {
 			}
 		} catch (JsonParsingException e) {
 			throw new UrlException("JsonParsingException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
-		} catch (InterruptedException e) {
-			throw new UrlException("InterruptedException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
-		} catch (ExecutionException e) {
-			throw new UrlException("ExecutionException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
 		}
 		return stats;
 	}

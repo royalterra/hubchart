@@ -8,6 +8,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -16,16 +17,20 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.UrlException;
 
 public class Poller {
 	
 	/* POLL USING HTTP CLIENT */
-	public String getJsonResponseFromUrl(String url) throws UrlException {
+	public static String getJsonResponseFromUrl(String url) throws UrlException {
 		CloseableHttpClient httpclient = null;
 		try {
+			RequestConfig requestConfig = RequestConfig.custom()
+					.setConnectTimeout(AppConstants.POLL_TIMEOUT).build();
 			// TRUST-ALL CERTIFICATES HTTP CLIENT:
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+			clientBuilder.setDefaultRequestConfig(requestConfig);
 			SSLContextBuilder sslBuilder = new SSLContextBuilder();
 			//ONLY SELF SIGNED: sslBuilder.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustSelfSignedStrategy());
 			sslBuilder.loadTrustMaterial(null, new TrustStrategy() {
