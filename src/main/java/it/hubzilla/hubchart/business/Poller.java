@@ -10,6 +10,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -27,10 +28,17 @@ public class Poller {
 		CloseableHttpClient httpclient = null;
 		try {
 			RequestConfig requestConfig = RequestConfig.custom()
-					.setConnectTimeout(AppConstants.POLL_TIMEOUT).build();
+					.setSocketTimeout(AppConstants.POLL_TIMEOUT)
+					.setConnectTimeout(AppConstants.POLL_TIMEOUT)
+					.build();
+			SocketConfig socketConfig = SocketConfig.custom()
+					.setSoTimeout(AppConstants.POLL_TIMEOUT)
+					.build();
+			
 			// TRUST-ALL CERTIFICATES HTTP CLIENT:
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
 			clientBuilder.setDefaultRequestConfig(requestConfig);
+			clientBuilder.setDefaultSocketConfig(socketConfig);
 			SSLContextBuilder sslBuilder = new SSLContextBuilder();
 			//ONLY SELF SIGNED: sslBuilder.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustSelfSignedStrategy());
 			sslBuilder.loadTrustMaterial(null, new TrustStrategy() {
