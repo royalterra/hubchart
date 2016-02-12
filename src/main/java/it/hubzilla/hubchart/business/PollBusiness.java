@@ -1,15 +1,13 @@
 package it.hubzilla.hubchart.business;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.URL;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -19,17 +17,6 @@ import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.hibernate.Session;
 
 import it.hubzilla.hubchart.AppConstants;
@@ -92,12 +79,24 @@ public class PollBusiness {
 		String hubPollUrl = hub.getBaseUrl() + AppConstants.JSON_SITEINFO;
 		String hubJsonResp = null;
 		try{
-			hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
-			stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
+			//hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
+			ThreadedPoller tp = new ThreadedPoller();
+			tp.launchPollingThread(hubPollUrl);
+			while(!tp.isFinished()) {
+				Thread.sleep(500);
+			}
+			hubJsonResp = tp.getResult();
+			if (hubJsonResp != null) {
+				stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
+			} else {
+				throw new UrlException("ThreadedPoller returned null result: "+hub.getBaseUrl());
+			}
 		} catch (JsonParsingException e) {
-			throw new UrlException("JsonParsingException: "+e.getMessage(), e);
-		//} catch (IOException e) {
-		//	throw new UrlException("IOException: "+e.getMessage(), e);
+			throw new UrlException("JsonParsingException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
+		} catch (InterruptedException e) {
+			throw new UrlException("InterruptedException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
+		} catch (ExecutionException e) {
+			throw new UrlException("ExecutionException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
 		}
 		return stats;
 	}
@@ -120,50 +119,6 @@ public class PollBusiness {
 //		return jsonText;
 //	}
 	
-	/* POLL USING HTTP CLIENT */
-	public static String getJsonResponseFromUrl(String url) throws UrlException {
-		CloseableHttpClient httpclient = null;
-		try {
-			// TRUST-ALL CERTIFICATES HTTP CLIENT:
-			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-			SSLContextBuilder sslBuilder = new SSLContextBuilder();
-			//ONLY SELF SIGNED: sslBuilder.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustSelfSignedStrategy());
-			sslBuilder.loadTrustMaterial(null, new TrustStrategy() {
-				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-					return true;
-				}
-			});
-			clientBuilder.setSslcontext(sslBuilder.build());
-			httpclient = clientBuilder.build();
-		} catch (Exception e) {
-			// NORMAL HTTP CLIENT:
-			httpclient = HttpClients.createDefault();
-		}
-		
-		HttpPost httpget = new HttpPost(url);
-		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-			public String handleResponse(final HttpResponse response)
-					throws ClientProtocolException, IOException {
-				int status = response.getStatusLine().getStatusCode();
-				if (status >= 200 && status < 300) {
-					HttpEntity entity = response.getEntity();
-					return entity != null ? EntityUtils.toString(entity) : null;
-				} else {
-					throw new ClientProtocolException(
-							"Unexpected response status: " + status);
-				}
-			}
-		};
-		String responseBody = null;
-		try {
-			responseBody = httpclient.execute(httpget, responseHandler);
-		} catch (ClientProtocolException e) {
-			throw new UrlException(e.getClass().getSimpleName()+": "+e.getMessage(), e);
-		} catch (IOException e) {
-			throw new UrlException(e.getClass().getSimpleName()+": "+e.getMessage(), e);
-		}
-		return responseBody;
-	}
 	
 //	private static Statistics parseDiasporaToTransientEntity(Session ses, Statistics stats,
 //			String responseBody, Date pollTime)

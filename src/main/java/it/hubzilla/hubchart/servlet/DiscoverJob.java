@@ -1,13 +1,5 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.UrlException;
-import it.hubzilla.hubchart.business.HubBusiness;
-import it.hubzilla.hubchart.business.LogBusiness;
-import it.hubzilla.hubchart.business.PollBusiness;
-import it.hubzilla.hubchart.model.Hubs;
-
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -27,6 +20,14 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.UrlException;
+import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.ThreadedPoller;
+import it.hubzilla.hubchart.model.Hubs;
 
 public class DiscoverJob implements Job {
 	
@@ -98,7 +99,17 @@ public class DiscoverJob implements Job {
 				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+
 						" Retrieving hubs from <i>"+knownHub.getFqdn()+"</i> "+directory);
 				String jsonUrl = knownHub.getBaseUrl()+SERVER_LIST_SUFFIX;
-				String responseBody = PollBusiness.getJsonResponseFromUrl(jsonUrl);
+				//String responseBody = PollBusiness.getJsonResponseFromUrl(jsonUrl);
+				ThreadedPoller tp = new ThreadedPoller();
+				tp.launchPollingThread(jsonUrl);
+				while(!tp.isFinished()) {
+					Thread.sleep(500);
+				}
+				String responseBody = tp.getResult();
+				if (responseBody == null) {
+					throw new UrlException("ThreadedPoller returned null result: "+knownHub.getBaseUrl());
+				}
+				
 				// Handle json response
 				JsonReader jsonReader = null;
 				JsonObject jo = null;
@@ -133,7 +144,8 @@ public class DiscoverJob implements Job {
 					}
 				}
 			} catch (UrlException e) {/* ignore wrong URLs */}
-			//catch (IOException e) {/* ignore wrong URLs */}
+			catch (InterruptedException e) {/* ignore wrong URLs */}
+			catch (ExecutionException e) {/* ignore wrong URLs */}
 			count++;
 		}
 		return newUrlList;
