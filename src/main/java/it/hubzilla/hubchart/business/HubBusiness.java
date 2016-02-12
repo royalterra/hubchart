@@ -1,18 +1,5 @@
 package it.hubzilla.hubchart.business;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.BusinessException;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.UrlException;
-import it.hubzilla.hubchart.beans.CountryStatBean;
-import it.hubzilla.hubchart.beans.LanguageStatBean;
-import it.hubzilla.hubchart.model.Hubs;
-import it.hubzilla.hubchart.model.Languages;
-import it.hubzilla.hubchart.model.Statistics;
-import it.hubzilla.hubchart.persistence.GenericDao;
-import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.HubsDao;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,6 +8,18 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.BusinessException;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.UrlException;
+import it.hubzilla.hubchart.beans.LanguageStatBean;
+import it.hubzilla.hubchart.model.Hubs;
+import it.hubzilla.hubchart.model.Languages;
+import it.hubzilla.hubchart.model.Statistics;
+import it.hubzilla.hubchart.persistence.GenericDao;
+import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
+import it.hubzilla.hubchart.persistence.HubsDao;
 
 public class HubBusiness {
 	
@@ -191,44 +190,44 @@ public class HubBusiness {
 		return baseUrl;
 	}
 	
-	public static List<CountryStatBean> findCountryStatBeans(Integer page, Integer pageSize) throws OrmException {
-		List<CountryStatBean> result = new ArrayList<CountryStatBean>();
-		if (page == null) page = 0;
-		if (pageSize == null) pageSize = 0;
-		int offset = page*pageSize;
-		Session ses = HibernateSessionFactory.getSession();
-		try {
-			List<Object[]> list = hubsDao.countLiveHubsByCountry(ses, offset, pageSize);
-			for (Object[] obj:list) {
-				try {
-					CountryStatBean cs = new CountryStatBean();
-					cs.setLiveHubs(((Long)obj[0]).intValue());
-					cs.setCountryCode((String)obj[1]);
-					cs.setCountryName((String)obj[2]);
-					result.add(cs);
-				} catch (Exception e) {/*ignore cast and nullpointer*/}
-			}
-		} catch (OrmException e) {
-			throw new OrmException(e.getMessage(), e);
-		} finally {
-			ses.close();
-		}
-		return result;
-	}
+	//public static List<CountryStatBean> findCountryStatBeans(Integer page, Integer pageSize) throws OrmException {
+	//	List<CountryStatBean> result = new ArrayList<CountryStatBean>();
+	//	if (page == null) page = 0;
+	//	if (pageSize == null) pageSize = 0;
+	//	int offset = page*pageSize;
+	//	Session ses = HibernateSessionFactory.getSession();
+	//	try {
+	//		List<Object[]> list = hubsDao.countLiveHubsByCountry(ses, offset, pageSize);
+	//		for (Object[] obj:list) {
+	//			try {
+	//				CountryStatBean cs = new CountryStatBean();
+	//				cs.setLiveHubs(((Long)obj[0]).intValue());
+	//				cs.setCountryCode((String)obj[1]);
+	//				cs.setCountryName((String)obj[2]);
+	//				result.add(cs);
+	//			} catch (Exception e) {/*ignore cast and nullpointer*/}
+	//		}
+	//	} catch (OrmException e) {
+	//		throw new OrmException(e.getMessage(), e);
+	//	} finally {
+	//		ses.close();
+	//	}
+	//	return result;
+	//}
 	
-	public static Integer findCountryStatCount() throws OrmException {
-		Session ses = HibernateSessionFactory.getSession();
-		Integer result = -1;
-		try {
-			List<Object[]> list = hubsDao.countLiveHubsByCountry(ses, 0, Integer.MAX_VALUE);
-			result = list.size();
-		} catch (OrmException e) {
-			throw new OrmException(e.getMessage(), e);
-		} finally {
-			ses.close();
-		}
-		return result;
-	}
+	//public static Integer findCountryStatCount() throws OrmException {
+	//	Session ses = HibernateSessionFactory.getSession();
+	//	Integer result = -1;
+	//	try {
+	//		List<Object[]> list = hubsDao.countLiveHubsByCountry(ses, 0, Integer.MAX_VALUE);
+	//		result = list.size();
+	//	} catch (OrmException e) {
+	//		throw new OrmException(e.getMessage(), e);
+	//	} finally {
+	//		ses.close();
+	//	}
+	//	return result;
+	//}
 	
 	public static List<LanguageStatBean> findLanguageStatBeans(Integer page, Integer pageSize) throws OrmException {
 		List<LanguageStatBean> result = new ArrayList<LanguageStatBean>();

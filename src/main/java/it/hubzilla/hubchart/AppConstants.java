@@ -92,7 +92,7 @@ public class AppConstants {
 	public static final String ORDER_FQDN = "fqdn";
 	public static final String ORDER_REGISTRATION = "regs";
 	public static final String ORDER_LANG = "lang";
-	public static final String ORDER_GEO = "geo";
+	//public static final String ORDER_GEO = "geo";
 	public static final String ORDER_CHANNEL = "chan";
 	public static final String ORDER_VERSION = "version";
 	public static final Map<String, String> ORDER_TYPES = new HashMap<String, String>();
@@ -100,7 +100,7 @@ public class AppConstants {
 		ORDER_TYPES.put(ORDER_FQDN, "hub.fqdn");
 		ORDER_TYPES.put(ORDER_REGISTRATION, "hub.registrationPolicy");
 		ORDER_TYPES.put(ORDER_LANG, "hub.language.language"); 
-		ORDER_TYPES.put(ORDER_GEO, "hub.countryCode");
+		//ORDER_TYPES.put(ORDER_GEO, "hub.countryCode");
 		ORDER_TYPES.put(ORDER_CHANNEL, "activeChannelsLast6Months");
 		ORDER_TYPES.put(ORDER_VERSION, "hub.version");
 	};

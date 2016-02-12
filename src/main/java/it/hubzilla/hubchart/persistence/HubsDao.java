@@ -273,29 +273,29 @@ public class HubsDao {
 		return result;
 	}
 	
-	public List<Object[]> countLiveHubsByCountry(Session ses, int offset, int pageSize) throws OrmException {
-		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
-		Date lastValidDate = cal.getTime();
-		List<Object[]> result = null;
-		try {
-			String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
-					"h.lastSuccessfulPollTime > :dt1 and "+
-					"h.countryCode is not null "+
-					"group by h.countryCode, h.countryName "+
-					"order by liveHubs desc";
-			Query q = ses.createQuery(hql);
-			q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
-			q.setFirstResult(offset);
-			q.setMaxResults(pageSize);
-			@SuppressWarnings("unchecked")
-			List<Object[]> list = q.list();
-			result = list;
-		} catch (HibernateException e) {
-			throw new OrmException(e.getMessage(), e);
-		}
-		return result;
-	}
+	//public List<Object[]> countLiveHubsByCountry(Session ses, int offset, int pageSize) throws OrmException {
+	//	Calendar cal = new GregorianCalendar();
+	//	cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+	//	Date lastValidDate = cal.getTime();
+	//	List<Object[]> result = null;
+	//	try {
+	//		String hql = "select count(h.id) as liveHubs, h.countryCode, h.countryName from Hubs h where "+
+	//				"h.lastSuccessfulPollTime > :dt1 and "+
+	//				"h.countryCode is not null "+
+	//				"group by h.countryCode, h.countryName "+
+	//				"order by liveHubs desc";
+	//		Query q = ses.createQuery(hql);
+	//		q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
+	//		q.setFirstResult(offset);
+	//		q.setMaxResults(pageSize);
+	//		@SuppressWarnings("unchecked")
+	//		List<Object[]> list = q.list();
+	//		result = list;
+	//	} catch (HibernateException e) {
+	//		throw new OrmException(e.getMessage(), e);
+	//	}
+	//	return result;
+	//}
 	
 	public List<Object[]> countLiveHubsByLanguage(Session ses, int offset, int pageSize) throws OrmException {
 		Calendar cal = new GregorianCalendar();
