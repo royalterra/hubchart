@@ -117,7 +117,7 @@ public class Hubs extends BaseEntity {
 				} catch (ParseException e) { /* do nothing */}
 			} else {
 				//doesn't start with a date
-				result += this.version;
+				//result += this.version;
 			}
 		}
 		return result;
