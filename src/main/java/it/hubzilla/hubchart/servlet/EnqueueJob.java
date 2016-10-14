@@ -3,6 +3,7 @@ package it.hubzilla.hubchart.servlet;
 import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.SettingsBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.GenericDao;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
@@ -73,6 +74,8 @@ public class EnqueueJob implements Job {
 				hub.setPollQueue(number);
 				GenericDao.updateGeneric(ses, hub.getId(), hub);
 			}
+			Long hubsCount = hubsDao.countHubsToPoll(ses);
+			SettingsBusiness.setPollCount(ses, hubsCount.intValue());
 			
 			trn.commit();
 		} catch (OrmException e) {

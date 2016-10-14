@@ -145,6 +145,26 @@ public class HubsDao {
 		return result;
 	}
 	
+	public Long countHubsToPoll(Session ses) throws OrmException {
+		try {
+			String hql = "select count(id) from Hubs h where ";
+			hql += "h.pollqueue is not null ";
+			Query q = ses.createQuery(hql);
+			@SuppressWarnings("unchecked")
+			List<Object> list = q.list();
+			if (list != null) {
+				if (list.size() > 0) {
+					if (list.get(0) instanceof Long) {
+						return (Long) list.get(0);
+					}
+				}
+			}
+		} catch (HibernateException e) {
+			throw new OrmException(e.getMessage(), e);
+		}
+		return null;
+	}
+	
 	public Long countLiveHubs(Session ses) throws OrmException {
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);

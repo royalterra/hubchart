@@ -4,6 +4,7 @@ import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.business.LogBusiness;
 import it.hubzilla.hubchart.business.PollBusiness;
+import it.hubzilla.hubchart.business.SettingsBusiness;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.HubsDao;
@@ -52,10 +53,8 @@ public class PollJob implements Job {
 				new LogsDao().addLog(ses, AppConstants.LOG_INFO, "poll", "FULL POLL");
 				pollQueue = hubsDao.findPollQueue(ses, Integer.MAX_VALUE);
 			} else {
-				Long liveHubsCount = hubsDao.countLiveHubs(ses);
-				Long newHubsCount = hubsDao.countNewHubs(ses);
-				Long hubsCount = liveHubsCount+newHubsCount;
-				//Number of hubs to poll = live hubs count / 20
+				Integer hubsCount = SettingsBusiness.getPollCount(ses);
+				//Number of hubs to poll = poll count / 20
 				Integer maxQueueSize = new Double(hubsCount/AppConstants.POLL_CYCLES).intValue();
 				pollQueue = hubsDao.findPollQueue(ses, maxQueueSize);
 			}

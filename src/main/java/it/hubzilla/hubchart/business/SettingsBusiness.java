@@ -1,13 +1,13 @@
 package it.hubzilla.hubchart.business;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Settings;
 import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
 import it.hubzilla.hubchart.persistence.SettingsDao;
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class SettingsBusiness {
 
@@ -17,6 +17,24 @@ public class SettingsBusiness {
 	
 	public static void setAccessKey(String value) throws OrmException {
 		setValue(AppConstants.SETTINGS_ACCESS_KEY, value);
+	}
+	
+	public static Integer getPollCount(Session ses) throws OrmException, NumberFormatException {
+		Settings s = new SettingsDao().findByName(ses, AppConstants.SETTINGS_POLL_COUNT);
+		if (s != null) {
+			String valueS = s.getValue();
+			if (valueS != null) {
+				return Integer.parseInt(valueS);
+			} else {
+				return 0;
+			}
+		} else {
+			return 0;
+		}
+	}
+	
+	public static void setPollCount(Session ses, Integer value) throws OrmException {
+		new SettingsDao().saveOrUpdateValueByName(ses, AppConstants.SETTINGS_POLL_COUNT, value.toString());
 	}
 	
 	public static String getValue(String name) throws OrmException {

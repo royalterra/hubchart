@@ -16,7 +16,6 @@ public class AppConstants {
 	public static final String QUARTZ_CONFIG_FILE = "/quartz-jobs.xml";
 	public static final String APP_PROPERTY_FILE = "/app.properties";
 	public static final String TESTING_PROPERTY_FILE = "/testing.properties";
-	public static final String SETTINGS_ACCESS_KEY = "accessKey";
 	public static final int POLL_CYCLES = 15;
 	public static final int POLL_TIMEOUT = 15000;
 	// LOG
@@ -26,6 +25,10 @@ public class AppConstants {
 	public static final String LOG_ERROR="ERROR";
 	public static final String LOG_DEBUG="DEBUG";
 	public static final String LOG_WARN="WARN";
+	
+	// SETTINGS
+	public static final String SETTINGS_ACCESS_KEY = "accessKey";
+	public static final String SETTINGS_POLL_COUNT="pollCount";
 	
 	// IMAGES
 	public static final String FLAG_ICONS_PATH = "images/flags_16/";
