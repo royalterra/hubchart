@@ -148,7 +148,7 @@ public class HubsDao {
 	public Long countHubsToPoll(Session ses) throws OrmException {
 		try {
 			String hql = "select count(id) from Hubs h where ";
-			hql += "h.pollqueue is not null ";
+			hql += "h.pollQueue is not null ";
 			Query q = ses.createQuery(hql);
 			@SuppressWarnings("unchecked")
 			List<Object> list = q.list();
