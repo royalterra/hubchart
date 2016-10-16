@@ -53,7 +53,7 @@ public class StatisticBusiness {
 		Session ses = HibernateSessionFactory.getSession();
 		try {
 			List<Statistics> sList = statisticsDao.findLatest(ses,
-					filterHidden, page, pageSize, orderBy);
+					filterExpired, filterHidden, page, pageSize, orderBy);
 			for (Statistics s:sList) {
 				StatisticBean bean = new StatisticBean();
 				PropertyUtils.copyProperties(bean, s);
@@ -90,7 +90,7 @@ public class StatisticBusiness {
 	}
 	
 	public static Integer findStatisticsForPresentationCount(
-			boolean filterExpired, boolean filterEmptyStats, boolean filterHidden)
+			boolean filterExpired, boolean filterHidden)
 					throws OrmException{
 		List<StatisticBean> sbList = findLatestStatisticBeans(filterExpired, filterHidden,
 				0, Integer.MAX_VALUE, null);
@@ -102,7 +102,7 @@ public class StatisticBusiness {
 		List<StatisticBean> result = new ArrayList<StatisticBean>();
 		Session ses = HibernateSessionFactory.getSession();
 		try {
-			List<Statistics> statList = statisticsDao.findByNewestHub(ses, offset, pageSize);
+			List<Statistics> statList = statisticsDao.findByNewestHub(ses, true, offset, pageSize);
 			for (Statistics stat:statList) {
 				StatisticBean bean = new StatisticBean();
 				PropertyUtils.copyProperties(bean, stat);

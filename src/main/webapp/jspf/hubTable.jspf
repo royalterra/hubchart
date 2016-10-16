@@ -11,7 +11,7 @@ List<StatisticBean> statList = StatisticBusiness.findStatisticsForPresentation(t
 		(Boolean) session.getAttribute(AppConstants.PARAM_HUB_ASC),
 		(Integer) session.getAttribute(AppConstants.PARAM_HUB_PAGE),
 		(Integer) AppConstants.PAGING_HUBS);
-Double itemCount = new Double(StatisticBusiness.findStatisticsForPresentationCount(true, true, true));
+Double itemCount = new Double(StatisticBusiness.findStatisticsForPresentationCount(true, true));
 Double pageCount = Math.ceil(itemCount/AppConstants.PAGING_HUBS);
 request.setAttribute("statList", statList);
 request.setAttribute("pageCount", pageCount.intValue());
