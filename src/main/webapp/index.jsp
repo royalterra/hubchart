@@ -88,7 +88,7 @@
 			</div>
 			<div class="col-sm-6">
 				&nbsp;
-				<h4>deployed versions</h4>
+				<h4>10 most used versions</h4>
 				<div class="col-sm-12">
 					<div id="versionChart" style="height: 210px; width: 100%;"></div>
 				</div>

@@ -35,15 +35,7 @@
 				<h4>More data</h4>
 			</div>
 		</div>
-		
-		&nbsp;<br />
-		<div class="row">
-			<div class="col-sm-12">
-				<h3>languages</h3>
-				<%@ include file="jspf/languageTable.jspf"%>
-			</div>
-		</div>
-		
+
 		&nbsp;<br />
 		<div class="row">
 			<div class="col-sm-12">
@@ -57,6 +49,14 @@
 			<div class="col-sm-12">
 				<h3>latest expired hubs</h3>
 				<%@ include file="jspf/lastExpiredTable.jspf" %>
+			</div>
+		</div>
+				
+		&nbsp;<br />
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>languages</h3>
+				<%@ include file="jspf/languageTable.jspf"%>
 			</div>
 		</div>
 		
