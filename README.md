@@ -13,13 +13,22 @@ Cartridges to add:
 * MySQL 5.5 
 * phpMyAdmin 4.0 
 
-Push the git whole git repository to openshift private repository.
+1. Push the cloned github repository to your openshift private repository.
 
-Open phpMyAdmin and execute all *.sql scripts you find in the project root folder.
+2. Open phpMyAdmin and execute all *.sql scripts you find in the project root folder.
 
-Navigate to the /admin.jsp page and define an accessKey and a seed hub.
+3. Navigate to the /admin.jsp page and define an accessKey and a seed hub.
 
-After the accessKey is defined the /admin.jsp will allow you to force a network discovery or a general poll.
+4. The accessKey will allow you to use the /admin.jsp page to launch these jobs: discover, enqueue, poll and draw.
 
-The OpenShift `jbossas` cartridge documentation can be found at:
-http://openshift.github.io/documentation/oo_cartridge_guide.html#jbossas
+
+Hubchart scheduled jobs
+----------------------
+
+**discover** [daily] - obtains a list of new hubs parsing the connections of known hubs
+
+**enqueue** [daily] - marks the order in which the known hubs will be polled (based on the last successful poll time)
+
+**poll** [hourly] - consumes a part of the hubs queue (the queue is emptied during the day)
+
+**draw** [daily] - calculates the statistic data, draws graphics and creates the rss feed

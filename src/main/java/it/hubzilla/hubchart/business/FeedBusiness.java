@@ -32,7 +32,7 @@ public class FeedBusiness {
 			global = PollBusiness.findLatestGlobalStats();
 			firstGs = PollBusiness.findFirstGlobalStats();
 			if (global != null && firstGs != null) {
-				List<StatisticBean> statList = HubBusiness.findStatisticsForPresentation(true, true,
+				List<StatisticBean> statList = StatisticBusiness.findStatisticsForPresentation(true, true,
 						AppConstants.ORDER_CHANNEL,
 						false, //order asc?
 						0,//start page
@@ -40,7 +40,7 @@ public class FeedBusiness {
 				overview = createOverview(global);
 				imageTags = createImageTags(firstGs, global);
 				hubChart = createHubChart(statList);
-				List<StatisticBean> newestHubList = HubBusiness.findNewestHubStatistics(0, 5);
+				List<StatisticBean> newestHubList = StatisticBusiness.findNewestHubStatistics(0, 5);
 				newestHubChart = createNewestHubChart(newestHubList);
 			}
 		} catch (OrmException e) {
@@ -76,6 +76,10 @@ public class FeedBusiness {
 				"<h2>Network status</h2>"+
 				"<table>"+
 				"<tr>"+
+					"<td>Active hubs</td>"+
+					"<td><b>"+global.getActiveHubs()+"</b></td>"+
+				"</tr>"+
+				"<tr>"+
 					"<td>Active channels (6 months)</td>"+
 					"<td><b>"+global.getActiveChannelsLast6Months()+"</b></td>"+
 				"</tr>"+
@@ -84,20 +88,12 @@ public class FeedBusiness {
 					"<td><b>"+global.getTotalChannels()+"</b></td>"+
 				"</tr>"+
 				"<tr>"+
-					"<td>Total posts</td>"+
-					"<td><b>"+global.getTotalPosts()+"</b></td>"+
-				"</tr>"+
-				"<tr>"+
-					"<td>Active hubs</td>"+
-					"<td><b>"+global.getActiveHubs()+"</b></td>"+
-				"</tr>"+
-				"<tr>"+
-					"<td>Channels/hub</td>"+
-					"<td><b>"+global.getAverageHubChannels()+"</b></td>"+
+					"<td>Network Types</td>"+
+					"<td>"+PresentationBusiness.printNetworkTypeStats()+"</td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Deployed versions</td>"+
-					"<td>"+HubBusiness.printVersionTagStat()+"</td>"+
+					"<td>"+PresentationBusiness.printVersionTagStats()+"</td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td>Last update</td>"+

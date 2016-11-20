@@ -5,6 +5,7 @@ import it.hubzilla.hubchart.AppConstants;
 
 public class VersionTagStatBean {
 
+	private String networkType;
 	private String versionTag;
 	private Integer liveHubs;
 	private Integer totalHubs;
@@ -21,6 +22,14 @@ public class VersionTagStatBean {
 		this.liveHubs = liveHubs;
 	}
 	
+	public String getNetworkType() {
+		return networkType;
+	}
+
+	public void setNetworkType(String networkType) {
+		this.networkType = networkType;
+	}
+
 	public String getVersionTag() {
 		return versionTag;
 	}

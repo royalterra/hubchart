@@ -26,7 +26,7 @@ request.setAttribute("langPageCount", langPageCount.intValue());
 		<c:forEach items="${requestScope.lsList}" var="ls" varStatus="status">
 			<tr>
 				<td>
-					<img src="${ls.countryFlag}" />&nbsp;<b><c:out value="${ls.language.language}" /></b>
+					<b><c:out value="${ls.language.language}" /></b>
 				</td>
 				<td><c:out value="${ls.language.code}" /></td>
 				<td class="text-right"><c:out value="${ls.liveHubs}" /></td>

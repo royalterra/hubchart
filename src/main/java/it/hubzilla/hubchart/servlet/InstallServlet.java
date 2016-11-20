@@ -1,13 +1,5 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.BusinessException;
-import it.hubzilla.hubchart.LookupUtil;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.business.HubBusiness;
-import it.hubzilla.hubchart.business.SettingsBusiness;
-import it.hubzilla.hubchart.model.Hubs;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -26,24 +18,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Servlet implementation class RegisterServlet
- */
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.SettingsBusiness;
+import it.hubzilla.hubchart.model.Hubs;
+
 @WebServlet("/install")
 public class InstallServlet extends HttpServlet {
-	private static final long serialVersionUID = 7794721577903409031L;
+	private static final long serialVersionUID = 3013147604613167496L;
 
 	private final Logger LOG = LoggerFactory.getLogger(InstallServlet.class);
 	
 	public static final String PARAM_SEED_HUB = "seedHub"; 
 	
-	/**
-     * @see HttpServlet#HttpServlet()
-     */
-    public InstallServlet() {
-        super();
-    }
-
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
@@ -101,7 +90,7 @@ public class InstallServlet extends HttpServlet {
 			throw new ServletException(e.getMessage(), e);
 		}
 		//Set the seed
-		Integer hubId = null;
+		Hubs hub = null;
 		if (emptyHubList) {
 			//Look for hub baseUrl
 			String pollUrl = null;
@@ -119,14 +108,15 @@ public class InstallServlet extends HttpServlet {
 				if (baseUrl != null) {
 					try {
 						//Revive or add hub
-						hubId = HubBusiness.addHub(baseUrl);
+						hub = HubBusiness.addHub(baseUrl);
 						message += "Your hub have been correctly registered.<br />"
 								+ "It will be included in global statistics within 24 hours.";
 						success = true;
-					} catch (BusinessException e) {
-						message = e.getMessage();
-					} catch (OrmException e) {
-						message = e.getMessage();
+					} catch (Exception e) {
+						//UrlException, BusinessException and OrmException => exit with error message
+						LogBusiness.addLog(AppConstants.LOG_DEBUG, "install", e.getMessage());
+						message = baseUrl+" could not be added.<br />"+
+								"Cause: "+e.getMessage();
 						LOG.error(message, e);
 					}
 				} else {
@@ -150,29 +140,23 @@ public class InstallServlet extends HttpServlet {
 				"<link href='css/bootstrap.min.css' rel='stylesheet'>"+
 				"</head> \n" + "<body> \n" +
 				"<div class='container'>"+
-				"<h1><img src='images/hz-64.png' align='middle' />hubchart</h1>"+
+				"<h1><img src='images/hubchart2-32.png' align='middle' /> hubchart</h1>"+
 				"&nbsp;<br />");
 		if (success) {
 			out.println("<p>"+message+"</p>");
-			if (hubId != null) {
-				try {
-					out.println("<p>");
-					Hubs hub = HubBusiness.findHubById(hubId);
-					out.println("Name: "+hub.getName()+"<br />");
-					out.println("Base URL: "+hub.getBaseUrl()+"<br />");
-					out.println("Network: <img src='"+
-							AppConstants.NETWORK_ICONS.get(hub.getNetworkType())+
-							"' border='0'/> "+
-							AppConstants.NETWORK_DESCRIPTIONS.get(hub.getNetworkType())+"<br />");
-					out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
-							hub.getCountryName()+"<br />");
-					out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
-							.get(hub.getRegistrationPolicy())+"<br />");
-					out.println("Version: "+hub.getVersion()+"<br />");
-					out.println("</p>");
-				} catch (OrmException e) {
-					out.println("<p style='color:#c60032;'>ERROR: "+e.getMessage()+"</p>");
-				}
+			if (hub != null) {
+				out.println("<p>");
+				out.println("Name: "+hub.getName()+"<br />");
+				out.println("Base URL: "+hub.getBaseUrl()+"<br />");
+				String icon = AppConstants.NETWORK_ICONS.get(hub.getNetworkType());
+				if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
+				out.println("Network: <img src='"+icon+"' border='0'/> "+hub.getNetworkType()+"<br />");
+				//out.println("Server location: <img src='"+LookupUtil.decodeCountryToFlag(hub.getCountryCode())+"' /> "+
+				//		hub.getCountryName()+"<br />");
+				out.println("Registration: "+AppConstants.REGISTRATION_DESCRIPTIONS
+						.get(hub.getRegistrationPolicy())+"<br />");
+				out.println("Version: "+hub.getVersion()+"<br />");
+				out.println("</p>");
 			}
 		} else {
 			out.println("<p style='color:#c60032;'>ERROR: "+message+"</p>");

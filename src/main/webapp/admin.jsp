@@ -11,12 +11,14 @@ request.setAttribute("accessKey", accessKey);
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Hubchart - Hubzilla grid statistics</title>
+	<title>Hubchart - Administration panel</title>
 	
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" />
+	<link href="css/font-awesome.min.css" rel="stylesheet" />
 	<link href="css/custom.css" rel="stylesheet" />
-	<link href="images/hz-16.png" rel="shortcut icon" type="image/png" />
+	
+	<link href="images/hubchart1-16.png" rel="shortcut icon" type="image/png" />
 	<link href="feed" rel="alternate" type="application/rss+xml" title="Hubzilla Statistics feed" />
 	
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -29,44 +31,76 @@ request.setAttribute("accessKey", accessKey);
 <body>
 
 	<div class="container">
-		&nbsp;<br />
 		<div class="row">
-			<div class="col-sm-7">
-				<h1><img src="images/hz-64.png" align="middle" />hubchart</h1>
+			<div class="col-sm-12">
+				<h1><a href="index.jsp"><img src="images/hubchart1-32.png" align="middle" /></a> hubchart</h1>
 				<h4>Administration panel</h4>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-12">
+				<%@ include file="jspf/adminMenu.jspf" %>
 			</div>
 		</div>
 		
 		<c:if test="${not empty accessKey}">
 		
 			&nbsp;<br/>
+			&nbsp;<br/>
 			<div class="row">
-				<form action="/forcejob" method="post">
-					<div class="col-sm-1">
+				<form action="forcejob" method="post">
+					<div class="col-sm-6">
 						<img src="images/home-32.png" align="middle" />
+						Launch hub network <b>discovery</b>
+						<input type="hidden" name="name" value="discover"></input>
 					</div>
-					<div class="col-sm-3">
-						Force hub list <b>polling</b>
-						<input type="hidden" name="name" value="poll"></input>
-					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-6">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
 					</div>
 				</form>
 			</div>
-		
+			
 			<div class="row">
-				<form action="/forcejob" method="post">
-					<div class="col-sm-1">
+				<form action="forcejob" method="post">
+					<div class="col-sm-6">
 						<img src="images/home-32.png" align="middle" />
+						<b>Enqueue</b> hubs to be polled
+						<input type="hidden" name="name" value="enqueue"></input>
 					</div>
-					<div class="col-sm-3">
-						Force hub network <b>discovery</b>
-						<input type="hidden" name="name" value="crawler"></input>
+					<div class="col-sm-6">
+						Access key
+						<input type="text" name="accessKey"></input>
+						<button type="submit">Go!</button>
 					</div>
-					<div class="col-sm-8">
+				</form>
+			</div>
+			
+			<div class="row">
+				<form action="forcejob" method="post">
+					<div class="col-sm-6">
+						<img src="images/home-32.png" align="middle" />
+						Launch <b>polling</b> of <i>all</i> enqueued hubs
+						<input type="hidden" name="name" value="fullPoll"></input>
+					</div>
+					<div class="col-sm-6">
+						Access key
+						<input type="text" name="accessKey"></input>
+						<button type="submit">Go!</button>
+					</div>
+				</form>
+			</div>
+			
+			<div class="row">
+				<form action="forcejob" method="post">
+					<div class="col-sm-6">
+						<img src="images/home-32.png" align="middle" />
+						<b>Draw</b> graphics and feed with latest stats
+						<input type="hidden" name="name" value="draw"></input>
+					</div>
+					<div class="col-sm-6">
 						Access key
 						<input type="text" name="accessKey"></input>
 						<button type="submit">Go!</button>
@@ -76,8 +110,9 @@ request.setAttribute("accessKey", accessKey);
 		</c:if>
 		
 		<c:if test="${empty accessKey}">
-			<form action="/install" method="post">
-				Define an access key for administration <i>(take note!)</i><br/>
+			<form action="install" method="post">
+				Define an access key for administration<br/>
+				<i>(it can be read/modified in the settings database table)</i><br/>
 				<input type="text" name="accessKey"></input><br/>
 				Insert a seed hub <b>base url</b> to start network discovery<br/>
 				<input type="text" name="seedHub" value="https://"></input><br/>

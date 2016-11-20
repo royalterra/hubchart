@@ -1,7 +1,9 @@
 package it.hubzilla.hubchart.model;
 
 import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.business.PresentationBusiness;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -45,29 +47,28 @@ public class Hubs extends BaseEntity {
 	private String name;
 	@Column(name = "ip_address", length = 64)
 	private String ipAddress;
-	@Column(name = "country_code", length = 4)
-	private String countryCode;
-	@Column(name = "country_name", length = 256)
-	private String countryName;
+	//@Column(name = "country_code", length = 4)
+	//private String countryCode;
+	//@Column(name = "country_name", length = 256)
+	//private String countryName;
 	@Basic(optional = false)
 	@Column(name = "network_type", nullable = false, length = 32)
 	private String networkType;
 	@Column(name = "registration_policy", length = 4)
 	private String registrationPolicy;
+	@Basic(optional = false)
+	@Column(name = "invitation_only", nullable = false)
+	private boolean invitationOnly;
 	@Column(name = "directory_mode", length = 4)
 	private String directoryMode;
-	@Column(name = "version", length = 32)
+	@Column(name = "version", length = 64)//AppConstants.VERSION_SIZE
 	private String version;
-	@Column(name = "version_tag", length = 32)
+	@Column(name = "version_tag", length = 64)//AppConstants.VERSION_SIZE
 	private String versionTag;
 	@Basic(optional = false)
 	@Column(name = "hidden", nullable = false)
 	private boolean hidden;
-	@Basic(optional = false)
-	@Column(name = "deleted", nullable = false)
-	private boolean deleted;
-	@Basic(optional = false)
-	@Column(name = "last_successful_poll_time", nullable = false)
+	@Column(name = "last_successful_poll_time")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastSuccessfulPollTime;
 	@Basic(optional = false)
@@ -86,12 +87,24 @@ public class Hubs extends BaseEntity {
     @JoinColumn(name = "id_language", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Languages language;
+	@Column(name = "poll_queue", nullable = true)
+	private BigInteger pollQueue;
 
 	public Hubs() {
 	}
 
 	public String getVersionDescription() {
-		String result = "";
+		//Icon
+		String icon = AppConstants.NETWORK_ICONS.get(this.networkType);
+		if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
+		String result = "<img src='"+icon+"' "+
+				"border='0' title='"+this.networkType+"' />";
+		//Adds VersionTag if possible
+		if (this.versionTag != null) {
+			if (this.versionTag.length() > 0) {
+				result += "<b>"+this.versionTag+"</b>";
+			}
+		}
 		//Date
 		Date update = null;
 		if (this.version != null) {
@@ -100,54 +113,20 @@ public class Hubs extends BaseEntity {
 				try {
 					String date = this.version.substring(0,10);
 					update = AppConstants.FORMAT_DAY_SQL.parse(date);
-					result += AppConstants.FORMAT_DAY.format(update)+" ";
+					result += " ("+AppConstants.FORMAT_DAY.format(update)+")";
 				} catch (ParseException e) { /* do nothing */}
 			} else {
 				//doesn't start with a date
-				result += this.version+" ";
-			}
-		}
-		//Adds VersionTag if possible
-		if (this.versionTag != null) {
-			if (this.versionTag.length() > 0) {
-				result += "("+this.versionTag+") ";
+				//result += this.version;
 			}
 		}
 		return result;
 	}
 	
-//	public String getVersionFriendly() {
-//		String result = "";
-//		//Date
-//		Date update = null;
-//		if (this.version != null) {
-//			if (this.version.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}.*")) {//[0-9]{2}/[0-9]{2}/[0-9]{4}
-//				//Starts with a date
-//				try {
-//					String date = this.version.substring(0,10);
-//					update = AppConstants.FORMAT_DAY_SQL.parse(date);
-//				} catch (ParseException e) { /* do nothing */}
-//			} else {
-//				//doesn't start with a date
-//				result = this.version;
-//			}
-//		}
-//		//Adds VersionTag if possible
-//		if (result.length() == 0) {
-//			if (this.versionTag != null) {
-//				if (this.versionTag.length() > 0) {
-//					result += this.versionTag +" ("+
-//							AppConstants.FORMAT_DAY.format(update)+") ";
-//				} else {
-//					result += AppConstants.FORMAT_DAY.format(update)+" ";
-//				}
-//			} else {
-//				result += AppConstants.FORMAT_DAY.format(update)+" ";
-//			}
-//		}
-//		return result;
-//	}
-	
+	public String getFormattedPlugins() {
+		return PresentationBusiness.printPluginList(this);
+	}
+		
 	public Integer getId() {
 		return id;
 	}
@@ -179,7 +158,7 @@ public class Hubs extends BaseEntity {
 	public void setInfo(String info) {
 		this.info = info;
 	}
-
+	
 	public String getPlugins() {
 		return plugins;
 	}
@@ -203,22 +182,22 @@ public class Hubs extends BaseEntity {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
-
-	public String getCountryCode() {
-		return countryCode;
-	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
-	}
-
-	public String getCountryName() {
-		return countryName;
-	}
-
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
+	//
+	//public String getCountryCode() {
+	//	return countryCode;
+	//}
+	//
+	//public void setCountryCode(String countryCode) {
+	//	this.countryCode = countryCode;
+	//}
+	//
+	//public String getCountryName() {
+	//	return countryName;
+	//}
+	//
+	//public void setCountryName(String countryName) {
+	//	this.countryName = countryName;
+	//}
 
 	public String getNetworkType() {
 		return networkType;
@@ -234,6 +213,14 @@ public class Hubs extends BaseEntity {
 
 	public void setRegistrationPolicy(String registrationPolicy) {
 		this.registrationPolicy = registrationPolicy;
+	}
+
+	public boolean getInvitationOnly() {
+		return invitationOnly;
+	}
+
+	public void setInvitationOnly(boolean invitationOnly) {
+		this.invitationOnly = invitationOnly;
 	}
 
 	public String getVersion() {
@@ -315,21 +302,21 @@ public class Hubs extends BaseEntity {
 	public void setVersionTag(String versionTag) {
 		this.versionTag = versionTag;
 	}
-
-	public boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-
+	
 	public Date getLastSuccessfulPollTime() {
 		return lastSuccessfulPollTime;
 	}
 
 	public void setLastSuccessfulPollTime(Date lastSuccessfulPollTime) {
 		this.lastSuccessfulPollTime = lastSuccessfulPollTime;
+	}
+
+	public BigInteger getPollQueue() {
+		return pollQueue;
+	}
+
+	public void setPollQueue(BigInteger pollQueue) {
+		this.pollQueue = pollQueue;
 	}
 
 	@Override

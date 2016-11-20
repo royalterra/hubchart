@@ -1,11 +1,14 @@
 package it.hubzilla.hubchart.persistence;
 
+import it.hubzilla.hubchart.AppConstants;
 import it.hubzilla.hubchart.OrmException;
 import it.hubzilla.hubchart.model.Hubs;
 import it.hubzilla.hubchart.model.Statistics;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -17,18 +20,23 @@ import org.hibernate.type.TimestampType;
 
 public class StatisticsDao {
 	
-	public List<Statistics> findLatest(Session ses, boolean filterHidden,
+	public List<Statistics> findLatest(Session ses, boolean filterExpired, boolean filterHidden,
 			int page, int pageSize, String orderBy
 			) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
 		List<Statistics> result = null;
 		if (orderBy == null) orderBy="";
 		if (orderBy.equals("")) orderBy="activeChannelsLast6Months desc"; 
 		try {
 			String hql="from Statistics hs where ";
 			if (filterHidden) hql += "hs.hub.hidden = :b3 and ";
+			if (filterExpired) hql += "hs.hub.lastSuccessfulPollTime > :dt1 and ";
 			hql += "hs.id = hs.hub.idLastHubStats order by hs."+orderBy;
 			Query q = ses.createQuery(hql);
 			if (filterHidden) q.setParameter("b3", Boolean.FALSE, BooleanType.INSTANCE);
+			if (filterExpired) q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			q.setFirstResult(page*pageSize);
 			q.setMaxResults(pageSize);
 			@SuppressWarnings("unchecked")
@@ -71,25 +79,29 @@ public class StatisticsDao {
 		}
 	}
 	
-	public List<Statistics> findByNewestHub(Session ses, int offset, int pageSize) throws OrmException {
+	public List<Statistics> findByNewestHub(Session ses, boolean filterExpired, int offset, int pageSize) throws OrmException {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_MONTH, (-1)*AppConstants.HUB_EXPIRATION_DAYS);
+		Date lastValidDate = cal.getTime();
 		List<Statistics> result = new ArrayList<Statistics>();
 		try {
-			String hql = "from Hubs where "
-					+ "lastSuccessfulPollTime is not null "
-					+ "and registrationPolicy is not null "
-					+ "and hidden = :b1 "
-					+ "and deleted = :b2 "
+			String hql = "from Hubs h where ";
+			if (filterExpired) hql += "h.lastSuccessfulPollTime > :dt1 and ";
+			hql += "h.lastSuccessfulPollTime is not null and "
+					+ "h.registrationPolicy is not null and "
+					+ "h.hidden = :b1 "
 					+ "order by creationTime desc";
 			Query q = ses.createQuery(hql);
 			q.setFirstResult(offset);
 			q.setMaxResults(pageSize);
 			q.setParameter("b1", Boolean.FALSE, BooleanType.INSTANCE);
-			q.setParameter("b2", Boolean.FALSE, BooleanType.INSTANCE);
+			if (filterExpired) q.setParameter("dt1", lastValidDate, TimestampType.INSTANCE);
 			@SuppressWarnings("unchecked")
 			List<Hubs> list = q.list();
 			for (Hubs hub:list) {
 				Statistics stat = findLastStatsByHub(ses, hub.getId());
-				result.add(stat);
+				if (stat !=null)
+						result.add(stat);
 			}
 		} catch (HibernateException e) {
 			throw new OrmException(e.getMessage(), e);

@@ -16,15 +16,22 @@ public class StatisticBean extends Statistics {
 	}
 	
 	public String getNetworkTypeIcon() {
-		return AppConstants.NETWORK_ICONS.get(this.getHub().getNetworkType());
+		String icon = AppConstants.NETWORK_ICONS.get(this.getHub().getNetworkType());
+		if (icon == null) icon = AppConstants.NETWORK_ICON_UNKNOWN;
+		return icon;
 	}
 	
 	public String getNetworkTypeDescr() {
-		return AppConstants.NETWORK_DESCRIPTIONS.get(this.getHub().getNetworkType());
+		return this.getHub().getNetworkType();
 	}
 	
 	public String getRegistrationPolicyDescr() {
-		return AppConstants.REGISTRATION_DESCRIPTIONS.get(this.getHub().getRegistrationPolicy());
+		String rpd = AppConstants.REGISTRATION_DESCRIPTIONS.get(this.getHub().getRegistrationPolicy());
+		if (this.getHub().getRegistrationPolicy().equals(AppConstants.REGISTRATION_OPEN) &&
+				this.getHub().getInvitationOnly()) {
+			return "Invite";
+		}
+		return rpd;
 	}
 	
 	public String getDirectoryDescr() {
@@ -35,9 +42,9 @@ public class StatisticBean extends Statistics {
 		return LookupUtil.decodeLanguageToFlag(this.getHub().getLanguage());
 	}
 	
-	public String getCountryFlag() {
-		return LookupUtil.decodeCountryToFlag(this.getHub().getCountryCode());
-	}
+	//public String getCountryFlag() {
+	//	return LookupUtil.decodeCountryToFlag(this.getHub().getCountryCode());
+	//}
 	
 	public String getAverageHubChannels() {
 		Double average = null;

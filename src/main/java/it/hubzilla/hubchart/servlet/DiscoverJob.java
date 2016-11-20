@@ -1,14 +1,7 @@
 package it.hubzilla.hubchart.servlet;
 
-import it.hubzilla.hubchart.BusinessException;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.UrlException;
-import it.hubzilla.hubchart.business.HubBusiness;
-import it.hubzilla.hubchart.business.PollBusiness;
-import it.hubzilla.hubchart.model.Hubs;
-
 import java.io.StringReader;
-import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,28 +20,41 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CrawlerJob implements Job {
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.UrlException;
+import it.hubzilla.hubchart.business.HubBusiness;
+import it.hubzilla.hubchart.business.LogBusiness;
+import it.hubzilla.hubchart.business.Poller;
+import it.hubzilla.hubchart.model.Hubs;
+
+public class DiscoverJob implements Job {
 	
-	private final Logger LOG = LoggerFactory.getLogger(CrawlerJob.class);
+	private final Logger LOG = LoggerFactory.getLogger(DiscoverJob.class);
 	private static String SERVER_LIST_SUFFIX = "/sitelist/json?start=0&limit=1000000";
 	
 	@Override
 	public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
 		LOG.info("Started job '"+jobCtx.getJobDetail().getKey().getName()+"'");
+		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "<b>STARTED JOB</b>");
 		//Get all known hubs
 		Map<String,Hubs> knownHubMap = new HashMap<String, Hubs>();
 		List<Hubs> hubToCheckList = null;
 		try {
 			hubToCheckList = HubBusiness.findDirectories();
 			List<Hubs> knownHubList = HubBusiness.findAllHubs(false, false);//include expired and hidden hubs
-			for (Hubs hub:knownHubList) knownHubMap.put(hub.getBaseUrl(), hub);
+			for (Hubs hub:knownHubList) {
+				String fqdnNoWww = HubBusiness.stripLeadingWww(hub.getFqdn());
+				knownHubMap.put(fqdnNoWww, hub);
+			}
 			if (hubToCheckList == null) hubToCheckList = new ArrayList<Hubs>();
 			if (hubToCheckList.size() == 0) {
 				//If no directory is known, then all hubs are polled
 				hubToCheckList = knownHubList;
 			}
 		} catch (OrmException e) {
-			LOG.error(e.getMessage(), e);
+			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover",
+					e.getClass().getSimpleName()+" "+e.getMessage());
 			throw new JobExecutionException(e);
 		}
 		
@@ -59,32 +65,44 @@ public class CrawlerJob implements Job {
 			//2) Create corresponding Hub objects
 			//3) New Hub objects become the new list to parse
 			do {
-				LOG.debug("Cycle "+cycleNum);
-				LOG.debug("Saved hubs are now "+knownHubMap.size());
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "<b>Iteration "+cycleNum+"</b>");
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Saved hubs are now "+knownHubMap.size());
 				List<String> newUrlList = retrieveAndFilterNewUrls(hubToCheckList, knownHubMap);
-				LOG.debug("Found "+newUrlList.size()+" new URLs");
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Found "+newUrlList.size()+" new URLs");
 				hubToCheckList = registerHubs(newUrlList);
-				LOG.debug("Saved "+hubToCheckList.size()+" new hubs");
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Saved "+hubToCheckList.size()+" new hubs");
 				cycleNum++;
 				//Repeat 3 times or until there are no new urls to add 
 			} while ((hubToCheckList.size() > 0) && (cycleNum <= 3));
-			LOG.debug("Cycles finished");
+			LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "Iterations finished");
 		} catch (OrmException e) {
-			LOG.error(e.getMessage(), e);
+			LogBusiness.addLog(AppConstants.LOG_ERROR, "discover",
+					e.getClass().getSimpleName()+" "+e.getMessage());
 			throw new JobExecutionException(e);
 		}
 		
+		LogBusiness.addLog(AppConstants.LOG_INFO, "discover", "<b>ENDED JOB</b>");
 		LOG.info("Ended job '"+jobCtx.getJobDetail().getKey().getName()+"'");
 	}
 	
 	private List<String> retrieveAndFilterNewUrls(Collection<Hubs> hubToCheckList, Map<String, Hubs> knownHubMap) {
 		List<String> newUrlList = new ArrayList<String>();
-		int count=0;
+		int count=1;
+		//Scan known hubs to find new hubs they're connected with
 		for (Hubs knownHub:hubToCheckList) {
 			try {
-				LOG.debug(count+"/"+hubToCheckList.size()+" Retrieving hubs from "+knownHub.getBaseUrl());
+				String directory = "";
+				if (knownHub.getDirectoryMode() != null) {
+					directory = "<b>"+AppConstants.DIRECTORY_DESCRIPTIONS.get(knownHub.getDirectoryMode())+"</b>";
+				}
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+hubToCheckList.size()+
+						" Retrieving hubs from <i>"+knownHub.getFqdn()+"</i> "+directory);
 				String jsonUrl = knownHub.getBaseUrl()+SERVER_LIST_SUFFIX;
-				String responseBody = PollBusiness.getJsonResponseFromUrl(jsonUrl);
+				String responseBody = Poller.getJsonResponseFromUrl(jsonUrl);
+				if (responseBody == null) {
+					throw new UrlException("ThreadedPoller returned null result: "+knownHub.getBaseUrl());
+				}
+				
 				// Handle json response
 				JsonReader jsonReader = null;
 				JsonObject jo = null;
@@ -104,8 +122,10 @@ public class CrawlerJob implements Job {
 						try {
 							String url = jo2.getString("url");
 							url = HubBusiness.cleanBaseUrl(url);
+							String fqdn = new URL(url).getHost();
+							String fqdnNoWww = HubBusiness.stripLeadingWww(fqdn);
 							//add only those not in the Map
-							Hubs foundHub = knownHubMap.get(url);
+							Hubs foundHub = knownHubMap.get(fqdnNoWww);
 							if (foundHub == null) {
 								//Not in known map
 								if (!newUrlList.contains(url)) {
@@ -117,6 +137,8 @@ public class CrawlerJob implements Job {
 					}
 				}
 			} catch (UrlException e) {/* ignore wrong URLs */}
+			//catch (InterruptedException e) {/* ignore wrong URLs */}
+			//catch (ExecutionException e) {/* ignore wrong URLs */}
 			count++;
 		}
 		return newUrlList;
@@ -124,17 +146,23 @@ public class CrawlerJob implements Job {
 	
 	private List<Hubs> registerHubs(List<String> urlList) throws OrmException {
 		List<Hubs> newHubList = new ArrayList<Hubs>();
+		int count = 0;
 		for(String url:urlList) {
-			LOG.debug(newHubList.size()+"/"+urlList.size()+" Saving "+url);
-			Integer hubId = null;
+			count++;
+			Hubs hub = null;
+			String message = "";
 			try {
-				hubId = HubBusiness.addHub(url);
-			} catch (BusinessException e) {/* ignore if URL is already registered */
-			} catch (MalformedURLException e) {/* ignore if URL is malformed */
+				hub = HubBusiness.addHub(url);
+			} catch (Exception e) {
+				//UrlException, BusinessException and OrmException => exit with error message
+				message = url+" could not be added. "+e.getMessage();
+				LOG.error(message, e);
 			}
-			if (hubId != null) {
-				Hubs hub = HubBusiness.findHubById(hubId);
+			if (hub != null) {
 				newHubList.add(hub);
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" saved <b>"+hub.getFqdn()+"</b>");
+			} else {
+				LogBusiness.addLog(AppConstants.LOG_INFO, "discover", count+"/"+urlList.size()+" "+url+" "+message);
 			}
 		}
 		return newHubList;

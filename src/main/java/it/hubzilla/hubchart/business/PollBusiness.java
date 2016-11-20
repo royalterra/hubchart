@@ -1,20 +1,5 @@
 package it.hubzilla.hubchart.business;
 
-import it.hubzilla.hubchart.AppConstants;
-import it.hubzilla.hubchart.LookupUtil;
-import it.hubzilla.hubchart.OrmException;
-import it.hubzilla.hubchart.UrlException;
-import it.hubzilla.hubchart.beans.StatisticBean;
-import it.hubzilla.hubchart.model.Hubs;
-import it.hubzilla.hubchart.model.Ip2nationCountries;
-import it.hubzilla.hubchart.model.Languages;
-import it.hubzilla.hubchart.model.Statistics;
-import it.hubzilla.hubchart.persistence.GenericDao;
-import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
-import it.hubzilla.hubchart.persistence.Ip2nationDao;
-import it.hubzilla.hubchart.persistence.StatisticsDao;
-
-import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
@@ -31,44 +16,56 @@ import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import it.hubzilla.hubchart.AppConstants;
+import it.hubzilla.hubchart.LookupUtil;
+import it.hubzilla.hubchart.OrmException;
+import it.hubzilla.hubchart.UrlException;
+import it.hubzilla.hubchart.beans.StatisticBean;
+import it.hubzilla.hubchart.model.Hubs;
+import it.hubzilla.hubchart.model.Languages;
+import it.hubzilla.hubchart.model.Statistics;
+import it.hubzilla.hubchart.persistence.GenericDao;
+import it.hubzilla.hubchart.persistence.HibernateSessionFactory;
+import it.hubzilla.hubchart.persistence.LogsDao;
+import it.hubzilla.hubchart.persistence.StatisticsDao;
 
 public class PollBusiness {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PollBusiness.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(PollBusiness.class);
 
-	private static Ip2nationDao nationDao = new Ip2nationDao();
-
+	/** Return persisted statistics list for the provided hubList */
 	public static List<Statistics> pollHubList(Session ses, List<Hubs> hubList, Date pollTime)
 			throws OrmException {
 		List<Statistics> statList = new ArrayList<Statistics>();
+		LogsDao logsDao = new LogsDao();
 		int count = 1;
 		for (Hubs hub:hubList) {
 			try {
-				LOG.debug(count+"/"+hubList.size()+" Polling "+hub.getBaseUrl());
-				Statistics stat = retrieveTransientStats(ses, hub, pollTime);
+				Statistics stat = retrieveTransientStats(ses, hub, pollTime);//Not responding -> exception
+				//Save the stats
 				if (stat != null) {
+					Integer idStats = (Integer) GenericDao.saveGeneric(ses, stat);
 					statList.add(stat);
-					GenericDao.updateGeneric(ses, hub.getId(),  hub);
+					hub.setIdLastHubStats(idStats);
+					hub.setLastSuccessfulPollTime(pollTime);
+					logsDao.addLog(ses, AppConstants.LOG_INFO, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> <b>OK</b>");
 				} else {
-					LOG.debug(count+"/"+hubList.size()+" Exception: hub is not responsive");
+					logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> Exception: statistics are empty ");
 				}
 			} catch (UrlException e) {
-				LOG.debug(count+"/"+hubList.size()+" Exception: "+e.getMessage());
+				String dead = "";
+				if (hub.getLastSuccessfulPollTime() != null) dead = ("<b>last seen "+AppConstants.FORMAT_DAY.format(hub.getLastSuccessfulPollTime())+"</b>");
+				logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", count+"/"+hubList.size()+" <b>"+hub.getFqdn()+"</b> "+e.getMessage()+" "+dead);
 			}
+			
+			//Always update the hub info after poll (successful or not)
+			hub.setPollQueue(null);
+			GenericDao.updateGeneric(ses, hub.getId(),  hub);
 			count++;
 		}
-		LOG.info("Responsive hubs: "+statList.size()+"/"+hubList.size());
+		logsDao.addLog(ses, AppConstants.LOG_ERROR, "poll", "Successful polls: "+statList.size()+"/"+hubList.size());
 		return statList;
 	}
 	
@@ -79,51 +76,38 @@ public class PollBusiness {
 		
 		//Poll siteinfo/json service
 		String hubPollUrl = hub.getBaseUrl() + AppConstants.JSON_SITEINFO;
-		String hubJsonResp = getJsonResponseFromUrl(hubPollUrl);
-		try {
-			stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
+		String hubJsonResp = null;
+		try{
+			hubJsonResp = Poller.getJsonResponseFromUrl(hubPollUrl);
+			if (hubJsonResp != null) {
+				stats = parseHubJsonToTransientEntity(ses, hub, hubJsonResp, pollTime);
+			} else {
+				throw new UrlException("ThreadedPoller returned null result: "+hub.getBaseUrl());
+			}
 		} catch (JsonParsingException e) {
-			LOG.debug(e.getMessage());
-			throw new UrlException(e.getMessage(), e);
-		}
-		
-		// Last poll time
-		if (stats != null) {
-			hub.setLastSuccessfulPollTime(pollTime);
-			hub.setDeleted(false);
-			stats.setPollTime(pollTime);
+			throw new UrlException("JsonParsingException: "+hub.getBaseUrl()+"\r\n"+e.getMessage(), e);
 		}
 		return stats;
 	}
 
-	public static String getJsonResponseFromUrl(String url) throws UrlException {
-		// HTTP CLIENT
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpPost httpget = new HttpPost(url);
-		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-			public String handleResponse(final HttpResponse response)
-					throws ClientProtocolException, IOException {
-				int status = response.getStatusLine().getStatusCode();
-				if (status >= 200 && status < 300) {
-					HttpEntity entity = response.getEntity();
-					return entity != null ? EntityUtils.toString(entity) : null;
-				} else {
-					throw new ClientProtocolException(
-							"Unexpected response status: " + status);
-				}
-			}
-		};
-		
-		String responseBody = null;
-		try {
-			responseBody = httpclient.execute(httpget, responseHandler);
-		} catch (ClientProtocolException e) {
-			throw new UrlException(e.getMessage(), e);
-		} catch (IOException e) {
-			throw new UrlException(e.getClass().getSimpleName()+": "+e.getMessage(), e);
-		}
-		return responseBody;
-	}
+	/* POLL USING INPUTSTREAMREADER */
+//	public static String getJsonResponseFromUrl(String url) throws IOException {
+//		String jsonText = null;
+//		InputStream is = new URL(url).openStream();
+//		try {
+//			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+//			StringBuilder sb = new StringBuilder();
+//			int cp;
+//			while ((cp = rd.read()) != -1) {
+//				sb.append((char) cp);
+//			}
+//			jsonText = sb.toString();
+//		} finally {
+//			is.close();
+//		}
+//		return jsonText;
+//	}
+	
 	
 //	private static Statistics parseDiasporaToTransientEntity(Session ses, Statistics stats,
 //			String responseBody, Date pollTime)
@@ -221,6 +205,7 @@ public class PollBusiness {
 		stats.setTotalChannels(0);
 		stats.setTotalPosts(0);
 		stats.setHub(hub);
+		stats.setPollTime(pollTime);
 		
 		// Handle json response
 		JsonReader jsonReader = Json.createReader(new StringReader(responseBody));
@@ -241,34 +226,58 @@ public class PollBusiness {
 			ip = address.getHostAddress();
 			hub.setIpAddress(ip);
 		} catch (Exception e) { }
-		// Country
-		if (ip != null) {
-			Ip2nationCountries country = null;
-			country = nationDao.findNationCodeByIp(ses, ipToLong(ip));
-			if (country != null) {
-				hub.setCountryCode(country.getCode());
-				hub.setCountryName(country.getCountry());
-			}
-		}
 		// Network type
 		try {
-			String networkType = AppConstants.NETWORK_TYPES.get(jo.getString("platform"));
-			if (networkType == null) networkType = AppConstants.NETWORK_TYPE_UNKNOWN;
-			hub.setNetworkType(networkType);
+			String platform = jo.getString("platform");
+			if (platform != null) {
+				if (platform.length() <32) {
+					hub.setNetworkType(platform);
+				} else {
+					hub.setNetworkType(platform.substring(0, 31));
+				}
+				platform = platform.toLowerCase();
+			}
+			//Attempt network type name normalization
+			String networkType = AppConstants.NETWORK_TYPES.get(platform);
+			if (networkType != null) hub.setNetworkType(networkType);
 		} catch (Exception e) { }
 		// Version
 		try {
-			hub.setVersion(jo.getString("version"));
+			String version = jo.getString("version");
+			if (version != null) {
+				if (version.length() >= AppConstants.VERSION_SIZE) version = version.substring(0, AppConstants.VERSION_SIZE);
+				hub.setVersion(version);
+			}
 		} catch (Exception e) { }
 		// Version tag
 		try {
-			hub.setVersionTag(jo.getString("version_tag"));
+			String versionTag = jo.getString("version_tag");
+			if (versionTag != null) {
+				if (versionTag.length() >= AppConstants.VERSION_SIZE) versionTag = versionTag.substring(0, AppConstants.VERSION_SIZE);
+				hub.setVersionTag(versionTag);
+			}
 		} catch (Exception e) { }
 		// Registration policy
 		try {
 			String registrationPolicy = LookupUtil.encodeRegistrationPolicy(jo.getString("register_policy"));
 			hub.setRegistrationPolicy(registrationPolicy);
 		} catch (Exception e) { }
+		// Is invitation only?
+		boolean invite = false;
+		try {
+			Integer inviteInt = jo.getInt("invitation_only");
+			if (inviteInt != null) {
+				if (inviteInt > 0) invite = true;
+			}
+		} catch (Exception e1) {
+			try {
+				String inviteString = jo.getString("invitation_only").toString();
+				if (inviteString != null) {
+					if (inviteString.equals("1")) invite = true;
+				}
+			} catch (Exception e2) {/* Any exception is discarded */}
+		}
+		stats.getHub().setInvitationOnly(invite);
 		// Directory mode
 		try {
 			String directoryMode = LookupUtil.encodeDirectoryMode(jo.getString("directory_mode"));
@@ -285,10 +294,11 @@ public class PollBusiness {
 			JsonArray pluginsArray = jo.getJsonArray("plugins");
 			if (pluginsArray != null) {
 				List<JsonValue> list = pluginsArray.getValuesAs(JsonValue.class);
-				for (JsonValue jv:list) plugins += jv.toString()+" ";
-				plugins = plugins.trim();
-				plugins = " "+plugins.replaceAll("\"", "");
-				if (plugins.length() > 2) plugins = plugins.replaceAll("\\s+", " &bull;");
+				for (JsonValue jv:list) {
+					if (plugins.length() > 0) plugins += AppConstants.STRING_SEPARATOR;
+					String plugin = jv.toString().replaceAll("\"", "");
+					plugins += plugin;
+				}
 			}
 			hub.setPlugins(plugins);
 		} catch (Exception e) { }
@@ -358,7 +368,6 @@ public class PollBusiness {
 			if (hiddenInt != null) {
 				if (hiddenInt > 0) hidden = true;
 			}
-			
 		} catch (Exception e1) {
 			try {
 				String hiddenString = jo.getString("hide_in_statistics").toString();
